@@ -1,0 +1,22 @@
+Source: prometheus-node-exporter
+Section: net
+Priority: extra
+Maintainer: Debian Go Packaging Team <pkg-go-maintainers@lists.alioth.debian.org>
+Uploaders: Martín Ferrari <tincho@debian.org>
+Build-Depends: debhelper (>= 9.0.0), dh-golang, golang-go,
+ golang-github.com-prometheus-log-dev,
+ golang-goprotobuf-dev,
+ golang-procfs-dev (>= 0+git20150616),
+ golang-prometheus-client-dev,
+Standards-Version: 3.9.6
+Vcs-Git: git://anonscm.debian.org/pkg-go/packages/prometheus-node-exporter.git
+Vcs-Browser: http://anonscm.debian.org/cgit/pkg-go/packages/prometheus-node-exporter.git/
+Homepage: https://github.com/prometheus/node_exporter
+
+Package: prometheus-node-exporter
+Architecture: any
+Depends: ${shlibs:Depends}, ${misc:Depends}, daemon
+Built-Using: ${misc:Built-Using}
+Description: Prometheus exporter for machine metrics
+ Prometheus exporter for machine metrics, written in Go with pluggable metric
+ collectors.

@@ -1,0 +1,69 @@
+#!/bin/sh
+# kFreeBSD do not accept scripts as interpreters, using #!/bin/sh and sourcing.
+if [ true != "$INIT_D_SCRIPT_SOURCED" ] ; then
+    set "$0" "$@"; INIT_D_SCRIPT_SOURCED=true . /lib/init/init-d-script
+fi
+### BEGIN INIT INFO
+# Provides:          prometheus-node-exporter
+# Required-Start:    $remote_fs $syslog
+# Required-Stop:     $remote_fs $syslog
+# Default-Start:     2 3 4 5
+# Default-Stop:      0 1 6
+# Short-Description: Monitoring system and time series database
+# Description:       Prometheus is a systems and services monitoring system. It
+#                    collects metrics from configured targets at given
+#                    intervals, evaluates rule expressions, displays the
+#                    results, and can trigger alerts if some condition is
+#                    observed to be true.
+### END INIT INFO
+
+# Author: Martín Ferrari <tincho@debian.org>
+
+DESC="monitoring system and time series database"
+DAEMON=/usr/bin/prometheus-node-exporter
+NAME=prometheus-node-exporter
+USER=prometheus
+PIDFILE=/var/run/prometheus/prometheus-node-exporter.pid
+LOGFILE=/var/log/prometheus/prometheus-node-exporter.log
+
+HELPER=/usr/bin/daemon
+HELPER_ARGS="--name=$NAME --output=$LOGFILE --pidfile=$PIDFILE --user=$USER"
+
+ARGS=""
+[ -r /etc/default/$NAME ] && . /etc/default/$NAME
+
+do_start_prepare()
+{
+    mkdir -p `dirname $PIDFILE` || true
+    chown -R $USER: `dirname $LOGFILE`
+    chown -R $USER: `dirname $PIDFILE`
+}
+
+do_start_cmd()
+{
+    # Return
+    #   0 if daemon has been started
+    #   1 if daemon was already running
+    #   2 if daemon could not be started
+    $HELPER $HELPER_ARGS --running && return 1
+    $HELPER $HELPER_ARGS -- $DAEMON $ARGS || return 2
+    return 0
+}
+
+do_stop_cmd()
+{
+    # Return
+    #   0 if daemon has been stopped
+    #   1 if daemon was already stopped
+    #   2 if daemon could not be stopped
+    #   other if a failure occurred
+    $HELPER $HELPER_ARGS --running || return 1
+    $HELPER $HELPER_ARGS --stop || return 2
+    # wait for the process to really terminate
+    for n in 1 2 3 4 5; do
+        sleep 1
+        $HELPER $HELPER_ARGS --running || break
+    done
+    $HELPER $HELPER_ARGS --running || return 0
+    return 2
+}

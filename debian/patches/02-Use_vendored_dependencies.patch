@@ -1,0 +1,22 @@
+--- a/collector/ntp.go
++++ b/collector/ntp.go
+@@ -7,7 +7,7 @@
+ 	"fmt"
+ 	"time"
+ 
+-	"github.com/beevik/ntp"
++	"github.com/prometheus/node_exporter/deps/github.com/beevik/ntp"
+ 	"github.com/prometheus/client_golang/prometheus"
+ 	"github.com/prometheus/log"
+ )
+--- a/collector/runit.go
++++ b/collector/runit.go
+@@ -5,7 +5,7 @@
+ import (
+ 	"github.com/prometheus/client_golang/prometheus"
+ 	"github.com/prometheus/log"
+-	"github.com/soundcloud/go-runit/runit"
++	"github.com/prometheus/node_exporter/deps/github.com/soundcloud/go-runit/runit"
+ )
+ 
+ type runitCollector struct {
