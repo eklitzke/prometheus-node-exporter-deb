@@ -1,13 +1,13 @@
 #!/bin/sh
-# postrm script for prometheus
+# postrm script for prometheus-node-exporter
 # Script executed after the package is removed.
 
 set -e
 
 case "$1" in
   purge)
-        rm -rf /var/log/prometheus/prometheus.log \
-            /var/run/prometheus/prometheus.pid
+        rm -rf /var/log/prometheus/prometheus-node-exporter.log \
+            /var/run/prometheus/prometheus-node-exporter.pid
 	# We do NOT remove the system user.
 	;;
 esac
