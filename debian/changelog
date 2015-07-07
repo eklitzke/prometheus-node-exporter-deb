@@ -1,6 +1,7 @@
 prometheus-node-exporter (0.10.0+ds-3) UNRELEASED; urgency=medium
 
   * debian/postrm: Do remove log and pid files.
+  * debian/init: Fix description.
 
  -- Martín Ferrari <tincho@debian.org>  Tue, 07 Jul 2015 08:24:30 +0000
 
