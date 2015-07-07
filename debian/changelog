@@ -1,6 +1,8 @@
 prometheus-node-exporter (0.10.0+ds-2) UNRELEASED; urgency=medium
 
   * debian/control: Update dependency name for prometheus/log.
+  * debian/postrm: Do not remove directories forcefully, as these are shared
+    with other prometheus tools.
 
  -- Martín Ferrari <tincho@debian.org>  Tue, 07 Jul 2015 07:27:13 +0000
 
