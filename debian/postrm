@@ -1,0 +1,15 @@
+#!/bin/sh
+# postrm script for prometheus
+# Script executed after the package is removed.
+
+set -e
+
+case "$1" in
+  purge)
+        rm -rf /var/log/prometheus/prometheus.log \
+            /var/run/prometheus/prometheus.pid
+	# We do NOT remove the system user.
+	;;
+esac
+
+#DEBHELPER#
