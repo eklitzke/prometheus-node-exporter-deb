@@ -1,3 +1,9 @@
+prometheus-node-exporter (0.10.0+ds-2) UNRELEASED; urgency=medium
+
+  * debian/control: Update dependency name for prometheus/log.
+
+ -- Martín Ferrari <tincho@debian.org>  Tue, 07 Jul 2015 07:27:13 +0000
+
 prometheus-node-exporter (0.10.0+ds-1) unstable; urgency=medium
 
   * Initial release. (Closes: #790748)
