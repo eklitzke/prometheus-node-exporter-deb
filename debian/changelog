@@ -1,9 +1,9 @@
-prometheus-node-exporter (0.10.0+ds-3) UNRELEASED; urgency=medium
+prometheus-node-exporter (0.10.0+ds-3) unstable; urgency=medium
 
   * debian/postrm: Do remove log and pid files.
   * debian/init: Fix description.
 
- -- Martín Ferrari <tincho@debian.org>  Tue, 07 Jul 2015 08:24:30 +0000
+ -- Martín Ferrari <tincho@debian.org>  Tue, 07 Jul 2015 11:28:12 +0000
 
 prometheus-node-exporter (0.10.0+ds-2) unstable; urgency=medium
 

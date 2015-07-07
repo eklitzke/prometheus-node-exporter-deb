@@ -12,7 +12,6 @@ fi
 # Short-Description: Prometheus exporter for machine metrics
 # Description:       Prometheus exporter for machine metrics, written in Go
 #                    with pluggable metric collectors.
-
 ### END INIT INFO
 
 # Author: Martín Ferrari <tincho@debian.org>
