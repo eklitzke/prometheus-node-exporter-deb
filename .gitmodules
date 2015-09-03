@@ -1,6 +1,0 @@
-[submodule "deps/github.com/beevik/ntp"]
-	path = deps/github.com/beevik/ntp
-	url = https://github.com/beevik/ntp.git
-[submodule "deps/github.com/soundcloud/go-runit"]
-	path = deps/github.com/soundcloud/go-runit
-	url = https://github.com/soundcloud/go-runit
