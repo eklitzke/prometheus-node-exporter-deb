@@ -3,25 +3,29 @@
 package collector
 
 import (
-	"bufio"
+	"errors"
 	"flag"
-	"fmt"
-	"os"
 	"regexp"
-	"strings"
-	"syscall"
+	"unsafe"
 
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/log"
 )
 
+/*
+#include <sys/param.h>
+#include <sys/ucred.h>
+#include <sys/mount.h>
+#include <stdio.h>
+*/
+import "C"
+
 const (
-	procMounts          = "/proc/mounts"
 	filesystemSubsystem = "filesystem"
 )
 
 var (
-	ignoredMountPoints = flag.String("collector.filesystem.ignored-mount-points", "^/(sys|proc|dev)($|/)", "Regexp of mount points to ignore for filesystem collector.")
+	ignoredMountPoints = flag.String("collector.filesystem.ignored-mount-points", "^/(dev)($|/)", "Regexp of mount points to ignore for filesystem collector.")
 )
 
 type filesystemCollector struct {
@@ -35,7 +39,7 @@ func init() {
 }
 
 // Takes a prometheus registry and returns a new Collector exposing
-// network device filesystems.
+// Filesystems stats.
 func NewFilesystemCollector() (Collector, error) {
 	var filesystemLabelNames = []string{"filesystem"}
 
@@ -45,7 +49,7 @@ func NewFilesystemCollector() (Collector, error) {
 			prometheus.GaugeOpts{
 				Namespace: Namespace,
 				Subsystem: filesystemSubsystem,
-				Name:      "size",
+				Name:      "size_bytes",
 				Help:      "Filesystem size in bytes.",
 			},
 			filesystemLabelNames,
@@ -54,7 +58,7 @@ func NewFilesystemCollector() (Collector, error) {
 			prometheus.GaugeOpts{
 				Namespace: Namespace,
 				Subsystem: filesystemSubsystem,
-				Name:      "free",
+				Name:      "free_bytes",
 				Help:      "Filesystem free space in bytes.",
 			},
 			filesystemLabelNames,
@@ -63,7 +67,7 @@ func NewFilesystemCollector() (Collector, error) {
 			prometheus.GaugeOpts{
 				Namespace: Namespace,
 				Subsystem: filesystemSubsystem,
-				Name:      "avail",
+				Name:      "avail_bytes",
 				Help:      "Filesystem space available to non-root users in bytes.",
 			},
 			filesystemLabelNames,
@@ -72,7 +76,7 @@ func NewFilesystemCollector() (Collector, error) {
 			prometheus.GaugeOpts{
 				Namespace: Namespace,
 				Subsystem: filesystemSubsystem,
-				Name:      "files",
+				Name:      "file_nodes",
 				Help:      "Filesystem total file nodes.",
 			},
 			filesystemLabelNames,
@@ -81,7 +85,7 @@ func NewFilesystemCollector() (Collector, error) {
 			prometheus.GaugeOpts{
 				Namespace: Namespace,
 				Subsystem: filesystemSubsystem,
-				Name:      "files_free",
+				Name:      "file_free_nodes",
 				Help:      "Filesystem total free file nodes.",
 			},
 			filesystemLabelNames,
@@ -91,46 +95,30 @@ func NewFilesystemCollector() (Collector, error) {
 
 // Expose filesystem fullness.
 func (c *filesystemCollector) Update(ch chan<- prometheus.Metric) (err error) {
-	mps, err := mountPoints()
-	if err != nil {
-		return err
+	var mntbuf *C.struct_statfs
+	count := C.getmntinfo(&mntbuf, C.MNT_NOWAIT)
+	if count == 0 {
+		return errors.New("getmntinfo() failed")
 	}
-	for _, mp := range mps {
-		if c.ignoredMountPointsPattern.MatchString(mp) {
-			log.Debugf("Ignoring mount point: %s", mp)
+
+	mnt := (*[1 << 30]C.struct_statfs)(unsafe.Pointer(mntbuf))
+	for i := 0; i < int(count); i++ {
+		name := C.GoString(&mnt[i].f_mntonname[0])
+		if c.ignoredMountPointsPattern.MatchString(name) {
+			log.Debugf("Ignoring mount point: %s", name)
 			continue
 		}
-		buf := new(syscall.Statfs_t)
-		err := syscall.Statfs(mp, buf)
-		if err != nil {
-			return fmt.Errorf("Statfs on %s returned %s", mp, err)
-		}
-		c.size.WithLabelValues(mp).Set(float64(buf.Blocks) * float64(buf.Bsize))
-		c.free.WithLabelValues(mp).Set(float64(buf.Bfree) * float64(buf.Bsize))
-		c.avail.WithLabelValues(mp).Set(float64(buf.Bavail) * float64(buf.Bsize))
-		c.files.WithLabelValues(mp).Set(float64(buf.Files))
-		c.filesFree.WithLabelValues(mp).Set(float64(buf.Ffree))
+		c.size.WithLabelValues(name).Set(float64(mnt[i].f_blocks) * float64(mnt[i].f_bsize))
+		c.free.WithLabelValues(name).Set(float64(mnt[i].f_bfree) * float64(mnt[i].f_bsize))
+		c.avail.WithLabelValues(name).Set(float64(mnt[i].f_bavail) * float64(mnt[i].f_bsize))
+		c.files.WithLabelValues(name).Set(float64(mnt[i].f_files))
+		c.filesFree.WithLabelValues(name).Set(float64(mnt[i].f_ffree))
 	}
+
 	c.size.Collect(ch)
 	c.free.Collect(ch)
 	c.avail.Collect(ch)
 	c.files.Collect(ch)
 	c.filesFree.Collect(ch)
 	return err
-}
-
-func mountPoints() ([]string, error) {
-	file, err := os.Open(procMounts)
-	if err != nil {
-		return nil, err
-	}
-	defer file.Close()
-
-	mountPoints := []string{}
-	scanner := bufio.NewScanner(file)
-	for scanner.Scan() {
-		parts := strings.Fields(scanner.Text())
-		mountPoints = append(mountPoints, parts[1])
-	}
-	return mountPoints, nil
 }
