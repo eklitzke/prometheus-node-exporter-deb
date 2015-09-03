@@ -16,7 +16,7 @@ fi
 
 # Author: Martín Ferrari <tincho@debian.org>
 
-DESC="monitoring system and time series database"
+DESC="Prometheus exporter for machine metrics"
 DAEMON=/usr/bin/prometheus-node-exporter
 NAME=prometheus-node-exporter
 USER=prometheus
