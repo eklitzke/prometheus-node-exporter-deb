@@ -1,12 +1,11 @@
-prometheus-node-exporter (0.12.0+ds-1) UNRELEASED; urgency=medium
+prometheus-node-exporter (0.12.0+ds-1) unstable; urgency=medium
 
   * New upstream release.
   * Add new dependency on golang-github-kolo-xmlrpc-dev.
   * Add new dependency on golang-github-prometheus-common-dev, and update
     patches.
-  * [PENDING] new dependencies to go through NEW.
 
- -- Martín Ferrari <tincho@debian.org>  Mon, 11 Jan 2016 02:53:05 +0000
+ -- Martín Ferrari <tincho@debian.org>  Mon, 11 Jan 2016 19:29:42 +0000
 
 prometheus-node-exporter (0.11.0+ds-1) unstable; urgency=medium
 
