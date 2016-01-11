@@ -1,11 +1,11 @@
 --- a/collector/textfile.go
 +++ b/collector/textfile.go
-@@ -11,7 +11,7 @@
- 	"strings"
- 	"time"
+@@ -30,7 +30,7 @@
+ 	"github.com/prometheus/common/expfmt"
+ 	"github.com/prometheus/log"
  
 -	dto "github.com/prometheus/client_model/go"
 +	dto "github.com/prometheus/client_golang/client_model"
+ )
  
- 	"github.com/golang/protobuf/proto"
- 	"github.com/prometheus/log"
+ var (

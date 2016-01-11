@@ -1,6 +1,6 @@
 --- a/collector/ntp.go
 +++ b/collector/ntp.go
-@@ -7,7 +7,7 @@
+@@ -20,7 +20,7 @@
  	"fmt"
  	"time"
  
@@ -11,7 +11,7 @@
  )
 --- a/collector/runit.go
 +++ b/collector/runit.go
-@@ -5,7 +5,7 @@
+@@ -18,7 +18,7 @@
  import (
  	"github.com/prometheus/client_golang/prometheus"
  	"github.com/prometheus/log"
