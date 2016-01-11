@@ -1,3 +1,16 @@
+// Copyright 2015 The Prometheus Authors
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 // +build !nodiskstats
 
 package collector
@@ -17,7 +30,6 @@ import (
 )
 
 const (
-	procDiskStats = "/proc/diskstats"
 	diskSubsystem = "disk"
 )
 
@@ -147,6 +159,7 @@ func NewDiskstatsCollector() (Collector, error) {
 }
 
 func (c *diskstatsCollector) Update(ch chan<- prometheus.Metric) (err error) {
+	procDiskStats := procFilePath("diskstats")
 	diskStats, err := getDiskStats()
 	if err != nil {
 		return fmt.Errorf("couldn't get diskstats: %s", err)
@@ -184,7 +197,7 @@ func (c *diskstatsCollector) Update(ch chan<- prometheus.Metric) (err error) {
 }
 
 func getDiskStats() (map[string]map[int]string, error) {
-	file, err := os.Open(procDiskStats)
+	file, err := os.Open(procFilePath("diskstats"))
 	if err != nil {
 		return nil, err
 	}
@@ -202,7 +215,7 @@ func parseDiskStats(r io.Reader) (map[string]map[int]string, error) {
 	for scanner.Scan() {
 		parts := strings.Fields(string(scanner.Text()))
 		if len(parts) < 4 { // we strip major, minor and dev
-			return nil, fmt.Errorf("invalid line in %s: %s", procDiskStats, scanner.Text())
+			return nil, fmt.Errorf("invalid line in %s: %s", procFilePath("diskstats"), scanner.Text())
 		}
 		dev := parts[2]
 		diskStats[dev] = map[int]string{}

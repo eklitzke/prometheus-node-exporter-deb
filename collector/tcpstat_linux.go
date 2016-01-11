@@ -1,3 +1,16 @@
+// Copyright 2015 The Prometheus Authors
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 // +build !notcpstat
 
 package collector
@@ -11,11 +24,6 @@ import (
 	"strings"
 
 	"github.com/prometheus/client_golang/prometheus"
-)
-
-const (
-	procTCPStat  = "/proc/net/tcp"
-	procTCP6Stat = "/proc/net/tcp6"
 )
 
 type TCPConnectionState int
@@ -58,14 +66,15 @@ func NewTCPStatCollector() (Collector, error) {
 }
 
 func (c *tcpStatCollector) Update(ch chan<- prometheus.Metric) (err error) {
-	tcpStats, err := getTCPStats(procTCPStat)
+	tcpStats, err := getTCPStats(procFilePath("net/tcp"))
 	if err != nil {
 		return fmt.Errorf("couldn't get tcpstats: %s", err)
 	}
 
 	// if enabled ipv6 system
-	if _, hasIPv6 := os.Stat(procTCP6Stat); hasIPv6 == nil {
-		tcp6Stats, err := getTCPStats(procTCP6Stat)
+	tcp6File := procFilePath("net/tcp6")
+	if _, hasIPv6 := os.Stat(tcp6File); hasIPv6 == nil {
+		tcp6Stats, err := getTCPStats(tcp6File)
 		if err != nil {
 			return fmt.Errorf("couldn't get tcp6stats: %s", err)
 		}

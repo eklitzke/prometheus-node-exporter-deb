@@ -1,9 +1,23 @@
+// Copyright 2015 The Prometheus Authors
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 // +build !nointerrupts
 
 package collector
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"io"
 	"os"
@@ -11,10 +25,6 @@ import (
 	"strings"
 
 	"github.com/prometheus/client_golang/prometheus"
-)
-
-const (
-	procInterrupts = "/proc/interrupts"
 )
 
 type interruptsCollector struct {
@@ -33,7 +43,7 @@ func NewInterruptsCollector() (Collector, error) {
 			prometheus.CounterOpts{
 				Namespace: Namespace,
 				Name:      "interrupts",
-				Help:      "Interrupt details from /proc/interrupts.",
+				Help:      "Interrupt details.",
 			},
 			[]string{"CPU", "type", "info", "devices"},
 		),
@@ -71,7 +81,7 @@ type interrupt struct {
 }
 
 func getInterrupts() (map[string]interrupt, error) {
-	file, err := os.Open(procInterrupts)
+	file, err := os.Open(procFilePath("interrupts"))
 	if err != nil {
 		return nil, err
 	}
@@ -87,7 +97,7 @@ func parseInterrupts(r io.Reader) (map[string]interrupt, error) {
 	)
 
 	if !scanner.Scan() {
-		return nil, fmt.Errorf("%s empty", procInterrupts)
+		return nil, errors.New("interrupts empty")
 	}
 	cpuNum := len(strings.Fields(string(scanner.Text()))) // one header per cpu
 

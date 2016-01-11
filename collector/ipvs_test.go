@@ -1,3 +1,16 @@
+// Copyright 2015 The Prometheus Authors
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package collector
 
 import (
@@ -107,7 +120,7 @@ var (
 )
 
 func TestIPVSCollector(t *testing.T) {
-	if err := flag.Set("collector.ipvs.procfs", "fixtures"); err != nil {
+	if err := flag.Set("collector.procfs", "fixtures/proc"); err != nil {
 		t.Fatal(err)
 	}
 	collector, err := newIPVSCollector()
@@ -169,7 +182,7 @@ func (c miniCollector) Describe(ch chan<- *prometheus.Desc) {
 }
 
 func TestIPVSCollectorResponse(t *testing.T) {
-	if err := flag.Set("collector.ipvs.procfs", "fixtures"); err != nil {
+	if err := flag.Set("collector.procfs", "fixtures/proc"); err != nil {
 		t.Fatal(err)
 	}
 	collector, err := NewIPVSCollector()
@@ -181,7 +194,7 @@ func TestIPVSCollectorResponse(t *testing.T) {
 	rw := httptest.NewRecorder()
 	prometheus.Handler().ServeHTTP(rw, &http.Request{})
 
-	metricsFile := "fixtures/net/ip_vs_result.txt"
+	metricsFile := "fixtures/ip_vs_result.txt"
 	wantMetrics, err := ioutil.ReadFile(metricsFile)
 	if err != nil {
 		t.Fatalf("unable to read input test file %s: %s", metricsFile, err)
