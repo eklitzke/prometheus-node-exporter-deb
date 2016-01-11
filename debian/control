@@ -4,6 +4,7 @@ Priority: extra
 Maintainer: Debian Go Packaging Team <pkg-go-maintainers@lists.alioth.debian.org>
 Uploaders: Martín Ferrari <tincho@debian.org>
 Build-Depends: debhelper (>= 9.0.0), dh-golang, golang-go,
+ golang-github-prometheus-common-dev,
  golang-github-prometheus-log-dev,
  golang-github-kolo-xmlrpc-dev,
  golang-goprotobuf-dev,

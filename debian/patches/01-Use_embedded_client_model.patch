@@ -5,7 +5,7 @@
  	"github.com/prometheus/log"
  
 -	dto "github.com/prometheus/client_model/go"
-+	dto "github.com/prometheus/client_golang/client_model"
++	dto "github.com/prometheus/common/client_model"
  )
  
  var (
