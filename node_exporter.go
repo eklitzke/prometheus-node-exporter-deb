@@ -1,3 +1,16 @@
+// Copyright 2015 The Prometheus Authors
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+// http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package main
 
 import (
@@ -28,7 +41,7 @@ var (
 	memProfile        = flag.String("debug.memprofile-file", "", "Write memory profile to this file upon receipt of SIGUSR1.")
 	listenAddress     = flag.String("web.listen-address", ":9100", "Address on which to expose metrics and web interface.")
 	metricsPath       = flag.String("web.telemetry-path", "/metrics", "Path under which to expose metrics.")
-	enabledCollectors = flag.String("collectors.enabled", "diskstats,filesystem,loadavg,meminfo,stat,textfile,time,netdev,netstat", "Comma-separated list of collectors to use.")
+	enabledCollectors = flag.String("collectors.enabled", "diskstats,filefd,filesystem,loadavg,mdadm,meminfo,netdev,netstat,sockstat,stat,textfile,time,uname", "Comma-separated list of collectors to use.")
 	printCollectors   = flag.Bool("collectors.print", false, "If true, print available collectors and exit.")
 	authUser          = flag.String("auth.user", "", "Username for basic auth.")
 	authPass          = flag.String("auth.pass", "", "Password for basic auth.")

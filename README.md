@@ -34,6 +34,7 @@ netstat | Exposes network statistics from `/proc/net/netstat`. This is the same 
 stat | Exposes various statistics from `/proc/stat`. This includes CPU usage, boot time, forks and interrupts.
 textfile | Exposes statistics read from local disk. The `--collector.textfile.directory` flag must be set.
 time | Exposes the current system time.
+mdadm | Exposes statistics about devices in `/proc/mdstat` (does nothing if no /proc/mdstat present).
 
 
 ### Disabled by default
@@ -48,6 +49,7 @@ lastlogin | Exposes the last time there was a login.
 megacli | Exposes RAID statistics from MegaCLI.
 ntp | Exposes time drift from an NTP server.
 runit | Exposes service status from [runit](http://smarden.org/runit/).
+supervisord | Exposes service status from [supervisord](http://supervisord.org/).
 tcpstat | Exposes TCP connection status information from `/proc/net/tcp` and `/proc/net/tcp6`. (Warning: the current version has potential performance issues in high load situations.)
 
 ## Textfile Collector
