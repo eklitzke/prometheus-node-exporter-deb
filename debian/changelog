@@ -1,8 +1,8 @@
-prometheus-node-exporter (0.12.0+ds-2) UNRELEASED; urgency=medium
+prometheus-node-exporter (0.12.0+ds-2) unstable; urgency=medium
 
   * Fix builds on arm64.
 
- -- Martín Ferrari <tincho@debian.org>  Mon, 25 Jan 2016 16:56:56 -0300
+ -- Martín Ferrari <tincho@debian.org>  Mon, 25 Jan 2016 16:58:35 -0300
 
 prometheus-node-exporter (0.12.0+ds-1) unstable; urgency=medium
 
