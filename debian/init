@@ -23,11 +23,11 @@ USER=prometheus
 PIDFILE=/var/run/prometheus/prometheus-node-exporter.pid
 LOGFILE=/var/log/prometheus/prometheus-node-exporter.log
 
-HELPER=/usr/bin/daemon
-HELPER_ARGS="--name=$NAME --output=$LOGFILE --pidfile=$PIDFILE --user=$USER"
-
 ARGS=""
 [ -r /etc/default/$NAME ] && . /etc/default/$NAME
+
+HELPER=/usr/bin/daemon
+HELPER_ARGS="--name=$NAME --output=$LOGFILE --pidfile=$PIDFILE --user=$USER"
 
 do_start_prepare()
 {
