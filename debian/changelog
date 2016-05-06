@@ -5,6 +5,11 @@ prometheus-node-exporter (0.12.0+ds+really0.12.0-1) UNRELEASED; urgency=medium
     for this release. Closes: #814227.
   * Stop ignoring some configuration values in initscript. Thanks to
     contaminates@baconmail.net for the patch. Closes: #813544.
+  * Remove now unneeded patches.
+  * debian/control:
+    - Add new dependencies.
+    - Update Standards-Version with no changes.
+  * debian/rules: Fix gen-orig-tgz target.
 
  -- Martín Ferrari <tincho@debian.org>  Fri, 06 May 2016 14:39:20 +0100
 

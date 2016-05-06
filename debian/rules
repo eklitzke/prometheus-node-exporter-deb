@@ -36,7 +36,6 @@ override_dh_auto_install:
 
 gen-orig-tgz:
 	if [ ! -f ../$(DEBPKGNAME)_$(VERSION).orig.tar.gz ] ; then \
-	    git-archive-all --format tar \
-                --prefix $(DEBPKGNAME)-$(VERSION)/ -t upstream/$(VERSION) \
-                -- - | gzip > ../$(DEBPKGNAME)_$(VERSION).orig.tar.gz ; \
+            git archive --format=tar.gz --prefix=$(DEBPKGNAME)-$(VERSION)/ \
+            upstream/$(VERSION) >../$(DEBPKGNAME)_$(VERSION).orig.tar.gz ; \
 	fi
