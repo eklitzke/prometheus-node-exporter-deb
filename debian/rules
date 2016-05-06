@@ -16,9 +16,9 @@ override_dh_auto_configure:
 	dh_auto_configure -O--buildsystem=golang
 	# Include vendored dependencies.
 	for i in github.com/beevik/ntp github.com/soundcloud/go-runit; do \
-            DEST=`dirname $(BUILDDIR)/src/$(DH_GOPKG)/deps/$$i`; \
+            DEST=`dirname $(BUILDDIR)/src/$$i`; \
 	    mkdir -p $$DEST; \
-	    cp -av deps/$$i $$DEST; \
+	    cp -av vendor/$$i $$DEST; \
 	done
 	# Copy test fixtures.
 	cp -av collector/fixtures $(BUILDDIR)/src/$(DH_GOPKG)/collector
