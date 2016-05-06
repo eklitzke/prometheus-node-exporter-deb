@@ -19,63 +19,50 @@ import (
 	"net/http"
 	_ "net/http/pprof"
 	"os"
-	"os/signal"
 	"sort"
 	"strings"
 	"sync"
-	"syscall"
 	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
-	"github.com/prometheus/log"
-
+	"github.com/prometheus/common/log"
+	"github.com/prometheus/common/version"
 	"github.com/prometheus/node_exporter/collector"
 )
 
-const subsystem = "exporter"
+const (
+	defaultCollectors = "conntrack,cpu,diskstats,entropy,filefd,filesystem,loadavg,mdadm,meminfo,netdev,netstat,sockstat,stat,textfile,time,uname,vmstat"
+)
 
 var (
-	// set at build time
-	Version = "0.0.0.dev"
-
-	memProfile        = flag.String("debug.memprofile-file", "", "Write memory profile to this file upon receipt of SIGUSR1.")
-	listenAddress     = flag.String("web.listen-address", ":9100", "Address on which to expose metrics and web interface.")
-	metricsPath       = flag.String("web.telemetry-path", "/metrics", "Path under which to expose metrics.")
-	enabledCollectors = flag.String("collectors.enabled", "diskstats,filefd,filesystem,loadavg,mdadm,meminfo,netdev,netstat,sockstat,stat,textfile,time,uname", "Comma-separated list of collectors to use.")
-	printCollectors   = flag.Bool("collectors.print", false, "If true, print available collectors and exit.")
-	authUser          = flag.String("auth.user", "", "Username for basic auth.")
-	authPass          = flag.String("auth.pass", "", "Password for basic auth.")
-
-	collectorLabelNames = []string{"collector", "result"}
-
 	scrapeDurations = prometheus.NewSummaryVec(
 		prometheus.SummaryOpts{
 			Namespace: collector.Namespace,
-			Subsystem: subsystem,
+			Subsystem: "exporter",
 			Name:      "scrape_duration_seconds",
 			Help:      "node_exporter: Duration of a scrape job.",
 		},
-		collectorLabelNames,
+		[]string{"collector", "result"},
 	)
 )
 
-// Implements Collector.
+// NodeCollector implements the prometheus.Collector interface.
 type NodeCollector struct {
 	collectors map[string]collector.Collector
 }
 
-// Implements Collector.
+// Describe implements the prometheus.Collector interface.
 func (n NodeCollector) Describe(ch chan<- *prometheus.Desc) {
 	scrapeDurations.Describe(ch)
 }
 
-// Implements Collector.
+// Collect implements the prometheus.Collector interface.
 func (n NodeCollector) Collect(ch chan<- prometheus.Metric) {
 	wg := sync.WaitGroup{}
 	wg.Add(len(n.collectors))
 	for name, c := range n.collectors {
 		go func(name string, c collector.Collector) {
-			Execute(name, c, ch)
+			execute(name, c, ch)
 			wg.Done()
 		}(name, c)
 	}
@@ -83,24 +70,18 @@ func (n NodeCollector) Collect(ch chan<- prometheus.Metric) {
 	scrapeDurations.Collect(ch)
 }
 
-type basicAuthHandler struct {
-	handler  http.HandlerFunc
-	user     string
-	password string
-}
-
-func (h *basicAuthHandler) ServeHTTP(w http.ResponseWriter, r *http.Request) {
-	user, password, ok := r.BasicAuth()
-	if !ok || password != h.password || user != h.user {
-		w.Header().Set("WWW-Authenticate", "Basic realm=\"metrics\"")
-		http.Error(w, "Invalid username or password", http.StatusUnauthorized)
-		return
+func filterAvailableCollectors(collectors string) string {
+	availableCollectors := make([]string, 0)
+	for _, c := range strings.Split(collectors, ",") {
+		_, ok := collector.Factories[c]
+		if ok {
+			availableCollectors = append(availableCollectors, c)
+		}
 	}
-	h.handler(w, r)
-	return
+	return strings.Join(availableCollectors, ",")
 }
 
-func Execute(name string, c collector.Collector, ch chan<- prometheus.Metric) {
+func execute(name string, c collector.Collector, ch chan<- prometheus.Metric) {
 	begin := time.Now()
 	err := c.Update(ch)
 	duration := time.Since(begin)
@@ -116,9 +97,9 @@ func Execute(name string, c collector.Collector, ch chan<- prometheus.Metric) {
 	scrapeDurations.WithLabelValues(name, result).Observe(duration.Seconds())
 }
 
-func loadCollectors() (map[string]collector.Collector, error) {
+func loadCollectors(list string) (map[string]collector.Collector, error) {
 	collectors := map[string]collector.Collector{}
-	for _, name := range strings.Split(*enabledCollectors, ",") {
+	for _, name := range strings.Split(list, ",") {
 		fn, ok := collector.Factories[name]
 		if !ok {
 			return nil, fmt.Errorf("collector '%s' not available", name)
@@ -132,12 +113,31 @@ func loadCollectors() (map[string]collector.Collector, error) {
 	return collectors, nil
 }
 
+func init() {
+	prometheus.MustRegister(version.NewCollector("node_exporter"))
+}
+
 func main() {
+	var (
+		showVersion       = flag.Bool("version", false, "Print version information.")
+		listenAddress     = flag.String("web.listen-address", ":9100", "Address on which to expose metrics and web interface.")
+		metricsPath       = flag.String("web.telemetry-path", "/metrics", "Path under which to expose metrics.")
+		enabledCollectors = flag.String("collectors.enabled", filterAvailableCollectors(defaultCollectors), "Comma-separated list of collectors to use.")
+		printCollectors   = flag.Bool("collectors.print", false, "If true, print available collectors and exit.")
+	)
 	flag.Parse()
+
+	if *showVersion {
+		fmt.Fprintln(os.Stdout, version.Print("node_exporter"))
+		os.Exit(0)
+	}
+
+	log.Infoln("Starting node_exporter", version.Info())
+	log.Infoln("Build context", version.BuildContext())
 
 	if *printCollectors {
 		collectorNames := make(sort.StringSlice, 0, len(collector.Factories))
-		for n, _ := range collector.Factories {
+		for n := range collector.Factories {
 			collectorNames = append(collectorNames, n)
 		}
 		collectorNames.Sort()
@@ -147,33 +147,20 @@ func main() {
 		}
 		return
 	}
-	collectors, err := loadCollectors()
+	collectors, err := loadCollectors(*enabledCollectors)
 	if err != nil {
 		log.Fatalf("Couldn't load collectors: %s", err)
 	}
 
 	log.Infof("Enabled collectors:")
-	for n, _ := range collectors {
+	for n := range collectors {
 		log.Infof(" - %s", n)
 	}
 
 	nodeCollector := NodeCollector{collectors: collectors}
 	prometheus.MustRegister(nodeCollector)
 
-	sigUsr1 := make(chan os.Signal)
-	signal.Notify(sigUsr1, syscall.SIGUSR1)
-
 	handler := prometheus.Handler()
-	if *authUser != "" || *authPass != "" {
-		if *authUser == "" || *authPass == "" {
-			log.Fatal("You need to specify -auth.user and -auth.pass to enable basic auth")
-		}
-		handler = &basicAuthHandler{
-			handler:  prometheus.Handler().ServeHTTP,
-			user:     *authUser,
-			password: *authPass,
-		}
-	}
 
 	http.Handle(*metricsPath, handler)
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
@@ -186,7 +173,7 @@ func main() {
 			</html>`))
 	})
 
-	log.Infof("Starting node_exporter v%s at %s", Version, *listenAddress)
+	log.Infoln("Listening on", *listenAddress)
 	err = http.ListenAndServe(*listenAddress, nil)
 	if err != nil {
 		log.Fatal(err)

@@ -17,10 +17,10 @@ package collector
 
 import (
 	"errors"
-	"fmt"
+	"regexp"
 	"strconv"
 
-	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/common/log"
 )
 
 /*
@@ -33,52 +33,7 @@ import (
 */
 import "C"
 
-type netDevCollector struct {
-	subsystem   string
-	metricDescs map[string]*prometheus.Desc
-}
-
-func init() {
-	Factories["netdev"] = NewNetDevCollector
-}
-
-// Takes a prometheus registry and returns a new Collector exposing
-// Network device stats.
-func NewNetDevCollector() (Collector, error) {
-	return &netDevCollector{
-		subsystem:   "network",
-		metricDescs: map[string]*prometheus.Desc{},
-	}, nil
-}
-
-func (c *netDevCollector) Update(ch chan<- prometheus.Metric) (err error) {
-	netDev, err := getNetDevStats()
-	if err != nil {
-		return fmt.Errorf("couldn't get netstats: %s", err)
-	}
-	for dev, devStats := range netDev {
-		for key, value := range devStats {
-			desc, ok := c.metricDescs[key]
-			if !ok {
-				desc = prometheus.NewDesc(
-					prometheus.BuildFQName(Namespace, c.subsystem, key),
-					fmt.Sprintf("%s from getifaddrs().", key),
-					[]string{"device"},
-					nil,
-				)
-				c.metricDescs[key] = desc
-			}
-			v, err := strconv.ParseFloat(value, 64)
-			if err != nil {
-				return fmt.Errorf("invalid value %s in netstats: %s", value, err)
-			}
-			ch <- prometheus.MustNewConstMetric(desc, prometheus.GaugeValue, v, dev)
-		}
-	}
-	return nil
-}
-
-func getNetDevStats() (map[string]map[string]string, error) {
+func getNetDevStats(ignore *regexp.Regexp) (map[string]map[string]string, error) {
 	netDev := map[string]map[string]string{}
 
 	var ifap, ifa *C.struct_ifaddrs
@@ -89,22 +44,32 @@ func getNetDevStats() (map[string]map[string]string, error) {
 
 	for ifa = ifap; ifa != nil; ifa = ifa.ifa_next {
 		if ifa.ifa_addr.sa_family == C.AF_LINK {
+			dev := C.GoString(ifa.ifa_name)
+			if ignore.MatchString(dev) {
+				log.Debugf("Ignoring device: %s", dev)
+				continue
+			}
+
 			devStats := map[string]string{}
 			data := (*C.struct_if_data)(ifa.ifa_data)
 
-			devStats["receive_packets"] = strconv.Itoa(int(data.ifi_ipackets))
-			devStats["transmit_packets"] = strconv.Itoa(int(data.ifi_opackets))
-			devStats["receive_errs"] = strconv.Itoa(int(data.ifi_ierrors))
-			devStats["transmit_errs"] = strconv.Itoa(int(data.ifi_oerrors))
-			devStats["receive_bytes"] = strconv.Itoa(int(data.ifi_ibytes))
-			devStats["transmit_bytes"] = strconv.Itoa(int(data.ifi_obytes))
-			devStats["receive_multicast"] = strconv.Itoa(int(data.ifi_imcasts))
-			devStats["transmit_multicast"] = strconv.Itoa(int(data.ifi_omcasts))
-			devStats["receive_drop"] = strconv.Itoa(int(data.ifi_iqdrops))
-			devStats["transmit_drop"] = strconv.Itoa(int(data.ifi_oqdrops))
-			netDev[C.GoString(ifa.ifa_name)] = devStats
+			devStats["receive_packets"] = convertFreeBSDCPUTime(uint64(data.ifi_ipackets))
+			devStats["transmit_packets"] = convertFreeBSDCPUTime(uint64(data.ifi_opackets))
+			devStats["receive_errs"] = convertFreeBSDCPUTime(uint64(data.ifi_ierrors))
+			devStats["transmit_errs"] = convertFreeBSDCPUTime(uint64(data.ifi_oerrors))
+			devStats["receive_bytes"] = convertFreeBSDCPUTime(uint64(data.ifi_ibytes))
+			devStats["transmit_bytes"] = convertFreeBSDCPUTime(uint64(data.ifi_obytes))
+			devStats["receive_multicast"] = convertFreeBSDCPUTime(uint64(data.ifi_imcasts))
+			devStats["transmit_multicast"] = convertFreeBSDCPUTime(uint64(data.ifi_omcasts))
+			devStats["receive_drop"] = convertFreeBSDCPUTime(uint64(data.ifi_iqdrops))
+			devStats["transmit_drop"] = convertFreeBSDCPUTime(uint64(data.ifi_oqdrops))
+			netDev[dev] = devStats
 		}
 	}
 
 	return netDev, nil
+}
+
+func convertFreeBSDCPUTime(counter uint64) string {
+	return strconv.FormatUint(counter, 10)
 }

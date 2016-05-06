@@ -27,39 +27,20 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 )
 
-type interruptsCollector struct {
-	metric *prometheus.CounterVec
-}
-
-func init() {
-	Factories["interrupts"] = NewInterruptsCollector
-}
-
-// Takes a prometheus registry and returns a new Collector exposing
-// interrupts stats
-func NewInterruptsCollector() (Collector, error) {
-	return &interruptsCollector{
-		metric: prometheus.NewCounterVec(
-			prometheus.CounterOpts{
-				Namespace: Namespace,
-				Name:      "interrupts",
-				Help:      "Interrupt details.",
-			},
-			[]string{"CPU", "type", "info", "devices"},
-		),
-	}, nil
-}
+var (
+	interruptLabelNames = []string{"CPU", "type", "info", "devices"}
+)
 
 func (c *interruptsCollector) Update(ch chan<- prometheus.Metric) (err error) {
 	interrupts, err := getInterrupts()
 	if err != nil {
-		return fmt.Errorf("Couldn't get interrupts: %s", err)
+		return fmt.Errorf("couldn't get interrupts: %s", err)
 	}
 	for name, interrupt := range interrupts {
 		for cpuNo, value := range interrupt.values {
 			fv, err := strconv.ParseFloat(value, 64)
 			if err != nil {
-				return fmt.Errorf("Invalid value %s in interrupts: %s", value, err)
+				return fmt.Errorf("invalid value %s in interrupts: %s", value, err)
 			}
 			labels := prometheus.Labels{
 				"CPU":     strconv.Itoa(cpuNo),

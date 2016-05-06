@@ -22,11 +22,12 @@ import (
 
 	"github.com/beevik/ntp"
 	"github.com/prometheus/client_golang/prometheus"
-	"github.com/prometheus/log"
+	"github.com/prometheus/common/log"
 )
 
 var (
-	ntpServer = flag.String("collector.ntp.server", "", "NTP server to use for ntp collector.")
+	ntpServer          = flag.String("collector.ntp.server", "", "NTP server to use for ntp collector.")
+	ntpProtocolVersion = flag.Int("collector.ntp.protocol-version", 4, "NTP protocol version")
 )
 
 type ntpCollector struct {
@@ -41,7 +42,10 @@ func init() {
 // the offset between ntp and the current system time.
 func NewNtpCollector() (Collector, error) {
 	if *ntpServer == "" {
-		return nil, fmt.Errorf("No NTP server specifies, see --ntpServer")
+		return nil, fmt.Errorf("no NTP server specified, see -collector.ntp.server")
+	}
+	if *ntpProtocolVersion < 2 || *ntpProtocolVersion > 4 {
+		return nil, fmt.Errorf("invalid NTP protocol version %d; must be 2, 3, or 4", *ntpProtocolVersion)
 	}
 
 	return &ntpCollector{
@@ -54,9 +58,9 @@ func NewNtpCollector() (Collector, error) {
 }
 
 func (c *ntpCollector) Update(ch chan<- prometheus.Metric) (err error) {
-	t, err := ntp.Time(*ntpServer)
+	t, err := ntp.TimeV(*ntpServer, byte(*ntpProtocolVersion))
 	if err != nil {
-		return fmt.Errorf("Couldn't get ntp drift: %s", err)
+		return fmt.Errorf("couldn't get NTP drift: %s", err)
 	}
 	drift := t.Sub(time.Now())
 	log.Debugf("Set ntp_drift_seconds: %f", drift.Seconds())
