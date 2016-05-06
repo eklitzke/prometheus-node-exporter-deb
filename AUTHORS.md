@@ -15,7 +15,6 @@ The following individuals have contributed code to this repository
 * Benjamin Staffin <benley@gmail.com>
 * Björn Rabenstein <beorn@soundcloud.com>
 * Brian Brazil <brian.brazil@boxever.com>
-* chosenken
 * Daniel Speichert <daniel@speichert.pro>
 * Eric Ripa
 * Fabian Reinartz <fabian@soundcloud.com>
@@ -25,7 +24,8 @@ The following individuals have contributed code to this repository
 * Jari Takkala <jtakkala@gmail.com>
 * Johannes 'fish' Ziemke <github@freigeist.org>
 * Jonas Große Sundrup <cherti@letopolis.de>
-* Julius Volz <julius@soundcloud.com>
+* Julius Volz <julius.volz@gmail.com>
+* Ken Herner <ken@modulus.io>
 * Matthias Rampke <matthias@rampke.de>
 * Siavash Safi <siavash.safi@gmail.com>
 * Stephen Shirley <kormat@gmail.com>

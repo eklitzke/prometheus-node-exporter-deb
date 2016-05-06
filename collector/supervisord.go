@@ -12,6 +12,7 @@
 // limitations under the License.
 
 // +build !nosupervisord
+
 package collector
 
 import (
@@ -19,7 +20,7 @@ import (
 
 	"github.com/kolo/xmlrpc"
 	"github.com/prometheus/client_golang/prometheus"
-	"github.com/prometheus/log"
+	"github.com/prometheus/common/log"
 )
 
 var (

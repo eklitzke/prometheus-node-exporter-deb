@@ -25,8 +25,7 @@ import (
 	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
-	"github.com/prometheus/log"
-
+	"github.com/prometheus/common/log"
 	"github.com/prometheus/node_exporter/collector/ganglia"
 )
 
@@ -60,7 +59,7 @@ func (c *gmondCollector) Update(ch chan<- prometheus.Metric) (err error) {
 	conn, err := net.Dial(gangliaProto, gangliaAddress)
 	log.Debugf("gmondCollector Update")
 	if err != nil {
-		return fmt.Errorf("Can't connect to gmond: %s", err)
+		return fmt.Errorf("can't connect to gmond: %s", err)
 	}
 	conn.SetDeadline(time.Now().Add(gangliaTimeout))
 
@@ -70,7 +69,7 @@ func (c *gmondCollector) Update(ch chan<- prometheus.Metric) (err error) {
 
 	err = decoder.Decode(&ganglia)
 	if err != nil {
-		return fmt.Errorf("Couldn't parse xml: %s", err)
+		return fmt.Errorf("couldn't parse xml: %s", err)
 	}
 
 	for _, cluster := range ganglia.Clusters {

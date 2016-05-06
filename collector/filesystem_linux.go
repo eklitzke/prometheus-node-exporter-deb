@@ -17,20 +17,16 @@ package collector
 
 import (
 	"bufio"
-	"fmt"
 	"os"
 	"strings"
 	"syscall"
 
-	"github.com/prometheus/log"
+	"github.com/prometheus/common/log"
 )
 
 const (
 	defIgnoredMountPoints = "^/(sys|proc|dev)($|/)"
-)
-
-var (
-	filesystemLabelNames = []string{"device", "mountpoint", "fstype"}
+	ST_RDONLY             = 0x1
 )
 
 type filesystemDetails struct {
@@ -54,8 +50,14 @@ func (c *filesystemCollector) GetStats() (stats []filesystemStats, err error) {
 		buf := new(syscall.Statfs_t)
 		err := syscall.Statfs(mpd.mountPoint, buf)
 		if err != nil {
-			return nil, fmt.Errorf("Statfs on %s returned %s",
+			log.Debugf("Statfs on %s returned %s",
 				mpd.mountPoint, err)
+			continue
+		}
+
+		var ro float64
+		if buf.Flags&ST_RDONLY != 0 {
+			ro = 1
 		}
 
 		labelValues := []string{mpd.device, mpd.mountPoint, mpd.fsType}
@@ -66,6 +68,7 @@ func (c *filesystemCollector) GetStats() (stats []filesystemStats, err error) {
 			avail:       float64(buf.Bavail) * float64(buf.Bsize),
 			files:       float64(buf.Files),
 			filesFree:   float64(buf.Ffree),
+			ro:          ro,
 		})
 	}
 	return stats, nil

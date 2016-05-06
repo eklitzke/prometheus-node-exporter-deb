@@ -1,6 +1,26 @@
 #!/usr/bin/env bash
 
-set +euf +o pipefail
+set -euf -o pipefail
+
+collectors=$(cat << COLLECTORS
+  conntrack
+  diskstats
+  entropy
+  filefd
+  ksmd
+  loadavg
+  mdadm
+  meminfo
+  meminfo_numa
+  netdev
+  netstat
+  sockstat
+  stat
+  textfile
+  bonding
+  megacli
+COLLECTORS
+)
 
 cd "$(dirname $0)"
 
@@ -33,11 +53,16 @@ do
   esac
 done
 
+if [ ! -x ./node_exporter ]
+then
+    echo './node_exporter not found. Consider running `go build` first.' >&2
+    exit 1
+fi
 
 ./node_exporter \
   -collector.procfs="collector/fixtures/proc" \
   -collector.sysfs="collector/fixtures/sys" \
-  -collectors.enabled="diskstats,filefd,loadavg,mdadm,meminfo,netdev,netstat,sockstat,stat,textfile,bonding,megacli" \
+  -collectors.enabled="$(echo ${collectors} | tr ' ' ',')" \
   -collector.textfile.directory="collector/fixtures/textfile/two_metric_files/" \
   -collector.megacli.command="collector/fixtures/megacli" \
   -web.listen-address "127.0.0.1:${port}" \
@@ -62,6 +87,7 @@ finish() {
   then
     kill -9 "$(cat ${tmpdir}/node_exporter.pid)"
     # This silences the "Killed" message
+    set +e
     wait "$(cat ${tmpdir}/node_exporter.pid)" > /dev/null 2>&1
     rm -rf "${tmpdir}"
   fi
