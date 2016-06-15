@@ -1,6 +1,7 @@
 prometheus-node-exporter (0.12.0+ds+really0.12.0-2) UNRELEASED; urgency=medium
 
   * debian/watch: Take into account RCs and current version hack.
+  * Fix default configuration.
 
  -- Martín Ferrari <tincho@debian.org>  Sat, 07 May 2016 17:13:38 +0100
 
