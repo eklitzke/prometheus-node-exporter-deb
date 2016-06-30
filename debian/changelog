@@ -1,7 +1,11 @@
 prometheus-node-exporter (0.12.0+ds+really0.12.0-3) UNRELEASED; urgency=medium
 
+  [ Paul Tagliamonte ]
   * Team upload.
   * Use a secure transport for the Vcs-Git and Vcs-Browser URL
+
+  [ Martín Ferrari ]
+  * Actually use https for Vcs-Browser.
 
  -- Paul Tagliamonte <paultag@debian.org>  Wed, 29 Jun 2016 20:56:29 -0400
 
