@@ -3,7 +3,7 @@ Section: net
 Priority: extra
 Maintainer: Debian Go Packaging Team <pkg-go-maintainers@lists.alioth.debian.org>
 Uploaders: Martín Ferrari <tincho@debian.org>
-Build-Depends: debhelper (>= 9.0.0), dh-golang, golang-go,
+Build-Depends: debhelper (>= 9.0.0), dh-golang (>= 1.17~), golang-any (>= 1.5~),
  golang-dbus-dev,
  golang-github-coreos-go-systemd-dev,
  golang-github-kolo-xmlrpc-dev,
@@ -14,7 +14,7 @@ Build-Depends: debhelper (>= 9.0.0), dh-golang, golang-go,
  golang-procfs-dev (>= 0+git20150616),
  golang-prometheus-client-dev (>= 0.7.0+ds-3),
 Standards-Version: 3.9.8
-Vcs-Git: git://anonscm.debian.org/pkg-go/packages/prometheus-node-exporter.git
+Vcs-Git: http://anonscm.debian.org/git/pkg-go/packages/prometheus-node-exporter.git/
 Vcs-Browser: http://anonscm.debian.org/cgit/pkg-go/packages/prometheus-node-exporter.git/
 Homepage: https://github.com/prometheus/node_exporter
 

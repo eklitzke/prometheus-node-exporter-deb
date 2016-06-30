@@ -1,7 +1,13 @@
 prometheus-node-exporter (0.12.0+ds+really0.12.0-2) UNRELEASED; urgency=medium
 
   * debian/watch: Take into account RCs and current version hack.
+  * debian/control: Update dependencies and Vcs-* links.
+  * debian/rules: Simplify with new dh_golang features; add version info.
   * Fix default configuration.
+  * Add systemd service file.
+  * Add logrotate script.
+  * Enable the textfile collector by default.
+  * Remove rotated logs and textfile directory on purge.
 
  -- Martín Ferrari <tincho@debian.org>  Sat, 07 May 2016 17:13:38 +0100
 
