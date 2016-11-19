@@ -18,7 +18,6 @@ package collector
 import (
 	"flag"
 	"fmt"
-	"time"
 
 	"github.com/beevik/ntp"
 	"github.com/prometheus/client_golang/prometheus"
@@ -31,7 +30,8 @@ var (
 )
 
 type ntpCollector struct {
-	drift prometheus.Gauge
+	drift   prometheus.Gauge
+	stratum prometheus.Gauge
 }
 
 func init() {
@@ -54,17 +54,27 @@ func NewNtpCollector() (Collector, error) {
 			Name:      "ntp_drift_seconds",
 			Help:      "Time between system time and ntp time.",
 		}),
+		stratum: prometheus.NewGauge(prometheus.GaugeOpts{
+			Namespace: Namespace,
+			Name:      "ntp_stratum",
+			Help:      "NTP server stratum.",
+		}),
 	}, nil
 }
 
 func (c *ntpCollector) Update(ch chan<- prometheus.Metric) (err error) {
-	t, err := ntp.TimeV(*ntpServer, byte(*ntpProtocolVersion))
+	resp, err := ntp.Query(*ntpServer, *ntpProtocolVersion)
 	if err != nil {
 		return fmt.Errorf("couldn't get NTP drift: %s", err)
 	}
-	drift := t.Sub(time.Now())
-	log.Debugf("Set ntp_drift_seconds: %f", drift.Seconds())
-	c.drift.Set(drift.Seconds())
+	driftSeconds := resp.ClockOffset.Seconds()
+	log.Debugf("Set ntp_drift_seconds: %f", driftSeconds)
+	c.drift.Set(driftSeconds)
 	c.drift.Collect(ch)
-	return err
+
+	stratum := float64(resp.Stratum)
+	log.Debugf("Set ntp_stratum: %f", stratum)
+	c.stratum.Set(stratum)
+	c.stratum.Collect(ch)
+	return nil
 }

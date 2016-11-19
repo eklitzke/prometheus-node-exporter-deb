@@ -22,12 +22,13 @@ conntrack | Shows conntrack statistics (does nothing if no `/proc/sys/net/netfil
 cpu | Exposes CPU statistics | FreeBSD
 diskstats | Exposes disk I/O statistics from `/proc/diskstats`. | Linux
 entropy | Exposes available entropy. | Linux
-filefd | Exposes file descriptor statistics. | Linux
-filesystem | Exposes filesystem statistics, such as disk space used. | FreeBSD, Linux, OpenBSD
+filefd | Exposes file descriptor statistics from `/proc/sys/fs/file-nr`. | Linux
+filesystem | Exposes filesystem statistics, such as disk space used. | FreeBSD, Dragonfly, Linux, OpenBSD
+hwmon | Expose hardware monitoring and sensor data from `/sys/class/hwmon/`. | Linux
 loadavg | Exposes load average. | Darwin, Dragonfly, FreeBSD, Linux, NetBSD, OpenBSD, Solaris
 mdadm | Exposes statistics about devices in `/proc/mdstat` (does nothing if no `/proc/mdstat` present). | Linux
-meminfo | Exposes memory statistics. | FreeBSD, Linux
-netdev | Exposes network interface statistics such as bytes transferred. | FreeBSD, Linux, OpenBSD
+meminfo | Exposes memory statistics. | Dragonfly, FreeBSD, Linux
+netdev | Exposes network interface statistics such as bytes transferred. | Dragonfly, FreeBSD, Linux, OpenBSD
 netstat | Exposes network statistics from `/proc/net/netstat`. This is the same information as `netstat -s`. | Linux
 stat | Exposes various statistics from `/proc/stat`. This includes CPU usage, boot time, forks and interrupts. | Linux
 textfile | Exposes statistics read from local disk. The `--collector.textfile.directory` flag must be set. | _any_
@@ -40,7 +41,7 @@ vmstat | Exposes statistics from `/proc/vmstat`. | Linux
 Name     | Description | OS
 ---------|-------------|----
 bonding | Exposes the number of configured and active slaves of Linux bonding interfaces. | Linux
-devstat | Exposes device statistics | FreeBSD
+devstat | Exposes device statistics | Dragonfly, FreeBSD
 gmond | Exposes statistics from Ganglia. | _any_
 interrupts | Exposes detailed interrupts statistics. | Linux, OpenBSD
 ipvs | Exposes IPVS status from `/proc/net/ip_vs` and stats from `/proc/net/ip_vs_stats`. | Linux
