@@ -1,4 +1,4 @@
-prometheus-node-exporter (0.13.0~rc.2+ds-1) UNRELEASED; urgency=medium
+prometheus-node-exporter (0.13.0~rc.2+ds-1) unstable; urgency=medium
 
   [ Paul Tagliamonte ]
   * Team upload.
@@ -12,7 +12,7 @@ prometheus-node-exporter (0.13.0~rc.2+ds-1) UNRELEASED; urgency=medium
   * New upstream release.
   * Update available parameters.
 
- -- Martín Ferrari <tincho@debian.org>  Sat, 19 Nov 2016 18:17:51 +0100
+ -- Martín Ferrari <tincho@debian.org>  Sat, 19 Nov 2016 17:28:35 +0000
 
 prometheus-node-exporter (0.12.0+ds+really0.12.0-2) unstable; urgency=medium
 
