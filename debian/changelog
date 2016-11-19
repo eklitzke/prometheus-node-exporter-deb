@@ -1,4 +1,4 @@
-prometheus-node-exporter (0.12.0+ds+really0.12.0-3) UNRELEASED; urgency=medium
+prometheus-node-exporter (0.13.0~rc.2+ds-1) UNRELEASED; urgency=medium
 
   [ Paul Tagliamonte ]
   * Team upload.
@@ -9,8 +9,9 @@ prometheus-node-exporter (0.12.0+ds+really0.12.0-3) UNRELEASED; urgency=medium
   * Filter out /(sys|proc|dev|run) filesystems by default.
   * debian/default: Add escapes in multiline variable. Closes: #840947.
   * debian/watch: Update with latest upstream versioning fmt.
+  * New upstream release.
 
- -- Paul Tagliamonte <paultag@debian.org>  Wed, 29 Jun 2016 20:56:29 -0400
+ -- Martín Ferrari <tincho@debian.org>  Sat, 19 Nov 2016 18:17:51 +0100
 
 prometheus-node-exporter (0.12.0+ds+really0.12.0-2) unstable; urgency=medium
 
