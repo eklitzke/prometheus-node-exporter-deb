@@ -28,8 +28,11 @@ import (
 )
 
 var (
-	statuslineRE = regexp.MustCompile(`(\d+) blocks .*\[(\d+)/(\d+)\] \[[U_]+\]`)
-	buildlineRE  = regexp.MustCompile(`\((\d+)/\d+\)`)
+	statuslineRE             = regexp.MustCompile(`(\d+) blocks .*\[(\d+)/(\d+)\] \[[U_]+\]`)
+	raid0lineRE              = regexp.MustCompile(`(\d+) blocks( super ([0-9\.])*)? \d+k chunks`)
+	buildlineRE              = regexp.MustCompile(`\((\d+)/\d+\)`)
+	unknownPersonalityLineRE = regexp.MustCompile(`(\d+) blocks (.*)`)
+	raidPersonalityRE        = regexp.MustCompile(`raid[0-9]+`)
 )
 
 type mdStatus struct {
@@ -76,6 +79,36 @@ func evalStatusline(statusline string) (active, total, size int64, err error) {
 	return active, total, size, nil
 }
 
+func evalRaid0line(statusline string) (size int64, err error) {
+	matches := raid0lineRE.FindStringSubmatch(statusline)
+
+	if len(matches) < 2 {
+		return 0, fmt.Errorf("invalid raid0 status line: %s", statusline)
+	}
+
+	size, err = strconv.ParseInt(matches[1], 10, 64)
+	if err != nil {
+		return 0, fmt.Errorf("%s in statusline: %s", err, statusline)
+	}
+
+	return size, nil
+}
+
+func evalUnknownPersonalitylineRE(statusline string) (size int64, err error) {
+	matches := unknownPersonalityLineRE.FindStringSubmatch(statusline)
+
+	if len(matches) != 2+1 {
+		return 0, fmt.Errorf("invalid unknown personality status line: %s", statusline)
+	}
+
+	size, err = strconv.ParseInt(matches[1], 10, 64)
+	if err != nil {
+		return 0, fmt.Errorf("%s in statusline: %s", err, statusline)
+	}
+
+	return size, nil
+}
+
 // Gets the size that has already been synced out of the sync-line.
 func evalBuildline(buildline string) (int64, error) {
 	matches := buildlineRE.FindStringSubmatch(buildline)
@@ -108,7 +141,11 @@ func parseMdstat(mdStatusFilePath string) ([]mdStatus, error) {
 	mdStatusFile := string(content)
 
 	lines := strings.Split(mdStatusFile, "\n")
-	var currentMD string
+	var (
+		currentMD           string
+		personality         string
+		active, total, size int64
+	)
 
 	// Each md has at least the deviceline, statusline and one empty line afterwards
 	// so we will have probably something of the order len(lines)/3 devices
@@ -122,7 +159,7 @@ func parseMdstat(mdStatusFilePath string) ([]mdStatus, error) {
 			continue
 		}
 
-		if l[0] == ' ' {
+		if l[0] == ' ' || l[0] == '\t' {
 			// Those lines are not the beginning of a md-section.
 			continue
 		}
@@ -133,17 +170,34 @@ func parseMdstat(mdStatusFilePath string) ([]mdStatus, error) {
 		}
 
 		mainLine := strings.Split(l, " ")
-		if len(mainLine) < 3 {
+		if len(mainLine) < 4 {
 			return mdStates, fmt.Errorf("error parsing mdline: %s", l)
 		}
-		currentMD = mainLine[0]               // name of md-device
-		isActive := (mainLine[2] == "active") // activity status of said md-device
+		currentMD = mainLine[0]               // The name of the md-device.
+		isActive := (mainLine[2] == "active") // The activity status of the md-device.
+		personality = ""
+		for _, possiblePersonality := range mainLine[3:] {
+			if raidPersonalityRE.MatchString(possiblePersonality) {
+				personality = possiblePersonality
+				break
+			}
+		}
 
 		if len(lines) <= i+3 {
 			return mdStates, fmt.Errorf("error parsing mdstat: entry for %s has fewer lines than expected", currentMD)
 		}
 
-		active, total, size, err := evalStatusline(lines[i+1]) // parse statusline, always present
+		switch {
+		case personality == "raid0":
+			active = int64(len(mainLine) - 4)     // Get the number of devices from the main line.
+			total = active                        // Raid0 active and total is always the same if active.
+			size, err = evalRaid0line(lines[i+1]) // Parse statusline, always present.
+		case raidPersonalityRE.MatchString(personality):
+			active, total, size, err = evalStatusline(lines[i+1]) // Parse statusline, always present.
+		default:
+			log.Infof("Personality unknown: %s\n", mainLine)
+			size, err = evalUnknownPersonalitylineRE(lines[i+1]) // Parse statusline, always present.
+		}
 
 		if err != nil {
 			return mdStates, fmt.Errorf("error parsing mdstat: %s", err)
@@ -162,7 +216,9 @@ func parseMdstat(mdStatusFilePath string) ([]mdStatus, error) {
 
 		// If device is syncing at the moment, get the number of currently synced bytes,
 		// otherwise that number equals the size of the device.
-		if strings.Contains(lines[j], "recovery") || strings.Contains(lines[j], "resync") && !strings.Contains(lines[j], "resync=DELAYED") {
+		if strings.Contains(lines[j], "recovery") ||
+			strings.Contains(lines[j], "resync") &&
+				!strings.Contains(lines[j], "\tresync=") {
 			syncedBlocks, err = evalBuildline(lines[j])
 			if err != nil {
 				return mdStates, fmt.Errorf("error parsing mdstat: %s", err)
