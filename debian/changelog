@@ -10,6 +10,7 @@ prometheus-node-exporter (0.13.0~rc.2+ds-1) UNRELEASED; urgency=medium
   * debian/default: Add escapes in multiline variable. Closes: #840947.
   * debian/watch: Update with latest upstream versioning fmt.
   * New upstream release.
+  * Update available parameters.
 
  -- Martín Ferrari <tincho@debian.org>  Sat, 19 Nov 2016 18:17:51 +0100
 
