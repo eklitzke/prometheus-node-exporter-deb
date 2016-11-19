@@ -1,5 +1,5 @@
 version=3
 
-opts="filenamemangle=s/(?:.*\/)?v?(\d[\d\.]*)\.tar\.gz/prometheus-node-exporter-$1.tar.gz/,dversionmangle=s/\+ds.*$//,uversionmangle=s/(rc\d+)/~$1/" \
+opts="filenamemangle=s/(?:.*\/)?v?(\d[\d\.]*)\.tar\.gz/prometheus-node-exporter-$1.tar.gz/,dversionmangle=s/\+ds.*$//,uversionmangle=s/-?(rc\.?\d+)/~$1/" \
          https://github.com/prometheus/node_exporter/tags \
-         (?:.*/)?v?(\d[\d\.]*(?:rc\d+)?)\.tar\.gz
+         (?:.*/)?v?(\d[\d\.]*(?:-?rc\.?\d+)?)\.tar\.gz
