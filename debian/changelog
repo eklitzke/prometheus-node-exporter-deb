@@ -1,10 +1,10 @@
-prometheus-node-exporter (0.13.0+ds-1) UNRELEASED; urgency=medium
+prometheus-node-exporter (0.13.0+ds-1) unstable; urgency=medium
 
   * New upstream release.
   * Work around gccgo inability to handle vendor directory.
   * Fix build for arches not contemplated upstream.
 
- -- Martín Ferrari <tincho@debian.org>  Sat, 14 Jan 2017 05:33:34 -0300
+ -- Martín Ferrari <tincho@debian.org>  Sat, 14 Jan 2017 05:38:44 -0300
 
 prometheus-node-exporter (0.13.0~rc.2+ds-1) unstable; urgency=medium
 
