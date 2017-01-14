@@ -15,17 +15,22 @@ The following individuals have contributed code to this repository
 * Benjamin Staffin <benley@gmail.com>
 * Björn Rabenstein <beorn@soundcloud.com>
 * Brian Brazil <brian.brazil@boxever.com>
+* Christian Schwarz
+* Corey Stewart <stewa169@purdue.edu>
 * Daniel Speichert <daniel@speichert.pro>
+* Ed Schouten <ed@kumina.nl>
 * Eric Ripa
 * Fabian Reinartz <fabian@soundcloud.com>
 * Franklin Wise <franklin@krave.io>
 * Ian Hansen
 * Ilia Choly <ilia.choly@gmail.com>
 * Jari Takkala <jtakkala@gmail.com>
+* Joe Handzik <joseph.t.handzik@hpe.com>
 * Johannes 'fish' Ziemke <github@freigeist.org>
 * Jonas Große Sundrup <cherti@letopolis.de>
 * Julius Volz <julius.volz@gmail.com>
 * Ken Herner <ken@modulus.io>
+* Matt Layher <mdlayher@gmail.com>
 * Matthias Rampke <matthias@rampke.de>
 * Siavash Safi <siavash.safi@gmail.com>
 * Stephen Shirley <kormat@gmail.com>

@@ -5,6 +5,8 @@ set -euf -o pipefail
 collectors=$(cat << COLLECTORS
   conntrack
   diskstats
+  drbd
+  edac
   entropy
   filefd
   hwmon
@@ -13,16 +15,19 @@ collectors=$(cat << COLLECTORS
   mdadm
   meminfo
   meminfo_numa
+  mountstats
   netdev
   netstat
+  nfs
   sockstat
   stat
   textfile
   bonding
   megacli
+  wifi
+  zfs
 COLLECTORS
 )
-
 cd "$(dirname $0)"
 
 port="$((10000 + (RANDOM % 10000)))"
@@ -66,17 +71,20 @@ fi
   -collectors.enabled="$(echo ${collectors} | tr ' ' ',')" \
   -collector.textfile.directory="collector/fixtures/textfile/two_metric_files/" \
   -collector.megacli.command="collector/fixtures/megacli" \
+  -collector.wifi="collector/fixtures/wifi" \
   -web.listen-address "127.0.0.1:${port}" \
   -log.level="debug" > "${tmpdir}/node_exporter.log" 2>&1 &
 
 echo $! > "${tmpdir}/node_exporter.pid"
 
 finish() {
-  if [ ${verbose} -ne 0 ]
+  if [ $? -ne 0 -o ${verbose} -ne 0 ]
   then
-    echo "LOG ====================="
-    cat "${tmpdir}/node_exporter.log"
-    echo "========================="
+    cat << EOF >&2
+LOG =====================
+$(cat "${tmpdir}/node_exporter.log")
+=========================
+EOF
   fi
 
   if [ ${update} -ne 0 ]
@@ -97,10 +105,10 @@ finish() {
 trap finish EXIT
 
 get() {
-  if which curl > /dev/null 2>&1
+  if command -v curl > /dev/null 2>&1
   then
     curl -s -f "$@"
-  elif which wget > /dev/null 2>&1
+  elif command -v wget > /dev/null 2>&1
   then
     wget -O - "$@"
   else
@@ -111,8 +119,8 @@ get() {
 
 sleep 1
 
-get "127.0.0.1:${port}/metrics" > "${tmpdir}/e2e-output.txt"
+get "127.0.0.1:${port}/metrics" | grep -E -v "${skip_re}" > "${tmpdir}/e2e-output.txt"
 
 diff -u \
-  <(grep -E -v "${skip_re}" "collector/fixtures/e2e-output.txt") \
-  <(grep -E -v "${skip_re}" "${tmpdir}/e2e-output.txt")
+  "collector/fixtures/e2e-output.txt" \
+  "${tmpdir}/e2e-output.txt"

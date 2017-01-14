@@ -16,11 +16,16 @@ package collector
 
 import (
 	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/common/log"
 )
 
 const Namespace = "node"
 
 var Factories = make(map[string]func() (Collector, error))
+
+func warnDeprecated(collector string) {
+	log.Warnf("The %s collector is deprecated and will be removed in the future!", collector)
+}
 
 // Interface a collector has to implement.
 type Collector interface {
@@ -28,8 +33,11 @@ type Collector interface {
 	Update(ch chan<- prometheus.Metric) (err error)
 }
 
-// TODO: Instead of periodically call Update, a Collector could be implemented
-// as a real prometheus.Collector that only gathers metrics when
-// scraped. (However, for metric gathering that takes very long, it might
-// actually be better to do them proactively before scraping to minimize scrape
-// time.)
+type typedDesc struct {
+	desc      *prometheus.Desc
+	valueType prometheus.ValueType
+}
+
+func (d *typedDesc) mustNewConstMetric(value float64, labels ...string) prometheus.Metric {
+	return prometheus.MustNewConstMetric(d.desc, d.valueType, value, labels...)
+}
