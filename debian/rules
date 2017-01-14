@@ -17,6 +17,7 @@ USER       := pkg-go-maintainers@lists.alioth.debian.org
 HOSTNAME   := debian
 BUILD_DATE := $(shell date --utc --date='$(DEBDATE)' +%Y%m%d-%H:%M:%S)
 GO_VERSION := $(shell go version | sed 's/go version \(\S*\).*/\1/')
+GCCGO      := $(strip $(shell go version | grep gccgo))
 BUILDFLAGS := -ldflags \
   " -X $(METAPKG)/version.Version=$(VERSION)\
     -X $(METAPKG)/version.Revision=$(REV)\
@@ -27,6 +28,19 @@ BUILDFLAGS := -ldflags \
 
 %:
 	dh $@ --buildsystem=golang --with=golang --builddirectory=$(BUILDDIR)
+
+ifneq ($(GCCGO),)
+# Gccgo ignores vendoring.
+override_dh_auto_configure:
+	dh_auto_configure
+	for i in github.com/beevik github.com/soundcloud; \
+        do \
+            src=$(BUILDDIR)/src/$(DH_GOPKG)/vendor/$$i; \
+            dst=`dirname $(BUILDDIR)/src/$$i`; \
+            mkdir -vp $$dst; \
+            mv -v $$src $$dst; \
+        done
+endif
 
 override_dh_auto_build:
 	dh_auto_build -- $(BUILDFLAGS)
