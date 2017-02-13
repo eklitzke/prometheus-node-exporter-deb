@@ -1,3 +1,40 @@
+prometheus-node-exporter (0.13.0+ds-1) unstable; urgency=medium
+
+  * New upstream release.
+  * Work around gccgo inability to handle vendor directory.
+  * Fix build for arches not contemplated upstream.
+
+ -- Martín Ferrari <tincho@debian.org>  Sat, 14 Jan 2017 05:38:44 -0300
+
+prometheus-node-exporter (0.13.0~rc.2+ds-1) unstable; urgency=medium
+
+  [ Paul Tagliamonte ]
+  * Team upload.
+  * Use a secure transport for the Vcs-Git and Vcs-Browser URL
+
+  [ Martín Ferrari ]
+  * Actually use https for Vcs-Browser.
+  * Filter out /(sys|proc|dev|run) filesystems by default.
+  * debian/default: Add escapes in multiline variable. Closes: #840947.
+  * debian/watch: Update with latest upstream versioning fmt.
+  * New upstream release.
+  * Update available parameters.
+
+ -- Martín Ferrari <tincho@debian.org>  Sat, 19 Nov 2016 17:28:35 +0000
+
+prometheus-node-exporter (0.12.0+ds+really0.12.0-2) unstable; urgency=medium
+
+  * debian/watch: Take into account RCs and current version hack.
+  * debian/control: Update dependencies and Vcs-* links.
+  * debian/rules: Simplify with new dh_golang features; add version info.
+  * Fix default configuration.
+  * Add systemd service file.
+  * Add logrotate script.
+  * Enable the textfile collector by default.
+  * Remove rotated logs and textfile directory on purge.
+
+ -- Martín Ferrari <tincho@debian.org>  Thu, 30 Jun 2016 13:30:21 +0000
+
 prometheus-node-exporter (0.12.0+ds+really0.12.0-1~bpo8+1) jessie-backports; urgency=medium
 
   * Rebuild for jessie-backports.

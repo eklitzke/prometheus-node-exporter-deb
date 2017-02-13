@@ -6,7 +6,9 @@ set -e
 
 case "$1" in
   purge)
-        rm -rf /var/log/prometheus/prometheus-node-exporter.log \
+        rm -rf /var/lib/prometheus/node-exporter/ \
+            /var/log/prometheus/prometheus-node-exporter.log \
+            /var/log/prometheus/prometheus-node-exporter.log.* \
             /var/run/prometheus/prometheus-node-exporter.pid
 	# We do NOT remove the system user.
 	;;

@@ -25,6 +25,7 @@ func TestMdadm(t *testing.T) {
 	}
 
 	refs := map[string]mdStatus{
+		// { "<name>", <active?>, <numDisksActive>, <totalNumDisks>, <amountSynced>, <totalSize>}
 		"md3":   {"md3", true, 8, 8, 5853468288, 5853468288},
 		"md127": {"md127", true, 2, 2, 312319552, 312319552},
 		"md0":   {"md0", true, 2, 2, 248896, 248896},
@@ -33,6 +34,11 @@ func TestMdadm(t *testing.T) {
 		"md8":   {"md8", true, 2, 2, 195310144, 16775552},
 		"md7":   {"md7", true, 3, 4, 7813735424, 7813735424},
 		"md9":   {"md9", true, 4, 4, 523968, 523968},
+		"md10":  {"md10", true, 2, 2, 314159265, 314159265},
+		"md11":  {"md11", true, 2, 2, 4190208, 4190208},
+		"md12":  {"md12", true, 2, 2, 3886394368, 3886394368},
+		"md219": {"md219", false, 2, 2, 7932, 7932},
+		"md00":  {"md00", true, 1, 1, 4186624, 4186624},
 	}
 
 	for _, md := range mdStates {
@@ -43,5 +49,13 @@ func TestMdadm(t *testing.T) {
 
 	if len(mdStates) != len(refs) {
 		t.Errorf("expected number of parsed md-device to be %d, but was %d", len(refs), len(mdStates))
+	}
+}
+
+func TestInvalidMdstat(t *testing.T) {
+	_, err := parseMdstat("fixtures/proc/mdstat_invalid")
+
+	if err == nil {
+		t.Fatalf("parsing of invalid reference file did not find any errors")
 	}
 }
