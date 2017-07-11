@@ -23,29 +23,28 @@ import (
 )
 
 type timeCollector struct {
-	metric prometheus.Counter
+	desc *prometheus.Desc
 }
 
 func init() {
 	Factories["time"] = NewTimeCollector
 }
 
-// Takes a prometheus registry and returns a new Collector exposing
-// the current system time in seconds since epoch.
+// NewTimeCollector returns a new Collector exposing the current system time in
+// seconds since epoch.
 func NewTimeCollector() (Collector, error) {
 	return &timeCollector{
-		metric: prometheus.NewCounter(prometheus.CounterOpts{
-			Namespace: Namespace,
-			Name:      "time",
-			Help:      "System time in seconds since epoch (1970).",
-		}),
+		desc: prometheus.NewDesc(
+			Namespace+"_time",
+			"System time in seconds since epoch (1970).",
+			nil, nil,
+		),
 	}, nil
 }
 
-func (c *timeCollector) Update(ch chan<- prometheus.Metric) (err error) {
+func (c *timeCollector) Update(ch chan<- prometheus.Metric) error {
 	now := float64(time.Now().Unix())
-	log.Debugf("Set time: %f", now)
-	c.metric.Set(now)
-	c.metric.Collect(ch)
-	return err
+	log.Debugf("Return time: %f", now)
+	ch <- prometheus.MustNewConstMetric(c.desc, prometheus.GaugeValue, now)
+	return nil
 }

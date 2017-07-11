@@ -26,16 +26,14 @@ import (
 	"strings"
 
 	"github.com/prometheus/client_golang/prometheus"
-)
-
-const (
-	hwMonSubsystem = "hwmon"
+	"github.com/prometheus/common/log"
 )
 
 var (
 	hwmonInvalidMetricChars = regexp.MustCompile("[^a-z0-9:_]")
 	hwmonFilenameFormat     = regexp.MustCompile(`^(?P<type>[^0-9]+)(?P<id>[0-9]*)?(_(?P<property>.+))?$`)
 	hwmonLabelDesc          = []string{"chip", "sensor"}
+	hwmonChipNameLabelDesc  = []string{"chip", "chip_name"}
 	hwmonSensorTypes        = []string{
 		"vrm", "beep_enable", "update_interval", "in", "cpu", "fan",
 		"pwm", "temp", "curr", "power", "energy", "humidity",
@@ -49,8 +47,8 @@ func init() {
 
 type hwMonCollector struct{}
 
-// Takes a prometheus registry and returns a new Collector exposing
-// /sys/class/hwmon stats (similar to lm-sensors).
+// NewHwMonCollector returns a new Collector exposing /sys/class/hwmon stats
+// (similar to lm-sensors).
 func NewHwMonCollector() (Collector, error) {
 	return &hwMonCollector{}, nil
 }
@@ -76,7 +74,7 @@ func addValueFile(data map[string]map[string]string, sensor string, prop string,
 	data[sensor][prop] = value
 }
 
-// Split a sensor name into <type><num>_<property>
+// explodeSensorFilename splits a sensor name into <type><num>_<property>.
 func explodeSensorFilename(filename string) (ok bool, sensorType string, sensorNum int, sensorProperty string) {
 	matches := hwmonFilenameFormat.FindStringSubmatch(filename)
 	if len(matches) == 0 {
@@ -103,7 +101,7 @@ func explodeSensorFilename(filename string) (ok bool, sensorType string, sensorN
 	return true, sensorType, sensorNum, sensorProperty
 }
 
-func collectSensorData(dir string, data map[string]map[string]string) (err error) {
+func collectSensorData(dir string, data map[string]map[string]string) error {
 	sensorFiles, dirError := ioutil.ReadDir(dir)
 	if dirError != nil {
 		return dirError
@@ -125,7 +123,7 @@ func collectSensorData(dir string, data map[string]map[string]string) (err error
 	return nil
 }
 
-func (c *hwMonCollector) updateHwmon(ch chan<- prometheus.Metric, dir string) (err error) {
+func (c *hwMonCollector) updateHwmon(ch chan<- prometheus.Metric, dir string) error {
 	hwmonName, err := c.hwmonName(dir)
 	if err != nil {
 		return err
@@ -143,18 +141,39 @@ func (c *hwMonCollector) updateHwmon(ch chan<- prometheus.Metric, dir string) (e
 		}
 	}
 
-	// format all sensors
+	hwmonChipName, err := c.hwmonHumanReadableChipName(dir)
+	if err == nil {
+		// sensor chip metadata
+		desc := prometheus.NewDesc(
+			"node_hwmon_chip_names",
+			"Annotation metric for human-readable chip names",
+			hwmonChipNameLabelDesc,
+			nil,
+		)
+
+		ch <- prometheus.MustNewConstMetric(
+			desc,
+			prometheus.GaugeValue,
+			1.0,
+			hwmonName,
+			hwmonChipName,
+		)
+	}
+
+	// Format all sensors.
 	for sensor, sensorData := range data {
 
 		_, sensorType, _, _ := explodeSensorFilename(sensor)
 
+		labels := []string{hwmonName, sensor}
 		if labelText, ok := sensorData["label"]; ok {
 			label := cleanMetricName(labelText)
 			if label != "" {
-				sensor = label
+				desc := prometheus.NewDesc("node_hwmon_sensor_label", "Label for given chip and sensor",
+					[]string{"chip", "sensor", "label"}, nil)
+				ch <- prometheus.MustNewConstMetric(desc, prometheus.GaugeValue, 1.0, hwmonName, sensor, label)
 			}
 		}
-		labels := []string{hwmonName, sensor}
 
 		if sensorType == "beep_enable" {
 			value := 0.0
@@ -351,7 +370,25 @@ func (c *hwMonCollector) hwmonName(dir string) (string, error) {
 	return "", errors.New("Could not derive a monitoring name for " + dir)
 }
 
-func (c *hwMonCollector) Update(ch chan<- prometheus.Metric) (err error) {
+// hwmonHumanReadableChipName is similar to the methods in hwmonName, but with
+// different precedences -- we can allow duplicates here.
+func (c *hwMonCollector) hwmonHumanReadableChipName(dir string) (string, error) {
+	sysnameRaw, nameErr := ioutil.ReadFile(path.Join(dir, "name"))
+	if nameErr != nil {
+		return "", nameErr
+	}
+
+	if string(sysnameRaw) != "" {
+		cleanName := cleanMetricName(string(sysnameRaw))
+		if cleanName != "" {
+			return cleanName, nil
+		}
+	}
+
+	return "", errors.New("Could not derive a human-readable chip type for " + dir)
+}
+
+func (c *hwMonCollector) Update(ch chan<- prometheus.Metric) error {
 	// Step 1: scan /sys/class/hwmon, resolve all symlinks and call
 	//         updatesHwmon for each folder
 
@@ -359,6 +396,11 @@ func (c *hwMonCollector) Update(ch chan<- prometheus.Metric) (err error) {
 
 	hwmonFiles, err := ioutil.ReadDir(hwmonPathName)
 	if err != nil {
+		if os.IsNotExist(err) {
+			log.Debug("hwmon collector metrics are not available for this system")
+			return nil
+		}
+
 		return err
 	}
 

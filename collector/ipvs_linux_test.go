@@ -15,108 +15,15 @@ package collector
 
 import (
 	"flag"
+	"fmt"
 	"io/ioutil"
-	"net"
 	"net/http"
 	"net/http/httptest"
-	"strconv"
 	"strings"
 	"testing"
 
 	"github.com/prometheus/client_golang/prometheus"
-	"github.com/prometheus/procfs"
-)
-
-var (
-	expectedIPVSStats = procfs.IPVSStats{
-		Connections:     23765872,
-		IncomingPackets: 3811989221,
-		OutgoingPackets: 0,
-		IncomingBytes:   89991519156915,
-		OutgoingBytes:   0,
-	}
-	expectedIPVSBackendStatuses = []procfs.IPVSBackendStatus{
-		{
-			LocalAddress:  net.ParseIP("192.168.0.22"),
-			LocalPort:     3306,
-			RemoteAddress: net.ParseIP("192.168.82.22"),
-			RemotePort:    3306,
-			Proto:         "TCP",
-			Weight:        100,
-			ActiveConn:    248,
-			InactConn:     2,
-		},
-		{
-			LocalAddress:  net.ParseIP("192.168.0.22"),
-			LocalPort:     3306,
-			RemoteAddress: net.ParseIP("192.168.83.24"),
-			RemotePort:    3306,
-			Proto:         "TCP",
-			Weight:        100,
-			ActiveConn:    248,
-			InactConn:     2,
-		},
-		{
-			LocalAddress:  net.ParseIP("192.168.0.22"),
-			LocalPort:     3306,
-			RemoteAddress: net.ParseIP("192.168.83.21"),
-			RemotePort:    3306,
-			Proto:         "TCP",
-			Weight:        100,
-			ActiveConn:    248,
-			InactConn:     1,
-		},
-		{
-			LocalAddress:  net.ParseIP("192.168.0.57"),
-			LocalPort:     3306,
-			RemoteAddress: net.ParseIP("192.168.84.22"),
-			RemotePort:    3306,
-			Proto:         "TCP",
-			Weight:        0,
-			ActiveConn:    0,
-			InactConn:     0,
-		},
-		{
-			LocalAddress:  net.ParseIP("192.168.0.57"),
-			LocalPort:     3306,
-			RemoteAddress: net.ParseIP("192.168.82.21"),
-			RemotePort:    3306,
-			Proto:         "TCP",
-			Weight:        100,
-			ActiveConn:    1499,
-			InactConn:     0,
-		},
-		{
-			LocalAddress:  net.ParseIP("192.168.0.57"),
-			LocalPort:     3306,
-			RemoteAddress: net.ParseIP("192.168.50.21"),
-			RemotePort:    3306,
-			Proto:         "TCP",
-			Weight:        100,
-			ActiveConn:    1498,
-			InactConn:     0,
-		},
-		{
-			LocalAddress:  net.ParseIP("192.168.0.55"),
-			LocalPort:     3306,
-			RemoteAddress: net.ParseIP("192.168.50.26"),
-			RemotePort:    3306,
-			Proto:         "TCP",
-			Weight:        0,
-			ActiveConn:    0,
-			InactConn:     0,
-		},
-		{
-			LocalAddress:  net.ParseIP("192.168.0.55"),
-			LocalPort:     3306,
-			RemoteAddress: net.ParseIP("192.168.49.32"),
-			RemotePort:    3306,
-			Proto:         "TCP",
-			Weight:        100,
-			ActiveConn:    0,
-			InactConn:     0,
-		},
-	}
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 )
 
 func TestIPVSCollector(t *testing.T) {
@@ -129,36 +36,23 @@ func TestIPVSCollector(t *testing.T) {
 	}
 	sink := make(chan prometheus.Metric)
 	go func() {
-		for {
-			<-sink
+		err = collector.Update(sink)
+		if err != nil {
+			panic(fmt.Sprintf("failed to update collector: %v", err))
 		}
 	}()
-
-	err = collector.Update(sink)
-	if err != nil {
-		t.Fatal(err)
-	}
-
-	for _, expect := range expectedIPVSBackendStatuses {
-		labels := prometheus.Labels{
-			"local_address":  expect.LocalAddress.String(),
-			"local_port":     strconv.FormatUint(uint64(expect.LocalPort), 10),
-			"remote_address": expect.RemoteAddress.String(),
-			"remote_port":    strconv.FormatUint(uint64(expect.RemotePort), 10),
-			"proto":          expect.Proto,
-		}
-		// TODO: Pending prometheus/client_golang#58, check the actual numbers
-		_, err = collector.backendConnectionsActive.GetMetricWith(labels)
-		if err != nil {
-			t.Errorf("Missing active connections metric for label combination: %+v", labels)
-		}
-		_, err = collector.backendConnectionsInact.GetMetricWith(labels)
-		if err != nil {
-			t.Errorf("Missing inactive connections metric for label combination: %+v", labels)
-		}
-		_, err = collector.backendWeight.GetMetricWith(labels)
-		if err != nil {
-			t.Errorf("Missing weight metric for label combination: %+v", labels)
+	for expected, got := range map[string]string{
+		prometheus.NewDesc("node_ipvs_connections_total", "The total number of connections made.", nil, nil).String():                                                                                                                  (<-sink).Desc().String(),
+		prometheus.NewDesc("node_ipvs_incoming_packets_total", "The total number of incoming packets.", nil, nil).String():                                                                                                             (<-sink).Desc().String(),
+		prometheus.NewDesc("node_ipvs_outgoing_packets_total", "The total number of outgoing packets.", nil, nil).String():                                                                                                             (<-sink).Desc().String(),
+		prometheus.NewDesc("node_ipvs_incoming_bytes_total", "The total amount of incoming data.", nil, nil).String():                                                                                                                  (<-sink).Desc().String(),
+		prometheus.NewDesc("node_ipvs_outgoing_bytes_total", "The total amount of outgoing data.", nil, nil).String():                                                                                                                  (<-sink).Desc().String(),
+		prometheus.NewDesc("node_ipvs_backend_connections_active", "The current active connections by local and remote address.", []string{"local_address", "local_port", "remote_address", "remote_port", "proto"}, nil).String():     (<-sink).Desc().String(),
+		prometheus.NewDesc("node_ipvs_backend_connections_inactive", "The current inactive connections by local and remote address.", []string{"local_address", "local_port", "remote_address", "remote_port", "proto"}, nil).String(): (<-sink).Desc().String(),
+		prometheus.NewDesc("node_ipvs_backend_weight", "The current backend weight by local and remote address.", []string{"local_address", "local_port", "remote_address", "remote_port", "proto"}, nil).String():                     (<-sink).Desc().String(),
+	} {
+		if expected != got {
+			t.Fatalf("Expected '%s' but got '%s'", expected, got)
 		}
 	}
 }
@@ -192,7 +86,7 @@ func TestIPVSCollectorResponse(t *testing.T) {
 	prometheus.MustRegister(miniCollector{c: collector})
 
 	rw := httptest.NewRecorder()
-	prometheus.Handler().ServeHTTP(rw, &http.Request{})
+	promhttp.Handler().ServeHTTP(rw, &http.Request{})
 
 	metricsFile := "fixtures/ip_vs_result.txt"
 	wantMetrics, err := ioutil.ReadFile(metricsFile)

@@ -30,17 +30,17 @@ var (
 )
 
 type ntpCollector struct {
-	drift   prometheus.Gauge
-	stratum prometheus.Gauge
+	drift, stratum typedDesc
 }
 
 func init() {
 	Factories["ntp"] = NewNtpCollector
 }
 
-// Takes a prometheus registry and returns a new Collector exposing
-// the offset between ntp and the current system time.
+// NewNtpCollector returns a new Collector exposing the offset between ntp and
+// the current system time.
 func NewNtpCollector() (Collector, error) {
+	warnDeprecated("ntp")
 	if *ntpServer == "" {
 		return nil, fmt.Errorf("no NTP server specified, see -collector.ntp.server")
 	}
@@ -49,32 +49,30 @@ func NewNtpCollector() (Collector, error) {
 	}
 
 	return &ntpCollector{
-		drift: prometheus.NewGauge(prometheus.GaugeOpts{
-			Namespace: Namespace,
-			Name:      "ntp_drift_seconds",
-			Help:      "Time between system time and ntp time.",
-		}),
-		stratum: prometheus.NewGauge(prometheus.GaugeOpts{
-			Namespace: Namespace,
-			Name:      "ntp_stratum",
-			Help:      "NTP server stratum.",
-		}),
+		drift: typedDesc{prometheus.NewDesc(
+			prometheus.BuildFQName(Namespace, "ntp", "drift_seconds"),
+			"Time between system time and ntp time.",
+			nil, nil,
+		), prometheus.GaugeValue},
+		stratum: typedDesc{prometheus.NewDesc(
+			prometheus.BuildFQName(Namespace, "ntp", "stratum"),
+			"NTP server stratum.",
+			nil, nil,
+		), prometheus.GaugeValue},
 	}, nil
 }
 
-func (c *ntpCollector) Update(ch chan<- prometheus.Metric) (err error) {
+func (c *ntpCollector) Update(ch chan<- prometheus.Metric) error {
 	resp, err := ntp.Query(*ntpServer, *ntpProtocolVersion)
 	if err != nil {
 		return fmt.Errorf("couldn't get NTP drift: %s", err)
 	}
 	driftSeconds := resp.ClockOffset.Seconds()
 	log.Debugf("Set ntp_drift_seconds: %f", driftSeconds)
-	c.drift.Set(driftSeconds)
-	c.drift.Collect(ch)
+	ch <- c.drift.mustNewConstMetric(driftSeconds)
 
 	stratum := float64(resp.Stratum)
 	log.Debugf("Set ntp_stratum: %f", stratum)
-	c.stratum.Set(stratum)
-	c.stratum.Collect(ch)
+	ch <- c.stratum.mustNewConstMetric(stratum)
 	return nil
 }

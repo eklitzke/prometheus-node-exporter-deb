@@ -1,3 +1,45 @@
+## v0.14.0 / 2017-03-21
+
+NOTE: We are deprecating several collectors in this release.
+    * `gmond` - Out of scope.
+    * `megacli` - Requires forking, to be moved to textfile collection.
+    * `ntp` - Out of scope.
+
+Breaking changes:
+    * Collector errors are now a separate metric, `node_scrape_collector_success`, not a label on `node_exporter_scrape_duration_seconds` (#516)
+
+* [CHANGE] Report collector success/failure as a bool metric, not a label. #516
+* [FEATURE] Add loadavg collector for Solaris #311
+* [FEATURE] Add StorCli text collector example script #320
+* [FEATURE] Add collector for Linux EDAC #324
+* [FEATURE] Add text file utility for SMART metrics #354
+* [FEATURE] Add a collector for NFS client statistics. #360
+* [FEATURE] Add mountstats collector for detailed NFS statistics #367
+* [FEATURE] Add a collector for DRBD #365
+* [FEATURE] Add cpu collector for darwin #391
+* [FEATURE] Add netdev collector for darwin #393
+* [FEATURE] Collect CPU temperatures on FreeBSD #397
+* [FEATURE] Add ZFS collector #410
+* [FEATURE] Add initial wifi collector #413
+* [FEATURE] Add NFS event metrics to mountstats collector #415
+* [FEATURE] Add an example rules file #422
+* [FEATURE] infiniband: Add new collector for InfiniBand statistics #450
+* [FEATURE] buddyinfo: Add support for /proc/buddyinfo for linux free memory fragmentation. #454
+* [IMPROVEMENT] hwmon: Provide annotation metric to link chip sysfs paths to human-readable chip types #359
+* [IMPROVEMENT] Add node_filesystem_device_errors_total metric #374
+* [IMPROVEMENT] Add runit service dir flag #375
+* [IMPROVEMENT] Improve Docker documentation #376
+* [IMPROVEMENT] Ignore autofs filesystems on linux #384
+* [IMPROVEMENT] Replace some FreeBSD collectors with pure Go versions #385
+* [IMPROVEMENT] Use filename as label, move 'label' to own metric #411 (hwmon)
+* [BUGFIX] mips64 build fix #361
+* [BUGFIX] Update vendoring #372 (to fix #242)
+* [BUGFIX] Convert remaining collectors to use ConstMetrics #389
+* [BUGFIX] Check for errors in netdev scanner #398
+* [BUGFIX] Don't leak or race in FreeBSD devstat collector #396
+* [BUGFIX] Allow graceful failure in hwmon collector #427
+* [BUGFIX] Fix the reporting of active+total disk metrics for inactive raids. #522
+
 ## v0.13.0 / 2016-11-26
 
 NOTE: We have disabled builds of linux/ppc64 and linux/ppc64le due to build bugs.

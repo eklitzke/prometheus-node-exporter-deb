@@ -44,8 +44,8 @@ func init() {
 	Factories["textfile"] = NewTextFileCollector
 }
 
-// Takes a registers a
-// SetMetricFamilyInjectionHook.
+// NewTextFileCollector returns a new Collector exposing metrics read from files
+// in the given textfile directory.
 func NewTextFileCollector() (Collector, error) {
 	c := &textFileCollector{
 		path: *textFileDirectory,
@@ -56,14 +56,17 @@ func NewTextFileCollector() (Collector, error) {
 		// the flag is not passed.
 		log.Infof("No directory specified, see --collector.textfile.directory")
 	} else {
-		prometheus.SetMetricFamilyInjectionHook(c.parseTextFiles)
+		prometheus.DefaultGatherer = prometheus.Gatherers{
+			prometheus.DefaultGatherer,
+			prometheus.GathererFunc(func() ([]*dto.MetricFamily, error) { return c.parseTextFiles(), nil }),
+		}
 	}
 
 	return c, nil
 }
 
-// textFile collector works via SetMetricFamilyInjectionHook in parseTextFiles.
-func (c *textFileCollector) Update(ch chan<- prometheus.Metric) (err error) {
+// Update implements the Collector interface.
+func (c *textFileCollector) Update(ch chan<- prometheus.Metric) error {
 	return nil
 }
 

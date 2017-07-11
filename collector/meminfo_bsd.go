@@ -11,92 +11,48 @@
 // See the License for the specific language governing permissions and
 // limitations under the License.
 
-// +build freebsd darwin,amd64 dragonfly
+// +build freebsd dragonfly
 // +build !nomeminfo
 
 package collector
 
 import (
-	"errors"
+	"fmt"
 
-	"github.com/prometheus/client_golang/prometheus"
+	"golang.org/x/sys/unix"
 )
 
-/*
-#include <stddef.h>
-#include <sys/sysctl.h>
+func (c *meminfoCollector) getMemInfo() (map[string]float64, error) {
+	info := make(map[string]float64)
 
-int _sysctl(const char* name) {
-        int val;
-        size_t size = sizeof(val);
-        int res = sysctlbyname(name, &val, &size, NULL, 0);
-        if (res == -1) {
-                return -1;
-        }
-        if (size != sizeof(val)) {
-                return -2;
-        }
-        return val;
-}
-*/
-import "C"
-
-const (
-	memInfoSubsystem = "memory"
-)
-
-type meminfoCollector struct{}
-
-func init() {
-	Factories["meminfo"] = NewMeminfoCollector
-}
-
-// Takes a prometheus registry and returns a new Collector exposing
-// Memory stats.
-func NewMeminfoCollector() (Collector, error) {
-	return &meminfoCollector{}, nil
-}
-
-func (c *meminfoCollector) Update(ch chan<- prometheus.Metric) (err error) {
-	var pages map[string]C.int
-	pages = make(map[string]C.int)
-
-	size := C._sysctl(C.CString("vm.stats.vm.v_page_size"))
-	if size == -1 {
-		return errors.New("sysctl(vm.stats.vm.v_page_size) failed")
+	tmp32, err := unix.SysctlUint32("vm.stats.vm.v_page_size")
+	if err != nil {
+		return nil, fmt.Errorf("sysctl(vm.stats.vm.v_page_size) failed: %s", err)
 	}
-	if size == -2 {
-		return errors.New("sysctl(vm.stats.vm.v_page_size) failed, wrong buffer size")
+	size := uint64(tmp32)
+	fromPage := func(v uint64) uint64 {
+		return v * size
 	}
 
-	pages["active"] = C._sysctl(C.CString("vm.stats.vm.v_active_count"))
-	pages["inactive"] = C._sysctl(C.CString("vm.stats.vm.v_inactive_count"))
-	pages["wire"] = C._sysctl(C.CString("vm.stats.vm.v_wire_count"))
-	pages["cache"] = C._sysctl(C.CString("vm.stats.vm.v_cache_count"))
-	pages["free"] = C._sysctl(C.CString("vm.stats.vm.v_free_count"))
-	pages["swappgsin"] = C._sysctl(C.CString("vm.stats.vm.v_swappgsin"))
-	pages["swappgsout"] = C._sysctl(C.CString("vm.stats.vm.v_swappgsout"))
-	pages["total"] = C._sysctl(C.CString("vm.stats.vm.v_page_count"))
-
-	for key := range pages {
-		if pages[key] == -1 {
-			return errors.New("sysctl() failed for " + key)
+	for _, ctl := range []bsdSysctl{
+		{name: "active_bytes", mib: "vm.stats.vm.v_active_count", conversion: fromPage},
+		{name: "inactive_bytes", mib: "vm.stats.vm.v_inactive_count", conversion: fromPage},
+		{name: "wired_bytes", mib: "vm.stats.vm.v_wire_count", conversion: fromPage},
+		{name: "cache_bytes", mib: "vm.stats.vm.v_cache_count", conversion: fromPage},
+		{name: "buffer_bytes", mib: "vfs.bufspace"},
+		{name: "free_bytes", mib: "vm.stats.vm.v_free_count", conversion: fromPage},
+		{name: "size_bytes", mib: "vm.stats.vm.v_page_count", conversion: fromPage},
+		{name: "swap_in_bytes_total", mib: "vm.stats.vm.v_swappgsin", conversion: fromPage},
+		{name: "swap_out_bytes_total", mib: "vm.stats.vm.v_swappgsout", conversion: fromPage},
+		{name: "swap_size_bytes", mib: "vm.swap_total", dataType: bsdSysctlTypeUint64},
+	} {
+		v, err := ctl.Value()
+		if err != nil {
+			return nil, err
 		}
-		if pages[key] == -2 {
-			return errors.New("sysctl() failed for " + key + ", wrong buffer size")
-		}
+
+		info[ctl.name] = v
 	}
 
-	for k, v := range pages {
-		ch <- prometheus.MustNewConstMetric(
-			prometheus.NewDesc(
-				prometheus.BuildFQName(Namespace, memInfoSubsystem, k),
-				k+" from sysctl()",
-				nil, nil,
-			),
-			// Convert metrics to kB (same as Linux meminfo).
-			prometheus.UntypedValue, float64(v)*float64(size),
-		)
-	}
-	return err
+	return info, nil
 }
