@@ -24,45 +24,32 @@ import (
 )
 
 type loadavgCollector struct {
-	metric []prometheus.Gauge
+	metric []typedDesc
 }
 
 func init() {
 	Factories["loadavg"] = NewLoadavgCollector
 }
 
-// Take a prometheus registry and return a new Collector exposing load average.
+// NewLoadavgCollector returns a new Collector exposing load average stats.
 func NewLoadavgCollector() (Collector, error) {
 	return &loadavgCollector{
-		metric: []prometheus.Gauge{
-			prometheus.NewGauge(prometheus.GaugeOpts{
-				Namespace: Namespace,
-				Name:      "load1",
-				Help:      "1m load average.",
-			}),
-			prometheus.NewGauge(prometheus.GaugeOpts{
-				Namespace: Namespace,
-				Name:      "load5",
-				Help:      "5m load average.",
-			}),
-			prometheus.NewGauge(prometheus.GaugeOpts{
-				Namespace: Namespace,
-				Name:      "load15",
-				Help:      "15m load average.",
-			}),
+		metric: []typedDesc{
+			{prometheus.NewDesc(Namespace+"_load1", "1m load average.", nil, nil), prometheus.GaugeValue},
+			{prometheus.NewDesc(Namespace+"_load5", "5m load average.", nil, nil), prometheus.GaugeValue},
+			{prometheus.NewDesc(Namespace+"_load15", "15m load average.", nil, nil), prometheus.GaugeValue},
 		},
 	}, nil
 }
 
-func (c *loadavgCollector) Update(ch chan<- prometheus.Metric) (err error) {
+func (c *loadavgCollector) Update(ch chan<- prometheus.Metric) error {
 	loads, err := getLoad()
 	if err != nil {
 		return fmt.Errorf("couldn't get load: %s", err)
 	}
 	for i, load := range loads {
-		log.Debugf("Set load %d: %f", i, load)
-		c.metric[i].Set(load)
-		c.metric[i].Collect(ch)
+		log.Debugf("return load %d: %f", i, load)
+		ch <- c.metric[i].mustNewConstMetric(load)
 	}
 	return err
 }

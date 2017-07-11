@@ -48,10 +48,15 @@ type filesystemCollector struct {
 	ignoredFSTypesPattern     *regexp.Regexp
 	sizeDesc, freeDesc, availDesc,
 	filesDesc, filesFreeDesc, roDesc *prometheus.Desc
+	devErrors *prometheus.CounterVec
+}
+
+type filesystemLabels struct {
+	device, mountPoint, fsType string
 }
 
 type filesystemStats struct {
-	labelValues                             []string
+	labels                                  filesystemLabels
 	size, free, avail, files, filesFree, ro float64
 }
 
@@ -59,8 +64,7 @@ func init() {
 	Factories["filesystem"] = NewFilesystemCollector
 }
 
-// Takes a prometheus registry and returns a new Collector exposing
-// Filesystems stats.
+// NewFilesystemCollector returns a new Collector exposing filesystems stats.
 func NewFilesystemCollector() (Collector, error) {
 	subsystem := "filesystem"
 	mountPointPattern := regexp.MustCompile(*ignoredMountPoints)
@@ -102,6 +106,11 @@ func NewFilesystemCollector() (Collector, error) {
 		filesystemLabelNames, nil,
 	)
 
+	devErrors := prometheus.NewCounterVec(prometheus.CounterOpts{
+		Name: prometheus.BuildFQName(Namespace, subsystem, "device_errors_total"),
+		Help: "Total number of errors occurred when getting stats for device",
+	}, filesystemLabelNames)
+
 	return &filesystemCollector{
 		ignoredMountPointsPattern: mountPointPattern,
 		ignoredFSTypesPattern:     filesystemsTypesPattern,
@@ -111,39 +120,48 @@ func NewFilesystemCollector() (Collector, error) {
 		filesDesc:                 filesDesc,
 		filesFreeDesc:             filesFreeDesc,
 		roDesc:                    roDesc,
+		devErrors:                 devErrors,
 	}, nil
 }
 
-func (c *filesystemCollector) Update(ch chan<- prometheus.Metric) (err error) {
+func (c *filesystemCollector) Update(ch chan<- prometheus.Metric) error {
 	stats, err := c.GetStats()
 	if err != nil {
 		return err
 	}
+	// Make sure we expose a metric once, even if there are multiple mounts
+	seen := map[filesystemLabels]bool{}
 	for _, s := range stats {
+		if seen[s.labels] {
+			continue
+		}
+		seen[s.labels] = true
+
 		ch <- prometheus.MustNewConstMetric(
 			c.sizeDesc, prometheus.GaugeValue,
-			s.size, s.labelValues...,
+			s.size, s.labels.device, s.labels.mountPoint, s.labels.fsType,
 		)
 		ch <- prometheus.MustNewConstMetric(
 			c.freeDesc, prometheus.GaugeValue,
-			s.free, s.labelValues...,
+			s.free, s.labels.device, s.labels.mountPoint, s.labels.fsType,
 		)
 		ch <- prometheus.MustNewConstMetric(
 			c.availDesc, prometheus.GaugeValue,
-			s.avail, s.labelValues...,
+			s.avail, s.labels.device, s.labels.mountPoint, s.labels.fsType,
 		)
 		ch <- prometheus.MustNewConstMetric(
 			c.filesDesc, prometheus.GaugeValue,
-			s.files, s.labelValues...,
+			s.files, s.labels.device, s.labels.mountPoint, s.labels.fsType,
 		)
 		ch <- prometheus.MustNewConstMetric(
 			c.filesFreeDesc, prometheus.GaugeValue,
-			s.filesFree, s.labelValues...,
+			s.filesFree, s.labels.device, s.labels.mountPoint, s.labels.fsType,
 		)
 		ch <- prometheus.MustNewConstMetric(
 			c.roDesc, prometheus.GaugeValue,
-			s.ro, s.labelValues...,
+			s.ro, s.labels.device, s.labels.mountPoint, s.labels.fsType,
 		)
 	}
+	c.devErrors.Collect(ch)
 	return nil
 }

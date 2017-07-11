@@ -26,24 +26,35 @@ import (
 	"github.com/prometheus/client_golang/prometheus"
 )
 
-type TCPConnectionState int
+type tcpConnectionState int
 
 const (
-	TCP_ESTABLISHED TCPConnectionState = iota + 1
-	TCP_SYN_SENT
-	TCP_SYN_RECV
-	TCP_FIN_WAIT1
-	TCP_FIN_WAIT2
-	TCP_TIME_WAIT
-	TCP_CLOSE
-	TCP_CLOSE_WAIT
-	TCP_LAST_ACK
-	TCP_LISTEN
-	TCP_CLOSING
+	// TCP_ESTABLISHED
+	tcpEstablished tcpConnectionState = iota + 1
+	// TCP_SYN_SENT
+	tcpSynSent
+	// TCP_SYN_RECV
+	tcpSynRecv
+	// TCP_FIN_WAIT1
+	tcpFinWait1
+	// TCP_FIN_WAIT2
+	tcpFinWait2
+	// TCP_TIME_WAIT
+	tcpTimeWait
+	// TCP_CLOSE
+	tcpClose
+	// TCP_CLOSE_WAIT
+	tcpCloseWait
+	// TCP_LAST_ACK
+	tcpLastAck
+	// TCP_LISTEN
+	tcpListen
+	// TCP_CLOSING
+	tcpClosing
 )
 
 type tcpStatCollector struct {
-	metric *prometheus.GaugeVec
+	desc typedDesc
 }
 
 func init() {
@@ -54,18 +65,15 @@ func init() {
 // a new Collector exposing network stats.
 func NewTCPStatCollector() (Collector, error) {
 	return &tcpStatCollector{
-		metric: prometheus.NewGaugeVec(
-			prometheus.GaugeOpts{
-				Namespace: Namespace,
-				Name:      "tcp_connection_states",
-				Help:      "Number of connection states.",
-			},
-			[]string{"state"},
-		),
+		desc: typedDesc{prometheus.NewDesc(
+			prometheus.BuildFQName(Namespace, "tcp", "connection_states"),
+			"Number of connection states.",
+			[]string{"state"}, nil,
+		), prometheus.GaugeValue},
 	}, nil
 }
 
-func (c *tcpStatCollector) Update(ch chan<- prometheus.Metric) (err error) {
+func (c *tcpStatCollector) Update(ch chan<- prometheus.Metric) error {
 	tcpStats, err := getTCPStats(procFilePath("net/tcp"))
 	if err != nil {
 		return fmt.Errorf("couldn't get tcpstats: %s", err)
@@ -85,14 +93,12 @@ func (c *tcpStatCollector) Update(ch chan<- prometheus.Metric) (err error) {
 	}
 
 	for st, value := range tcpStats {
-		c.metric.WithLabelValues(st.String()).Set(value)
+		ch <- c.desc.mustNewConstMetric(value, st.String())
 	}
-
-	c.metric.Collect(ch)
-	return err
+	return nil
 }
 
-func getTCPStats(statsFile string) (map[TCPConnectionState]float64, error) {
+func getTCPStats(statsFile string) (map[tcpConnectionState]float64, error) {
 	file, err := os.Open(statsFile)
 	if err != nil {
 		return nil, err
@@ -102,9 +108,9 @@ func getTCPStats(statsFile string) (map[TCPConnectionState]float64, error) {
 	return parseTCPStats(file)
 }
 
-func parseTCPStats(r io.Reader) (map[TCPConnectionState]float64, error) {
+func parseTCPStats(r io.Reader) (map[tcpConnectionState]float64, error) {
 	var (
-		tcpStats = map[TCPConnectionState]float64{}
+		tcpStats = map[tcpConnectionState]float64{}
 		scanner  = bufio.NewScanner(r)
 	)
 
@@ -121,35 +127,35 @@ func parseTCPStats(r io.Reader) (map[TCPConnectionState]float64, error) {
 			return nil, err
 		}
 
-		tcpStats[TCPConnectionState(st)]++
+		tcpStats[tcpConnectionState(st)]++
 	}
 
-	return tcpStats, nil
+	return tcpStats, scanner.Err()
 }
 
-func (st TCPConnectionState) String() string {
+func (st tcpConnectionState) String() string {
 	switch st {
-	case TCP_ESTABLISHED:
+	case tcpEstablished:
 		return "established"
-	case TCP_SYN_SENT:
+	case tcpSynSent:
 		return "syn_sent"
-	case TCP_SYN_RECV:
+	case tcpSynRecv:
 		return "syn_recv"
-	case TCP_FIN_WAIT1:
+	case tcpFinWait1:
 		return "fin_wait1"
-	case TCP_FIN_WAIT2:
+	case tcpFinWait2:
 		return "fin_wait2"
-	case TCP_TIME_WAIT:
+	case tcpTimeWait:
 		return "time_wait"
-	case TCP_CLOSE:
+	case tcpClose:
 		return "close"
-	case TCP_CLOSE_WAIT:
+	case tcpCloseWait:
 		return "close_wait"
-	case TCP_LAST_ACK:
+	case tcpLastAck:
 		return "last_ack"
-	case TCP_LISTEN:
+	case tcpListen:
 		return "listen"
-	case TCP_CLOSING:
+	case tcpClosing:
 		return "closing"
 	default:
 		return "unknown"

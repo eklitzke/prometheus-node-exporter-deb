@@ -46,8 +46,9 @@ func init() {
 
 var illegalCharsRE = regexp.MustCompile(`[^a-zA-Z0-9_]`)
 
-// Takes a prometheus registry and returns a new Collector scraping ganglia.
+// NewGmondCollector returns a new Collector scraping ganglia.
 func NewGmondCollector() (Collector, error) {
+	warnDeprecated("gmond")
 	c := gmondCollector{
 		metrics: map[string]*prometheus.GaugeVec{},
 	}
@@ -55,7 +56,7 @@ func NewGmondCollector() (Collector, error) {
 	return &c, nil
 }
 
-func (c *gmondCollector) Update(ch chan<- prometheus.Metric) (err error) {
+func (c *gmondCollector) Update(ch chan<- prometheus.Metric) error {
 	conn, err := net.Dial(gangliaProto, gangliaAddress)
 	log.Debugf("gmondCollector Update")
 	if err != nil {

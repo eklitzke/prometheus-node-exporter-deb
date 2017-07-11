@@ -39,7 +39,7 @@ type megaCliCollector struct {
 	cli string
 
 	driveTemperature *prometheus.GaugeVec
-	driveCounters    *prometheus.CounterVec
+	driveCounters    *prometheus.GaugeVec
 	drivePresence    *prometheus.GaugeVec
 }
 
@@ -47,9 +47,10 @@ func init() {
 	Factories["megacli"] = NewMegaCliCollector
 }
 
-// Takes a prometheus registry and returns a new Collector exposing
-// RAID status through megacli.
+// NewMegaCliCollector returns a new Collector exposing RAID status through
+// megacli.
 func NewMegaCliCollector() (Collector, error) {
+	warnDeprecated("megacli")
 	return &megaCliCollector{
 		cli: *megacliCommand,
 		driveTemperature: prometheus.NewGaugeVec(prometheus.GaugeOpts{
@@ -57,7 +58,7 @@ func NewMegaCliCollector() (Collector, error) {
 			Name:      "megacli_drive_temperature_celsius",
 			Help:      "megacli: drive temperature",
 		}, []string{"enclosure", "slot"}),
-		driveCounters: prometheus.NewCounterVec(prometheus.CounterOpts{
+		driveCounters: prometheus.NewGaugeVec(prometheus.GaugeOpts{
 			Namespace: Namespace,
 			Name:      "megacli_drive_count",
 			Help:      "megacli: drive error and event counters",
@@ -70,16 +71,17 @@ func NewMegaCliCollector() (Collector, error) {
 	}, nil
 }
 
-func (c *megaCliCollector) Update(ch chan<- prometheus.Metric) (err error) {
-	err = c.updateAdapter()
-	if err != nil {
+func (c *megaCliCollector) Update(ch chan<- prometheus.Metric) error {
+	if err := c.updateAdapter(); err != nil {
 		return err
 	}
-	err = c.updateDisks()
+	if err := c.updateDisks(); err != nil {
+		return err
+	}
 	c.driveTemperature.Collect(ch)
 	c.driveCounters.Collect(ch)
 	c.drivePresence.Collect(ch)
-	return err
+	return nil
 }
 
 func parseMegaCliDisks(r io.Reader) (map[int]map[int]map[string]string, error) {
@@ -121,7 +123,7 @@ func parseMegaCliDisks(r io.Reader) (map[int]map[int]map[string]string, error) {
 		}
 	}
 
-	return stats, nil
+	return stats, scanner.Err()
 }
 
 func parseMegaCliAdapter(r io.Reader) (map[string]map[string]string, error) {
@@ -154,7 +156,7 @@ func parseMegaCliAdapter(r io.Reader) (map[string]map[string]string, error) {
 
 	}
 
-	return raidStats, nil
+	return raidStats, scanner.Err()
 }
 
 func (c *megaCliCollector) updateAdapter() error {

@@ -26,72 +26,67 @@ import (
 
 const (
 	defIgnoredMountPoints = "^/(sys|proc|dev)($|/)"
-	defIgnoredFSTypes     = "^(sys|proc)fs$"
-	ST_RDONLY             = 0x1
+	defIgnoredFSTypes     = "^(sys|proc|auto)fs$"
+	readOnly              = 0x1 // ST_RDONLY
 )
 
-type filesystemDetails struct {
-	device     string
-	mountPoint string
-	fsType     string
-}
-
-// Expose filesystem fullness.
-func (c *filesystemCollector) GetStats() (stats []filesystemStats, err error) {
-	mpds, err := mountPointDetails()
+// GetStats returns filesystem stats.
+func (c *filesystemCollector) GetStats() ([]filesystemStats, error) {
+	mps, err := mountPointDetails()
 	if err != nil {
 		return nil, err
 	}
-	stats = []filesystemStats{}
-	for _, mpd := range mpds {
-		if c.ignoredMountPointsPattern.MatchString(mpd.mountPoint) {
-			log.Debugf("Ignoring mount point: %s", mpd.mountPoint)
+	stats := []filesystemStats{}
+	for _, labels := range mps {
+		if c.ignoredMountPointsPattern.MatchString(labels.mountPoint) {
+			log.Debugf("Ignoring mount point: %s", labels.mountPoint)
 			continue
 		}
-		if c.ignoredFSTypesPattern.MatchString(mpd.fsType) {
-			log.Debugf("Ignoring fs type: %s", mpd.fsType)
+		if c.ignoredFSTypesPattern.MatchString(labels.fsType) {
+			log.Debugf("Ignoring fs type: %s", labels.fsType)
 			continue
 		}
+		labelValues := []string{labels.device, labels.mountPoint, labels.fsType}
 		buf := new(syscall.Statfs_t)
-		err := syscall.Statfs(mpd.mountPoint, buf)
+		err := syscall.Statfs(labels.mountPoint, buf)
 		if err != nil {
+			c.devErrors.WithLabelValues(labelValues...).Inc()
 			log.Debugf("Statfs on %s returned %s",
-				mpd.mountPoint, err)
+				labels.mountPoint, err)
 			continue
 		}
 
 		var ro float64
-		if buf.Flags&ST_RDONLY != 0 {
+		if (buf.Flags & readOnly) != 0 {
 			ro = 1
 		}
 
-		labelValues := []string{mpd.device, mpd.mountPoint, mpd.fsType}
 		stats = append(stats, filesystemStats{
-			labelValues: labelValues,
-			size:        float64(buf.Blocks) * float64(buf.Bsize),
-			free:        float64(buf.Bfree) * float64(buf.Bsize),
-			avail:       float64(buf.Bavail) * float64(buf.Bsize),
-			files:       float64(buf.Files),
-			filesFree:   float64(buf.Ffree),
-			ro:          ro,
+			labels:    labels,
+			size:      float64(buf.Blocks) * float64(buf.Bsize),
+			free:      float64(buf.Bfree) * float64(buf.Bsize),
+			avail:     float64(buf.Bavail) * float64(buf.Bsize),
+			files:     float64(buf.Files),
+			filesFree: float64(buf.Ffree),
+			ro:        ro,
 		})
 	}
 	return stats, nil
 }
 
-func mountPointDetails() ([]filesystemDetails, error) {
+func mountPointDetails() ([]filesystemLabels, error) {
 	file, err := os.Open(procFilePath("mounts"))
 	if err != nil {
 		return nil, err
 	}
 	defer file.Close()
 
-	filesystems := []filesystemDetails{}
+	filesystems := []filesystemLabels{}
 
 	scanner := bufio.NewScanner(file)
 	for scanner.Scan() {
 		parts := strings.Fields(scanner.Text())
-		filesystems = append(filesystems, filesystemDetails{parts[0], parts[1], parts[2]})
+		filesystems = append(filesystems, filesystemLabels{parts[0], parts[1], parts[2]})
 	}
-	return filesystems, nil
+	return filesystems, scanner.Err()
 }

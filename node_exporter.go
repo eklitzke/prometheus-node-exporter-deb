@@ -25,24 +25,28 @@ import (
 	"time"
 
 	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"github.com/prometheus/common/log"
 	"github.com/prometheus/common/version"
 	"github.com/prometheus/node_exporter/collector"
 )
 
 const (
-	defaultCollectors = "conntrack,cpu,diskstats,entropy,filefd,filesystem,hwmon,loadavg,mdadm,meminfo,netdev,netstat,sockstat,stat,textfile,time,uname,vmstat"
+	defaultCollectors = "conntrack,cpu,diskstats,entropy,edac,exec,filefd,filesystem,hwmon,infiniband,loadavg,mdadm,meminfo,netdev,netstat,sockstat,stat,textfile,time,uname,vmstat,wifi,zfs"
 )
 
 var (
-	scrapeDurations = prometheus.NewSummaryVec(
-		prometheus.SummaryOpts{
-			Namespace: collector.Namespace,
-			Subsystem: "exporter",
-			Name:      "scrape_duration_seconds",
-			Help:      "node_exporter: Duration of a scrape job.",
-		},
-		[]string{"collector", "result"},
+	scrapeDurationDesc = prometheus.NewDesc(
+		prometheus.BuildFQName(collector.Namespace, "scrape", "collector_duration_seconds"),
+		"node_exporter: Duration of a collector scrape.",
+		[]string{"collector"},
+		nil,
+	)
+	scrapeSuccessDesc = prometheus.NewDesc(
+		prometheus.BuildFQName(collector.Namespace, "scrape", "collector_success"),
+		"node_exporter: Whether a collector succeeded.",
+		[]string{"collector"},
+		nil,
 	)
 )
 
@@ -53,7 +57,8 @@ type NodeCollector struct {
 
 // Describe implements the prometheus.Collector interface.
 func (n NodeCollector) Describe(ch chan<- *prometheus.Desc) {
-	scrapeDurations.Describe(ch)
+	ch <- scrapeDurationDesc
+	ch <- scrapeSuccessDesc
 }
 
 // Collect implements the prometheus.Collector interface.
@@ -67,11 +72,10 @@ func (n NodeCollector) Collect(ch chan<- prometheus.Metric) {
 		}(name, c)
 	}
 	wg.Wait()
-	scrapeDurations.Collect(ch)
 }
 
 func filterAvailableCollectors(collectors string) string {
-	availableCollectors := make([]string, 0)
+	var availableCollectors []string
 	for _, c := range strings.Split(collectors, ",") {
 		_, ok := collector.Factories[c]
 		if ok {
@@ -85,16 +89,17 @@ func execute(name string, c collector.Collector, ch chan<- prometheus.Metric) {
 	begin := time.Now()
 	err := c.Update(ch)
 	duration := time.Since(begin)
-	var result string
+	var success float64
 
 	if err != nil {
 		log.Errorf("ERROR: %s collector failed after %fs: %s", name, duration.Seconds(), err)
-		result = "error"
+		success = 0
 	} else {
 		log.Debugf("OK: %s collector succeeded after %fs.", name, duration.Seconds())
-		result = "success"
+		success = 1
 	}
-	scrapeDurations.WithLabelValues(name, result).Observe(duration.Seconds())
+	ch <- prometheus.MustNewConstMetric(scrapeDurationDesc, prometheus.GaugeValue, duration.Seconds(), name)
+	ch <- prometheus.MustNewConstMetric(scrapeSuccessDesc, prometheus.GaugeValue, success, name)
 }
 
 func loadCollectors(list string) (map[string]collector.Collector, error) {
@@ -157,12 +162,17 @@ func main() {
 		log.Infof(" - %s", n)
 	}
 
-	nodeCollector := NodeCollector{collectors: collectors}
-	prometheus.MustRegister(nodeCollector)
+	if err := prometheus.Register(NodeCollector{collectors: collectors}); err != nil {
+		log.Fatalf("Couldn't register collector: %s", err)
+	}
+	handler := promhttp.HandlerFor(prometheus.DefaultGatherer,
+		promhttp.HandlerOpts{
+			ErrorLog:      log.NewErrorLogger(),
+			ErrorHandling: promhttp.ContinueOnError,
+		})
 
-	handler := prometheus.Handler()
-
-	http.Handle(*metricsPath, handler)
+	// TODO(ts): Remove deprecated and problematic InstrumentHandler usage.
+	http.Handle(*metricsPath, prometheus.InstrumentHandler("prometheus", handler))
 	http.HandleFunc("/", func(w http.ResponseWriter, r *http.Request) {
 		w.Write([]byte(`<html>
 			<head><title>Node Exporter</title></head>

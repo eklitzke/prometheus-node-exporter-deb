@@ -1,84 +1,55 @@
 # HELP go_gc_duration_seconds A summary of the GC invocation durations.
 # TYPE go_gc_duration_seconds summary
-go_gc_duration_seconds{quantile="0"} 0
-go_gc_duration_seconds{quantile="0.25"} 0
-go_gc_duration_seconds{quantile="0.5"} 0
-go_gc_duration_seconds{quantile="0.75"} 0
-go_gc_duration_seconds{quantile="1"} 0
-go_gc_duration_seconds_sum 0
-go_gc_duration_seconds_count 0
 # HELP go_goroutines Number of goroutines that currently exist.
 # TYPE go_goroutines gauge
-go_goroutines 13
 # HELP go_memstats_alloc_bytes Number of bytes allocated and still in use.
 # TYPE go_memstats_alloc_bytes gauge
-go_memstats_alloc_bytes 1.236968e+06
 # HELP go_memstats_alloc_bytes_total Total number of bytes allocated, even if freed.
 # TYPE go_memstats_alloc_bytes_total counter
-go_memstats_alloc_bytes_total 1.236968e+06
 # HELP go_memstats_buck_hash_sys_bytes Number of bytes used by the profiling bucket hash table.
 # TYPE go_memstats_buck_hash_sys_bytes gauge
-go_memstats_buck_hash_sys_bytes 2717
 # HELP go_memstats_frees_total Total number of frees.
 # TYPE go_memstats_frees_total counter
-go_memstats_frees_total 265
 # HELP go_memstats_gc_sys_bytes Number of bytes used for garbage collection system metadata.
 # TYPE go_memstats_gc_sys_bytes gauge
-go_memstats_gc_sys_bytes 65536
 # HELP go_memstats_heap_alloc_bytes Number of heap bytes allocated and still in use.
 # TYPE go_memstats_heap_alloc_bytes gauge
-go_memstats_heap_alloc_bytes 1.236968e+06
 # HELP go_memstats_heap_idle_bytes Number of heap bytes waiting to be used.
 # TYPE go_memstats_heap_idle_bytes gauge
-go_memstats_heap_idle_bytes 139264
 # HELP go_memstats_heap_inuse_bytes Number of heap bytes that are in use.
 # TYPE go_memstats_heap_inuse_bytes gauge
-go_memstats_heap_inuse_bytes 1.630208e+06
 # HELP go_memstats_heap_objects Number of allocated objects.
 # TYPE go_memstats_heap_objects gauge
-go_memstats_heap_objects 8119
-# HELP go_memstats_heap_released_bytes_total Total number of heap bytes released to OS.
-# TYPE go_memstats_heap_released_bytes_total counter
-go_memstats_heap_released_bytes_total 0
+# HELP go_memstats_heap_released_bytes Number of heap bytes released to OS.
+# TYPE go_memstats_heap_released_bytes gauge
 # HELP go_memstats_heap_sys_bytes Number of heap bytes obtained from system.
 # TYPE go_memstats_heap_sys_bytes gauge
-go_memstats_heap_sys_bytes 1.769472e+06
 # HELP go_memstats_last_gc_time_seconds Number of seconds since 1970 of last garbage collection.
 # TYPE go_memstats_last_gc_time_seconds gauge
-go_memstats_last_gc_time_seconds 9
 # HELP go_memstats_lookups_total Total number of pointer lookups.
 # TYPE go_memstats_lookups_total counter
-go_memstats_lookups_total 9
 # HELP go_memstats_mallocs_total Total number of mallocs.
 # TYPE go_memstats_mallocs_total counter
-go_memstats_mallocs_total 8384
 # HELP go_memstats_mcache_inuse_bytes Number of bytes in use by mcache structures.
 # TYPE go_memstats_mcache_inuse_bytes gauge
-go_memstats_mcache_inuse_bytes 9600
 # HELP go_memstats_mcache_sys_bytes Number of bytes used for mcache structures obtained from system.
 # TYPE go_memstats_mcache_sys_bytes gauge
-go_memstats_mcache_sys_bytes 16384
 # HELP go_memstats_mspan_inuse_bytes Number of bytes in use by mspan structures.
 # TYPE go_memstats_mspan_inuse_bytes gauge
-go_memstats_mspan_inuse_bytes 16080
 # HELP go_memstats_mspan_sys_bytes Number of bytes used for mspan structures obtained from system.
 # TYPE go_memstats_mspan_sys_bytes gauge
-go_memstats_mspan_sys_bytes 16384
 # HELP go_memstats_next_gc_bytes Number of heap bytes when next garbage collection will take place.
 # TYPE go_memstats_next_gc_bytes gauge
-go_memstats_next_gc_bytes 4.194304e+06
 # HELP go_memstats_other_sys_bytes Number of bytes used for other system allocations.
 # TYPE go_memstats_other_sys_bytes gauge
-go_memstats_other_sys_bytes 558435
 # HELP go_memstats_stack_inuse_bytes Number of bytes in use by the stack allocator.
 # TYPE go_memstats_stack_inuse_bytes gauge
-go_memstats_stack_inuse_bytes 327680
 # HELP go_memstats_stack_sys_bytes Number of bytes obtained from system for stack allocator.
 # TYPE go_memstats_stack_sys_bytes gauge
-go_memstats_stack_sys_bytes 327680
-# HELP go_memstats_sys_bytes Number of bytes obtained by system. Sum of all system allocations.
+# HELP go_memstats_sys_bytes Number of bytes obtained from system.
 # TYPE go_memstats_sys_bytes gauge
-go_memstats_sys_bytes 2.756608e+06
+# HELP go_threads Number of OS threads created
+# TYPE go_threads gauge
 # HELP http_request_duration_microseconds The HTTP request latencies in microseconds.
 # TYPE http_request_duration_microseconds summary
 http_request_duration_microseconds{handler="prometheus",quantile="0.5"} NaN
@@ -100,9 +71,54 @@ http_response_size_bytes{handler="prometheus",quantile="0.9"} NaN
 http_response_size_bytes{handler="prometheus",quantile="0.99"} NaN
 http_response_size_bytes_sum{handler="prometheus"} 0
 http_response_size_bytes_count{handler="prometheus"} 0
+# HELP node_bonding_active Number of active slaves per bonding interface.
+# TYPE node_bonding_active gauge
+node_bonding_active{master="bond0"} 0
+node_bonding_active{master="dmz"} 2
+node_bonding_active{master="int"} 1
+# HELP node_bonding_slaves Number of configured slaves per bonding interface.
+# TYPE node_bonding_slaves gauge
+node_bonding_slaves{master="bond0"} 0
+node_bonding_slaves{master="dmz"} 2
+node_bonding_slaves{master="int"} 2
 # HELP node_boot_time Node boot time, in unixtime.
 # TYPE node_boot_time gauge
 node_boot_time 1.418183276e+09
+# HELP node_buddyinfo_count Count of free blocks according to size.
+# TYPE node_buddyinfo_count gauge
+node_buddyinfo_count{node="0",size="0",zone="DMA"} 1
+node_buddyinfo_count{node="0",size="0",zone="DMA32"} 759
+node_buddyinfo_count{node="0",size="0",zone="Normal"} 4381
+node_buddyinfo_count{node="0",size="1",zone="DMA"} 0
+node_buddyinfo_count{node="0",size="1",zone="DMA32"} 572
+node_buddyinfo_count{node="0",size="1",zone="Normal"} 1093
+node_buddyinfo_count{node="0",size="10",zone="DMA"} 3
+node_buddyinfo_count{node="0",size="10",zone="DMA32"} 0
+node_buddyinfo_count{node="0",size="10",zone="Normal"} 0
+node_buddyinfo_count{node="0",size="2",zone="DMA"} 1
+node_buddyinfo_count{node="0",size="2",zone="DMA32"} 791
+node_buddyinfo_count{node="0",size="2",zone="Normal"} 185
+node_buddyinfo_count{node="0",size="3",zone="DMA"} 0
+node_buddyinfo_count{node="0",size="3",zone="DMA32"} 475
+node_buddyinfo_count{node="0",size="3",zone="Normal"} 1530
+node_buddyinfo_count{node="0",size="4",zone="DMA"} 2
+node_buddyinfo_count{node="0",size="4",zone="DMA32"} 194
+node_buddyinfo_count{node="0",size="4",zone="Normal"} 567
+node_buddyinfo_count{node="0",size="5",zone="DMA"} 1
+node_buddyinfo_count{node="0",size="5",zone="DMA32"} 45
+node_buddyinfo_count{node="0",size="5",zone="Normal"} 102
+node_buddyinfo_count{node="0",size="6",zone="DMA"} 1
+node_buddyinfo_count{node="0",size="6",zone="DMA32"} 12
+node_buddyinfo_count{node="0",size="6",zone="Normal"} 4
+node_buddyinfo_count{node="0",size="7",zone="DMA"} 0
+node_buddyinfo_count{node="0",size="7",zone="DMA32"} 0
+node_buddyinfo_count{node="0",size="7",zone="Normal"} 0
+node_buddyinfo_count{node="0",size="8",zone="DMA"} 1
+node_buddyinfo_count{node="0",size="8",zone="DMA32"} 0
+node_buddyinfo_count{node="0",size="8",zone="Normal"} 0
+node_buddyinfo_count{node="0",size="9",zone="DMA"} 1
+node_buddyinfo_count{node="0",size="9",zone="DMA32"} 0
+node_buddyinfo_count{node="0",size="9",zone="Normal"} 0
 # HELP node_context_switches Total number of context switches.
 # TYPE node_context_switches counter
 node_context_switches 3.8014093e+07
@@ -225,7 +241,7 @@ node_disk_io_now{device="nvme0n1"} 0
 node_disk_io_now{device="sda"} 0
 node_disk_io_now{device="sr0"} 0
 node_disk_io_now{device="vda"} 0
-# HELP node_disk_io_time_ms Milliseconds spent doing I/Os.
+# HELP node_disk_io_time_ms Total Milliseconds spent doing I/Os.
 # TYPE node_disk_io_time_ms counter
 node_disk_io_time_ms{device="dm-0"} 1.1325968e+07
 node_disk_io_time_ms{device="dm-1"} 76
@@ -285,7 +301,7 @@ node_disk_reads_completed{device="nvme0n1"} 47114
 node_disk_reads_completed{device="sda"} 2.5354637e+07
 node_disk_reads_completed{device="sr0"} 0
 node_disk_reads_completed{device="vda"} 1.775784e+06
-# HELP node_disk_reads_merged The number of reads merged. See https://www.kernel.org/doc/Documentation/iostats.txt.
+# HELP node_disk_reads_merged The total number of reads merged. See https://www.kernel.org/doc/Documentation/iostats.txt.
 # TYPE node_disk_reads_merged counter
 node_disk_reads_merged{device="dm-0"} 0
 node_disk_reads_merged{device="dm-1"} 0
@@ -375,99 +391,72 @@ node_disk_writes_merged{device="nvme0n1"} 43950
 node_disk_writes_merged{device="sda"} 1.1134226e+07
 node_disk_writes_merged{device="sr0"} 0
 node_disk_writes_merged{device="vda"} 2.0711856e+07
+# HELP node_drbd_activitylog_writes_total Number of updates of the activity log area of the meta data.
+# TYPE node_drbd_activitylog_writes_total counter
+node_drbd_activitylog_writes_total{device="drbd1"} 1100
+# HELP node_drbd_application_pending Number of block I/O requests forwarded to DRBD, but not yet answered by DRBD.
+# TYPE node_drbd_application_pending gauge
+node_drbd_application_pending{device="drbd1"} 12348
+# HELP node_drbd_bitmap_writes_total Number of updates of the bitmap area of the meta data.
+# TYPE node_drbd_bitmap_writes_total counter
+node_drbd_bitmap_writes_total{device="drbd1"} 221
+# HELP node_drbd_connected Whether DRBD is connected to the peer.
+# TYPE node_drbd_connected gauge
+node_drbd_connected{device="drbd1"} 1
+# HELP node_drbd_disk_read_bytes_total Net data read from local hard disk; in bytes.
+# TYPE node_drbd_disk_read_bytes_total counter
+node_drbd_disk_read_bytes_total{device="drbd1"} 1.2154539008e+11
+# HELP node_drbd_disk_state_is_up_to_date Whether the disk of the node is up to date.
+# TYPE node_drbd_disk_state_is_up_to_date gauge
+node_drbd_disk_state_is_up_to_date{device="drbd1",node="local"} 1
+node_drbd_disk_state_is_up_to_date{device="drbd1",node="remote"} 1
+# HELP node_drbd_disk_written_bytes_total Net data written on local hard disk; in bytes.
+# TYPE node_drbd_disk_written_bytes_total counter
+node_drbd_disk_written_bytes_total{device="drbd1"} 2.8941845504e+10
+# HELP node_drbd_epochs Number of Epochs currently on the fly.
+# TYPE node_drbd_epochs gauge
+node_drbd_epochs{device="drbd1"} 1
+# HELP node_drbd_local_pending Number of open requests to the local I/O sub-system.
+# TYPE node_drbd_local_pending gauge
+node_drbd_local_pending{device="drbd1"} 12345
+# HELP node_drbd_network_received_bytes_total Total number of bytes received via the network.
+# TYPE node_drbd_network_received_bytes_total counter
+node_drbd_network_received_bytes_total{device="drbd1"} 1.0961011e+07
+# HELP node_drbd_network_sent_bytes_total Total number of bytes sent via the network.
+# TYPE node_drbd_network_sent_bytes_total counter
+node_drbd_network_sent_bytes_total{device="drbd1"} 1.7740228608e+10
+# HELP node_drbd_node_role_is_primary Whether the role of the node is in the primary state.
+# TYPE node_drbd_node_role_is_primary gauge
+node_drbd_node_role_is_primary{device="drbd1",node="local"} 1
+node_drbd_node_role_is_primary{device="drbd1",node="remote"} 1
+# HELP node_drbd_out_of_sync_bytes Amount of data known to be out of sync; in bytes.
+# TYPE node_drbd_out_of_sync_bytes gauge
+node_drbd_out_of_sync_bytes{device="drbd1"} 1.2645376e+07
+# HELP node_drbd_remote_pending Number of requests sent to the peer, but that have not yet been answered by the latter.
+# TYPE node_drbd_remote_pending gauge
+node_drbd_remote_pending{device="drbd1"} 12346
+# HELP node_drbd_remote_unacknowledged Number of requests received by the peer via the network connection, but that have not yet been answered.
+# TYPE node_drbd_remote_unacknowledged gauge
+node_drbd_remote_unacknowledged{device="drbd1"} 12347
+# HELP node_edac_correctable_errors_total Total correctable memory errors.
+# TYPE node_edac_correctable_errors_total counter
+node_edac_correctable_errors_total{controller="0"} 1
+# HELP node_edac_csrow_correctable_errors_total Total correctable memory errors for this csrow.
+# TYPE node_edac_csrow_correctable_errors_total counter
+node_edac_csrow_correctable_errors_total{controller="0",csrow="0"} 3
+node_edac_csrow_correctable_errors_total{controller="0",csrow="unknown"} 2
+# HELP node_edac_csrow_uncorrectable_errors_total Total uncorrectable memory errors for this csrow.
+# TYPE node_edac_csrow_uncorrectable_errors_total counter
+node_edac_csrow_uncorrectable_errors_total{controller="0",csrow="0"} 4
+node_edac_csrow_uncorrectable_errors_total{controller="0",csrow="uknown"} 6
+# HELP node_edac_uncorrectable_errors_total Total uncorrectable memory errors.
+# TYPE node_edac_uncorrectable_errors_total counter
+node_edac_uncorrectable_errors_total{controller="0"} 5
 # HELP node_entropy_available_bits Bits of available entropy.
 # TYPE node_entropy_available_bits gauge
 node_entropy_available_bits 1337
 # HELP node_exporter_build_info A metric with a constant '1' value labeled by version, revision, branch, and goversion from which node_exporter was built.
 # TYPE node_exporter_build_info gauge
-node_exporter_build_info{branch="",goversion="go1.6.2",revision="",version=""} 1
-# HELP node_exporter_scrape_duration_seconds node_exporter: Duration of a scrape job.
-# TYPE node_exporter_scrape_duration_seconds summary
-node_exporter_scrape_duration_seconds{collector="bonding",result="success",quantile="0.5"} 0.00016681900000000002
-node_exporter_scrape_duration_seconds{collector="bonding",result="success",quantile="0.9"} 0.00016681900000000002
-node_exporter_scrape_duration_seconds{collector="bonding",result="success",quantile="0.99"} 0.00016681900000000002
-node_exporter_scrape_duration_seconds_sum{collector="bonding",result="success"} 0.00016681900000000002
-node_exporter_scrape_duration_seconds_count{collector="bonding",result="success"} 1
-node_exporter_scrape_duration_seconds{collector="conntrack",result="success",quantile="0.5"} 7.791e-05
-node_exporter_scrape_duration_seconds{collector="conntrack",result="success",quantile="0.9"} 7.791e-05
-node_exporter_scrape_duration_seconds{collector="conntrack",result="success",quantile="0.99"} 7.791e-05
-node_exporter_scrape_duration_seconds_sum{collector="conntrack",result="success"} 7.791e-05
-node_exporter_scrape_duration_seconds_count{collector="conntrack",result="success"} 1
-node_exporter_scrape_duration_seconds{collector="diskstats",result="success",quantile="0.5"} 0.005133268000000001
-node_exporter_scrape_duration_seconds{collector="diskstats",result="success",quantile="0.9"} 0.005133268000000001
-node_exporter_scrape_duration_seconds{collector="diskstats",result="success",quantile="0.99"} 0.005133268000000001
-node_exporter_scrape_duration_seconds_sum{collector="diskstats",result="success"} 0.005133268000000001
-node_exporter_scrape_duration_seconds_count{collector="diskstats",result="success"} 1
-node_exporter_scrape_duration_seconds{collector="entropy",result="success",quantile="0.5"} 0.000170072
-node_exporter_scrape_duration_seconds{collector="entropy",result="success",quantile="0.9"} 0.000170072
-node_exporter_scrape_duration_seconds{collector="entropy",result="success",quantile="0.99"} 0.000170072
-node_exporter_scrape_duration_seconds_sum{collector="entropy",result="success"} 0.000170072
-node_exporter_scrape_duration_seconds_count{collector="entropy",result="success"} 1
-node_exporter_scrape_duration_seconds{collector="filefd",result="success",quantile="0.5"} 8.825900000000001e-05
-node_exporter_scrape_duration_seconds{collector="filefd",result="success",quantile="0.9"} 8.825900000000001e-05
-node_exporter_scrape_duration_seconds{collector="filefd",result="success",quantile="0.99"} 8.825900000000001e-05
-node_exporter_scrape_duration_seconds_sum{collector="filefd",result="success"} 8.825900000000001e-05
-node_exporter_scrape_duration_seconds_count{collector="filefd",result="success"} 1
-node_exporter_scrape_duration_seconds{collector="hwmon",result="success",quantile="0.5"} 0.0076871280000000005
-node_exporter_scrape_duration_seconds{collector="hwmon",result="success",quantile="0.9"} 0.0076871280000000005
-node_exporter_scrape_duration_seconds{collector="hwmon",result="success",quantile="0.99"} 0.0076871280000000005
-node_exporter_scrape_duration_seconds_sum{collector="hwmon",result="success"} 0.0076871280000000005
-node_exporter_scrape_duration_seconds_count{collector="hwmon",result="success"} 1
-node_exporter_scrape_duration_seconds{collector="ksmd",result="success",quantile="0.5"} 0.001088926
-node_exporter_scrape_duration_seconds{collector="ksmd",result="success",quantile="0.9"} 0.001088926
-node_exporter_scrape_duration_seconds{collector="ksmd",result="success",quantile="0.99"} 0.001088926
-node_exporter_scrape_duration_seconds_sum{collector="ksmd",result="success"} 0.001088926
-node_exporter_scrape_duration_seconds_count{collector="ksmd",result="success"} 1
-node_exporter_scrape_duration_seconds{collector="loadavg",result="success",quantile="0.5"} 0.000189222
-node_exporter_scrape_duration_seconds{collector="loadavg",result="success",quantile="0.9"} 0.000189222
-node_exporter_scrape_duration_seconds{collector="loadavg",result="success",quantile="0.99"} 0.000189222
-node_exporter_scrape_duration_seconds_sum{collector="loadavg",result="success"} 0.000189222
-node_exporter_scrape_duration_seconds_count{collector="loadavg",result="success"} 1
-node_exporter_scrape_duration_seconds{collector="mdadm",result="success",quantile="0.5"} 0.0030327270000000003
-node_exporter_scrape_duration_seconds{collector="mdadm",result="success",quantile="0.9"} 0.0030327270000000003
-node_exporter_scrape_duration_seconds{collector="mdadm",result="success",quantile="0.99"} 0.0030327270000000003
-node_exporter_scrape_duration_seconds_sum{collector="mdadm",result="success"} 0.0030327270000000003
-node_exporter_scrape_duration_seconds_count{collector="mdadm",result="success"} 1
-node_exporter_scrape_duration_seconds{collector="megacli",result="success",quantile="0.5"} 0.010434629
-node_exporter_scrape_duration_seconds{collector="megacli",result="success",quantile="0.9"} 0.010434629
-node_exporter_scrape_duration_seconds{collector="megacli",result="success",quantile="0.99"} 0.010434629
-node_exporter_scrape_duration_seconds_sum{collector="megacli",result="success"} 0.010434629
-node_exporter_scrape_duration_seconds_count{collector="megacli",result="success"} 1
-node_exporter_scrape_duration_seconds{collector="meminfo",result="success",quantile="0.5"} 0.000966604
-node_exporter_scrape_duration_seconds{collector="meminfo",result="success",quantile="0.9"} 0.000966604
-node_exporter_scrape_duration_seconds{collector="meminfo",result="success",quantile="0.99"} 0.000966604
-node_exporter_scrape_duration_seconds_sum{collector="meminfo",result="success"} 0.000966604
-node_exporter_scrape_duration_seconds_count{collector="meminfo",result="success"} 1
-node_exporter_scrape_duration_seconds{collector="meminfo_numa",result="success",quantile="0.5"} 0.0017954980000000002
-node_exporter_scrape_duration_seconds{collector="meminfo_numa",result="success",quantile="0.9"} 0.0017954980000000002
-node_exporter_scrape_duration_seconds{collector="meminfo_numa",result="success",quantile="0.99"} 0.0017954980000000002
-node_exporter_scrape_duration_seconds_sum{collector="meminfo_numa",result="success"} 0.0017954980000000002
-node_exporter_scrape_duration_seconds_count{collector="meminfo_numa",result="success"} 1
-node_exporter_scrape_duration_seconds{collector="netdev",result="success",quantile="0.5"} 0.000495389
-node_exporter_scrape_duration_seconds{collector="netdev",result="success",quantile="0.9"} 0.000495389
-node_exporter_scrape_duration_seconds{collector="netdev",result="success",quantile="0.99"} 0.000495389
-node_exporter_scrape_duration_seconds_sum{collector="netdev",result="success"} 0.000495389
-node_exporter_scrape_duration_seconds_count{collector="netdev",result="success"} 1
-node_exporter_scrape_duration_seconds{collector="netstat",result="success",quantile="0.5"} 0.004669412
-node_exporter_scrape_duration_seconds{collector="netstat",result="success",quantile="0.9"} 0.004669412
-node_exporter_scrape_duration_seconds{collector="netstat",result="success",quantile="0.99"} 0.004669412
-node_exporter_scrape_duration_seconds_sum{collector="netstat",result="success"} 0.004669412
-node_exporter_scrape_duration_seconds_count{collector="netstat",result="success"} 1
-node_exporter_scrape_duration_seconds{collector="sockstat",result="success",quantile="0.5"} 0.000185951
-node_exporter_scrape_duration_seconds{collector="sockstat",result="success",quantile="0.9"} 0.000185951
-node_exporter_scrape_duration_seconds{collector="sockstat",result="success",quantile="0.99"} 0.000185951
-node_exporter_scrape_duration_seconds_sum{collector="sockstat",result="success"} 0.000185951
-node_exporter_scrape_duration_seconds_count{collector="sockstat",result="success"} 1
-node_exporter_scrape_duration_seconds{collector="stat",result="success",quantile="0.5"} 0.00029448200000000004
-node_exporter_scrape_duration_seconds{collector="stat",result="success",quantile="0.9"} 0.00029448200000000004
-node_exporter_scrape_duration_seconds{collector="stat",result="success",quantile="0.99"} 0.00029448200000000004
-node_exporter_scrape_duration_seconds_sum{collector="stat",result="success"} 0.00029448200000000004
-node_exporter_scrape_duration_seconds_count{collector="stat",result="success"} 1
-node_exporter_scrape_duration_seconds{collector="textfile",result="success",quantile="0.5"} 5.180000000000001e-07
-node_exporter_scrape_duration_seconds{collector="textfile",result="success",quantile="0.9"} 5.180000000000001e-07
-node_exporter_scrape_duration_seconds{collector="textfile",result="success",quantile="0.99"} 5.180000000000001e-07
-node_exporter_scrape_duration_seconds_sum{collector="textfile",result="success"} 5.180000000000001e-07
-node_exporter_scrape_duration_seconds_count{collector="textfile",result="success"} 1
 # HELP node_filefd_allocated File descriptor statistics: allocated.
 # TYPE node_filefd_allocated gauge
 node_filefd_allocated 1024
@@ -477,6 +466,11 @@ node_filefd_maximum 1.631329e+06
 # HELP node_forks Total number of forks.
 # TYPE node_forks counter
 node_forks 26442
+# HELP node_hwmon_chip_names Annotation metric for human-readable chip names
+# TYPE node_hwmon_chip_names gauge
+node_hwmon_chip_names{chip="nct6779",chip_name="nct6779"} 1
+node_hwmon_chip_names{chip="platform_coretemp_0",chip_name="coretemp"} 1
+node_hwmon_chip_names{chip="platform_coretemp_1",chip_name="coretemp"} 1
 # HELP node_hwmon_fan_alarm Hardware sensor alarm status (fan)
 # TYPE node_hwmon_fan_alarm gauge
 node_hwmon_fan_alarm{chip="nct6779",sensor="fan2"} 0
@@ -485,29 +479,29 @@ node_hwmon_fan_alarm{chip="nct6779",sensor="fan2"} 0
 node_hwmon_fan_beep_enabled{chip="nct6779",sensor="fan2"} 0
 # HELP node_hwmon_fan_manual Hardware monitor fan element manual
 # TYPE node_hwmon_fan_manual gauge
-node_hwmon_fan_manual{chip="platform_applesmc_768",sensor="left_side"} 0
-node_hwmon_fan_manual{chip="platform_applesmc_768",sensor="right_side"} 0
+node_hwmon_fan_manual{chip="platform_applesmc_768",sensor="fan1"} 0
+node_hwmon_fan_manual{chip="platform_applesmc_768",sensor="fan2"} 0
 # HELP node_hwmon_fan_max_rpm Hardware monitor for fan revolutions per minute (max)
 # TYPE node_hwmon_fan_max_rpm gauge
-node_hwmon_fan_max_rpm{chip="platform_applesmc_768",sensor="left_side"} 6156
-node_hwmon_fan_max_rpm{chip="platform_applesmc_768",sensor="right_side"} 5700
+node_hwmon_fan_max_rpm{chip="platform_applesmc_768",sensor="fan1"} 6156
+node_hwmon_fan_max_rpm{chip="platform_applesmc_768",sensor="fan2"} 5700
 # HELP node_hwmon_fan_min_rpm Hardware monitor for fan revolutions per minute (min)
 # TYPE node_hwmon_fan_min_rpm gauge
 node_hwmon_fan_min_rpm{chip="nct6779",sensor="fan2"} 0
-node_hwmon_fan_min_rpm{chip="platform_applesmc_768",sensor="left_side"} 2160
-node_hwmon_fan_min_rpm{chip="platform_applesmc_768",sensor="right_side"} 2000
+node_hwmon_fan_min_rpm{chip="platform_applesmc_768",sensor="fan1"} 2160
+node_hwmon_fan_min_rpm{chip="platform_applesmc_768",sensor="fan2"} 2000
 # HELP node_hwmon_fan_output Hardware monitor fan element output
 # TYPE node_hwmon_fan_output gauge
-node_hwmon_fan_output{chip="platform_applesmc_768",sensor="left_side"} 2160
-node_hwmon_fan_output{chip="platform_applesmc_768",sensor="right_side"} 2000
+node_hwmon_fan_output{chip="platform_applesmc_768",sensor="fan1"} 2160
+node_hwmon_fan_output{chip="platform_applesmc_768",sensor="fan2"} 2000
 # HELP node_hwmon_fan_pulses Hardware monitor fan element pulses
 # TYPE node_hwmon_fan_pulses gauge
 node_hwmon_fan_pulses{chip="nct6779",sensor="fan2"} 2
 # HELP node_hwmon_fan_rpm Hardware monitor for fan revolutions per minute (input)
 # TYPE node_hwmon_fan_rpm gauge
 node_hwmon_fan_rpm{chip="nct6779",sensor="fan2"} 1098
-node_hwmon_fan_rpm{chip="platform_applesmc_768",sensor="left_side"} 0
-node_hwmon_fan_rpm{chip="platform_applesmc_768",sensor="right_side"} 1998
+node_hwmon_fan_rpm{chip="platform_applesmc_768",sensor="fan1"} 0
+node_hwmon_fan_rpm{chip="platform_applesmc_768",sensor="fan2"} 1998
 # HELP node_hwmon_fan_target_rpm Hardware monitor for fan revolutions per minute (target)
 # TYPE node_hwmon_fan_target_rpm gauge
 node_hwmon_fan_target_rpm{chip="nct6779",sensor="fan2"} 27000
@@ -623,54 +617,142 @@ node_hwmon_pwm_weight_temp_step_base{chip="nct6779",sensor="pwm1"} 0
 # HELP node_hwmon_pwm_weight_temp_step_tol Hardware monitor pwm element weight_temp_step_tol
 # TYPE node_hwmon_pwm_weight_temp_step_tol gauge
 node_hwmon_pwm_weight_temp_step_tol{chip="nct6779",sensor="pwm1"} 0
+# HELP node_hwmon_sensor_label Label for given chip and sensor
+# TYPE node_hwmon_sensor_label gauge
+node_hwmon_sensor_label{chip="hwmon4",label="foosensor",sensor="temp1"} 1
+node_hwmon_sensor_label{chip="hwmon4",label="foosensor",sensor="temp2"} 1
+node_hwmon_sensor_label{chip="platform_applesmc_768",label="left_side",sensor="fan1"} 1
+node_hwmon_sensor_label{chip="platform_applesmc_768",label="right_side",sensor="fan2"} 1
+node_hwmon_sensor_label{chip="platform_coretemp_0",label="core_0",sensor="temp2"} 1
+node_hwmon_sensor_label{chip="platform_coretemp_0",label="core_1",sensor="temp3"} 1
+node_hwmon_sensor_label{chip="platform_coretemp_0",label="core_2",sensor="temp4"} 1
+node_hwmon_sensor_label{chip="platform_coretemp_0",label="core_3",sensor="temp5"} 1
+node_hwmon_sensor_label{chip="platform_coretemp_0",label="physical_id_0",sensor="temp1"} 1
+node_hwmon_sensor_label{chip="platform_coretemp_1",label="core_0",sensor="temp2"} 1
+node_hwmon_sensor_label{chip="platform_coretemp_1",label="core_1",sensor="temp3"} 1
+node_hwmon_sensor_label{chip="platform_coretemp_1",label="core_2",sensor="temp4"} 1
+node_hwmon_sensor_label{chip="platform_coretemp_1",label="core_3",sensor="temp5"} 1
+node_hwmon_sensor_label{chip="platform_coretemp_1",label="physical_id_0",sensor="temp1"} 1
 # HELP node_hwmon_temp_celsius Hardware monitor for temperature (input)
 # TYPE node_hwmon_temp_celsius gauge
-node_hwmon_temp_celsius{chip="platform_coretemp_0",sensor="core_0"} 54
-node_hwmon_temp_celsius{chip="platform_coretemp_0",sensor="core_1"} 52
-node_hwmon_temp_celsius{chip="platform_coretemp_0",sensor="core_2"} 53
-node_hwmon_temp_celsius{chip="platform_coretemp_0",sensor="core_3"} 50
-node_hwmon_temp_celsius{chip="platform_coretemp_0",sensor="physical_id_0"} 55
-node_hwmon_temp_celsius{chip="platform_coretemp_1",sensor="core_0"} 54
-node_hwmon_temp_celsius{chip="platform_coretemp_1",sensor="core_1"} 52
-node_hwmon_temp_celsius{chip="platform_coretemp_1",sensor="core_2"} 53
-node_hwmon_temp_celsius{chip="platform_coretemp_1",sensor="core_3"} 50
-node_hwmon_temp_celsius{chip="platform_coretemp_1",sensor="physical_id_0"} 55
+node_hwmon_temp_celsius{chip="hwmon4",sensor="temp1"} 55
+node_hwmon_temp_celsius{chip="hwmon4",sensor="temp2"} 54
+node_hwmon_temp_celsius{chip="platform_coretemp_0",sensor="temp1"} 55
+node_hwmon_temp_celsius{chip="platform_coretemp_0",sensor="temp2"} 54
+node_hwmon_temp_celsius{chip="platform_coretemp_0",sensor="temp3"} 52
+node_hwmon_temp_celsius{chip="platform_coretemp_0",sensor="temp4"} 53
+node_hwmon_temp_celsius{chip="platform_coretemp_0",sensor="temp5"} 50
+node_hwmon_temp_celsius{chip="platform_coretemp_1",sensor="temp1"} 55
+node_hwmon_temp_celsius{chip="platform_coretemp_1",sensor="temp2"} 54
+node_hwmon_temp_celsius{chip="platform_coretemp_1",sensor="temp3"} 52
+node_hwmon_temp_celsius{chip="platform_coretemp_1",sensor="temp4"} 53
+node_hwmon_temp_celsius{chip="platform_coretemp_1",sensor="temp5"} 50
 # HELP node_hwmon_temp_crit_alarm_celsius Hardware monitor for temperature (crit_alarm)
 # TYPE node_hwmon_temp_crit_alarm_celsius gauge
-node_hwmon_temp_crit_alarm_celsius{chip="platform_coretemp_0",sensor="core_0"} 0
-node_hwmon_temp_crit_alarm_celsius{chip="platform_coretemp_0",sensor="core_1"} 0
-node_hwmon_temp_crit_alarm_celsius{chip="platform_coretemp_0",sensor="core_2"} 0
-node_hwmon_temp_crit_alarm_celsius{chip="platform_coretemp_0",sensor="core_3"} 0
-node_hwmon_temp_crit_alarm_celsius{chip="platform_coretemp_0",sensor="physical_id_0"} 0
-node_hwmon_temp_crit_alarm_celsius{chip="platform_coretemp_1",sensor="core_0"} 0
-node_hwmon_temp_crit_alarm_celsius{chip="platform_coretemp_1",sensor="core_1"} 0
-node_hwmon_temp_crit_alarm_celsius{chip="platform_coretemp_1",sensor="core_2"} 0
-node_hwmon_temp_crit_alarm_celsius{chip="platform_coretemp_1",sensor="core_3"} 0
-node_hwmon_temp_crit_alarm_celsius{chip="platform_coretemp_1",sensor="physical_id_0"} 0
+node_hwmon_temp_crit_alarm_celsius{chip="hwmon4",sensor="temp1"} 0
+node_hwmon_temp_crit_alarm_celsius{chip="hwmon4",sensor="temp2"} 0
+node_hwmon_temp_crit_alarm_celsius{chip="platform_coretemp_0",sensor="temp1"} 0
+node_hwmon_temp_crit_alarm_celsius{chip="platform_coretemp_0",sensor="temp2"} 0
+node_hwmon_temp_crit_alarm_celsius{chip="platform_coretemp_0",sensor="temp3"} 0
+node_hwmon_temp_crit_alarm_celsius{chip="platform_coretemp_0",sensor="temp4"} 0
+node_hwmon_temp_crit_alarm_celsius{chip="platform_coretemp_0",sensor="temp5"} 0
+node_hwmon_temp_crit_alarm_celsius{chip="platform_coretemp_1",sensor="temp1"} 0
+node_hwmon_temp_crit_alarm_celsius{chip="platform_coretemp_1",sensor="temp2"} 0
+node_hwmon_temp_crit_alarm_celsius{chip="platform_coretemp_1",sensor="temp3"} 0
+node_hwmon_temp_crit_alarm_celsius{chip="platform_coretemp_1",sensor="temp4"} 0
+node_hwmon_temp_crit_alarm_celsius{chip="platform_coretemp_1",sensor="temp5"} 0
 # HELP node_hwmon_temp_crit_celsius Hardware monitor for temperature (crit)
 # TYPE node_hwmon_temp_crit_celsius gauge
-node_hwmon_temp_crit_celsius{chip="platform_coretemp_0",sensor="core_0"} 100
-node_hwmon_temp_crit_celsius{chip="platform_coretemp_0",sensor="core_1"} 100
-node_hwmon_temp_crit_celsius{chip="platform_coretemp_0",sensor="core_2"} 100
-node_hwmon_temp_crit_celsius{chip="platform_coretemp_0",sensor="core_3"} 100
-node_hwmon_temp_crit_celsius{chip="platform_coretemp_0",sensor="physical_id_0"} 100
-node_hwmon_temp_crit_celsius{chip="platform_coretemp_1",sensor="core_0"} 100
-node_hwmon_temp_crit_celsius{chip="platform_coretemp_1",sensor="core_1"} 100
-node_hwmon_temp_crit_celsius{chip="platform_coretemp_1",sensor="core_2"} 100
-node_hwmon_temp_crit_celsius{chip="platform_coretemp_1",sensor="core_3"} 100
-node_hwmon_temp_crit_celsius{chip="platform_coretemp_1",sensor="physical_id_0"} 100
+node_hwmon_temp_crit_celsius{chip="hwmon4",sensor="temp1"} 100
+node_hwmon_temp_crit_celsius{chip="hwmon4",sensor="temp2"} 100
+node_hwmon_temp_crit_celsius{chip="platform_coretemp_0",sensor="temp1"} 100
+node_hwmon_temp_crit_celsius{chip="platform_coretemp_0",sensor="temp2"} 100
+node_hwmon_temp_crit_celsius{chip="platform_coretemp_0",sensor="temp3"} 100
+node_hwmon_temp_crit_celsius{chip="platform_coretemp_0",sensor="temp4"} 100
+node_hwmon_temp_crit_celsius{chip="platform_coretemp_0",sensor="temp5"} 100
+node_hwmon_temp_crit_celsius{chip="platform_coretemp_1",sensor="temp1"} 100
+node_hwmon_temp_crit_celsius{chip="platform_coretemp_1",sensor="temp2"} 100
+node_hwmon_temp_crit_celsius{chip="platform_coretemp_1",sensor="temp3"} 100
+node_hwmon_temp_crit_celsius{chip="platform_coretemp_1",sensor="temp4"} 100
+node_hwmon_temp_crit_celsius{chip="platform_coretemp_1",sensor="temp5"} 100
 # HELP node_hwmon_temp_max_celsius Hardware monitor for temperature (max)
 # TYPE node_hwmon_temp_max_celsius gauge
-node_hwmon_temp_max_celsius{chip="platform_coretemp_0",sensor="core_0"} 84
-node_hwmon_temp_max_celsius{chip="platform_coretemp_0",sensor="core_1"} 84
-node_hwmon_temp_max_celsius{chip="platform_coretemp_0",sensor="core_2"} 84
-node_hwmon_temp_max_celsius{chip="platform_coretemp_0",sensor="core_3"} 84
-node_hwmon_temp_max_celsius{chip="platform_coretemp_0",sensor="physical_id_0"} 84
-node_hwmon_temp_max_celsius{chip="platform_coretemp_1",sensor="core_0"} 84
-node_hwmon_temp_max_celsius{chip="platform_coretemp_1",sensor="core_1"} 84
-node_hwmon_temp_max_celsius{chip="platform_coretemp_1",sensor="core_2"} 84
-node_hwmon_temp_max_celsius{chip="platform_coretemp_1",sensor="core_3"} 84
-node_hwmon_temp_max_celsius{chip="platform_coretemp_1",sensor="physical_id_0"} 84
+node_hwmon_temp_max_celsius{chip="hwmon4",sensor="temp1"} 100
+node_hwmon_temp_max_celsius{chip="hwmon4",sensor="temp2"} 100
+node_hwmon_temp_max_celsius{chip="platform_coretemp_0",sensor="temp1"} 84
+node_hwmon_temp_max_celsius{chip="platform_coretemp_0",sensor="temp2"} 84
+node_hwmon_temp_max_celsius{chip="platform_coretemp_0",sensor="temp3"} 84
+node_hwmon_temp_max_celsius{chip="platform_coretemp_0",sensor="temp4"} 84
+node_hwmon_temp_max_celsius{chip="platform_coretemp_0",sensor="temp5"} 84
+node_hwmon_temp_max_celsius{chip="platform_coretemp_1",sensor="temp1"} 84
+node_hwmon_temp_max_celsius{chip="platform_coretemp_1",sensor="temp2"} 84
+node_hwmon_temp_max_celsius{chip="platform_coretemp_1",sensor="temp3"} 84
+node_hwmon_temp_max_celsius{chip="platform_coretemp_1",sensor="temp4"} 84
+node_hwmon_temp_max_celsius{chip="platform_coretemp_1",sensor="temp5"} 84
+# HELP node_infiniband_legacy_data_received_bytes_total Number of data octets received on all links
+# TYPE node_infiniband_legacy_data_received_bytes_total counter
+node_infiniband_legacy_data_received_bytes_total{device="mlx4_0",port="1"} 4.631917e+06
+node_infiniband_legacy_data_received_bytes_total{device="mlx4_0",port="2"} 4.631917e+06
+# HELP node_infiniband_legacy_data_transmitted_bytes_total Number of data octets transmitted on all links
+# TYPE node_infiniband_legacy_data_transmitted_bytes_total counter
+node_infiniband_legacy_data_transmitted_bytes_total{device="mlx4_0",port="1"} 3.73344e+06
+node_infiniband_legacy_data_transmitted_bytes_total{device="mlx4_0",port="2"} 3.73344e+06
+# HELP node_infiniband_legacy_multicast_packets_received_total Number of multicast packets received
+# TYPE node_infiniband_legacy_multicast_packets_received_total counter
+node_infiniband_legacy_multicast_packets_received_total{device="mlx4_0",port="1"} 93
+node_infiniband_legacy_multicast_packets_received_total{device="mlx4_0",port="2"} 93
+# HELP node_infiniband_legacy_multicast_packets_transmitted_total Number of multicast packets transmitted
+# TYPE node_infiniband_legacy_multicast_packets_transmitted_total counter
+node_infiniband_legacy_multicast_packets_transmitted_total{device="mlx4_0",port="1"} 16
+node_infiniband_legacy_multicast_packets_transmitted_total{device="mlx4_0",port="2"} 16
+# HELP node_infiniband_legacy_packets_received_total Number of data packets received on all links
+# TYPE node_infiniband_legacy_packets_received_total counter
+node_infiniband_legacy_packets_received_total{device="mlx4_0",port="1"} 0
+node_infiniband_legacy_packets_received_total{device="mlx4_0",port="2"} 0
+# HELP node_infiniband_legacy_packets_transmitted_total Number of data packets received on all links
+# TYPE node_infiniband_legacy_packets_transmitted_total counter
+node_infiniband_legacy_packets_transmitted_total{device="mlx4_0",port="1"} 0
+node_infiniband_legacy_packets_transmitted_total{device="mlx4_0",port="2"} 0
+# HELP node_infiniband_legacy_unicast_packets_received_total Number of unicast packets received
+# TYPE node_infiniband_legacy_unicast_packets_received_total counter
+node_infiniband_legacy_unicast_packets_received_total{device="mlx4_0",port="1"} 61148
+node_infiniband_legacy_unicast_packets_received_total{device="mlx4_0",port="2"} 61148
+# HELP node_infiniband_legacy_unicast_packets_transmitted_total Number of unicast packets transmitted
+# TYPE node_infiniband_legacy_unicast_packets_transmitted_total counter
+node_infiniband_legacy_unicast_packets_transmitted_total{device="mlx4_0",port="1"} 61239
+node_infiniband_legacy_unicast_packets_transmitted_total{device="mlx4_0",port="2"} 61239
+# HELP node_infiniband_link_downed_total Number of times the link failed to recover from an error state and went down
+# TYPE node_infiniband_link_downed_total counter
+node_infiniband_link_downed_total{device="mlx4_0",port="1"} 0
+node_infiniband_link_downed_total{device="mlx4_0",port="2"} 0
+# HELP node_infiniband_link_error_recovery_total Number of times the link successfully recovered from an error state
+# TYPE node_infiniband_link_error_recovery_total counter
+node_infiniband_link_error_recovery_total{device="mlx4_0",port="1"} 0
+node_infiniband_link_error_recovery_total{device="mlx4_0",port="2"} 0
+# HELP node_infiniband_multicast_packets_received_total Number of multicast packets received (including errors)
+# TYPE node_infiniband_multicast_packets_received_total counter
+node_infiniband_multicast_packets_received_total{device="mlx4_0",port="1"} 93
+node_infiniband_multicast_packets_received_total{device="mlx4_0",port="2"} 0
+# HELP node_infiniband_multicast_packets_transmitted_total Number of multicast packets transmitted (including errors)
+# TYPE node_infiniband_multicast_packets_transmitted_total counter
+node_infiniband_multicast_packets_transmitted_total{device="mlx4_0",port="1"} 16
+node_infiniband_multicast_packets_transmitted_total{device="mlx4_0",port="2"} 0
+# HELP node_infiniband_port_data_received_bytes Number of data octets received on all links
+# TYPE node_infiniband_port_data_received_bytes counter
+node_infiniband_port_data_received_bytes{device="mlx4_0",port="1"} 4.631917e+06
+node_infiniband_port_data_received_bytes{device="mlx4_0",port="2"} 0
+# HELP node_infiniband_port_data_transmitted_bytes Number of data octets transmitted on all links
+# TYPE node_infiniband_port_data_transmitted_bytes counter
+node_infiniband_port_data_transmitted_bytes{device="mlx4_0",port="1"} 3.73344e+06
+node_infiniband_port_data_transmitted_bytes{device="mlx4_0",port="2"} 0
+# HELP node_infiniband_unicast_packets_received_total Number of unicast packets received (including errors)
+# TYPE node_infiniband_unicast_packets_received_total counter
+node_infiniband_unicast_packets_received_total{device="mlx4_0",port="1"} 61148
+node_infiniband_unicast_packets_received_total{device="mlx4_0",port="2"} 0
+# HELP node_infiniband_unicast_packets_transmitted_total Number of unicast packets transmitted (including errors)
+# TYPE node_infiniband_unicast_packets_transmitted_total counter
+node_infiniband_unicast_packets_transmitted_total{device="mlx4_0",port="1"} 61239
+node_infiniband_unicast_packets_transmitted_total{device="mlx4_0",port="2"} 0
 # HELP node_intr Total number of interrupts serviced.
 # TYPE node_intr counter
 node_intr 8.885917e+06
@@ -748,7 +830,7 @@ node_md_disks{device="md10"} 2
 node_md_disks{device="md11"} 2
 node_md_disks{device="md12"} 2
 node_md_disks{device="md127"} 2
-node_md_disks{device="md219"} 2
+node_md_disks{device="md219"} 0
 node_md_disks{device="md3"} 8
 node_md_disks{device="md4"} 2
 node_md_disks{device="md6"} 2
@@ -763,7 +845,7 @@ node_md_disks_active{device="md10"} 2
 node_md_disks_active{device="md11"} 2
 node_md_disks_active{device="md12"} 2
 node_md_disks_active{device="md127"} 2
-node_md_disks_active{device="md219"} 2
+node_md_disks_active{device="md219"} 0
 node_md_disks_active{device="md3"} 8
 node_md_disks_active{device="md4"} 2
 node_md_disks_active{device="md6"} 1
@@ -786,7 +868,7 @@ node_md_is_active{device="md7"} 1
 node_md_is_active{device="md8"} 1
 node_md_is_active{device="md9"} 1
 # HELP node_megacli_drive_count megacli: drive error and event counters
-# TYPE node_megacli_drive_count counter
+# TYPE node_megacli_drive_count gauge
 node_megacli_drive_count{enclosure="32",slot="0",type="Media Error Count"} 0
 node_megacli_drive_count{enclosure="32",slot="0",type="Other Error Count"} 0
 node_megacli_drive_count{enclosure="32",slot="0",type="Predictive Failure Count"} 0
@@ -1070,16 +1152,181 @@ node_memory_numa_numa_miss_total{node="1"} 5.9858626709e+10
 # TYPE node_memory_numa_other_node_total counter
 node_memory_numa_other_node_total{node="0"} 1.8179487e+07
 node_memory_numa_other_node_total{node="1"} 5.986052692e+10
-# HELP node_net_bonding_slaves Number of configured slaves per bonding interface.
-# TYPE node_net_bonding_slaves gauge
-node_net_bonding_slaves{master="bond0"} 0
-node_net_bonding_slaves{master="dmz"} 2
-node_net_bonding_slaves{master="int"} 2
-# HELP node_net_bonding_slaves_active Number of active slaves per bonding interface.
-# TYPE node_net_bonding_slaves_active gauge
-node_net_bonding_slaves_active{master="bond0"} 0
-node_net_bonding_slaves_active{master="dmz"} 2
-node_net_bonding_slaves_active{master="int"} 1
+# HELP node_mountstats_nfs_age_seconds_total The age of the NFS mount in seconds.
+# TYPE node_mountstats_nfs_age_seconds_total counter
+node_mountstats_nfs_age_seconds_total{export="192.168.1.1:/srv/test"} 13968
+# HELP node_mountstats_nfs_direct_read_bytes_total Number of bytes read using the read() syscall in O_DIRECT mode.
+# TYPE node_mountstats_nfs_direct_read_bytes_total counter
+node_mountstats_nfs_direct_read_bytes_total{export="192.168.1.1:/srv/test"} 0
+# HELP node_mountstats_nfs_direct_write_bytes_total Number of bytes written using the write() syscall in O_DIRECT mode.
+# TYPE node_mountstats_nfs_direct_write_bytes_total counter
+node_mountstats_nfs_direct_write_bytes_total{export="192.168.1.1:/srv/test"} 0
+# HELP node_mountstats_nfs_event_attribute_invalidate_total Number of times cached inode attributes are invalidated.
+# TYPE node_mountstats_nfs_event_attribute_invalidate_total counter
+node_mountstats_nfs_event_attribute_invalidate_total{export="192.168.1.1:/srv/test"} 0
+# HELP node_mountstats_nfs_event_data_invalidate_total Number of times an inode cache is cleared.
+# TYPE node_mountstats_nfs_event_data_invalidate_total counter
+node_mountstats_nfs_event_data_invalidate_total{export="192.168.1.1:/srv/test"} 0
+# HELP node_mountstats_nfs_event_dnode_revalidate_total Number of times cached dentry nodes are re-validated from the server.
+# TYPE node_mountstats_nfs_event_dnode_revalidate_total counter
+node_mountstats_nfs_event_dnode_revalidate_total{export="192.168.1.1:/srv/test"} 226
+# HELP node_mountstats_nfs_event_inode_revalidate_total Number of times cached inode attributes are re-validated from the server.
+# TYPE node_mountstats_nfs_event_inode_revalidate_total counter
+node_mountstats_nfs_event_inode_revalidate_total{export="192.168.1.1:/srv/test"} 52
+# HELP node_mountstats_nfs_event_jukebox_delay_total Number of times the NFS server indicated EJUKEBOX; retrieving data from offline storage.
+# TYPE node_mountstats_nfs_event_jukebox_delay_total counter
+node_mountstats_nfs_event_jukebox_delay_total{export="192.168.1.1:/srv/test"} 0
+# HELP node_mountstats_nfs_event_pnfs_read_total Number of NFS v4.1+ pNFS reads.
+# TYPE node_mountstats_nfs_event_pnfs_read_total counter
+node_mountstats_nfs_event_pnfs_read_total{export="192.168.1.1:/srv/test"} 0
+# HELP node_mountstats_nfs_event_pnfs_write_total Number of NFS v4.1+ pNFS writes.
+# TYPE node_mountstats_nfs_event_pnfs_write_total counter
+node_mountstats_nfs_event_pnfs_write_total{export="192.168.1.1:/srv/test"} 0
+# HELP node_mountstats_nfs_event_short_read_total Number of times the NFS server gave less data than expected while reading.
+# TYPE node_mountstats_nfs_event_short_read_total counter
+node_mountstats_nfs_event_short_read_total{export="192.168.1.1:/srv/test"} 0
+# HELP node_mountstats_nfs_event_short_write_total Number of times the NFS server wrote less data than expected while writing.
+# TYPE node_mountstats_nfs_event_short_write_total counter
+node_mountstats_nfs_event_short_write_total{export="192.168.1.1:/srv/test"} 0
+# HELP node_mountstats_nfs_event_silly_rename_total Number of times a file was removed while still open by another process.
+# TYPE node_mountstats_nfs_event_silly_rename_total counter
+node_mountstats_nfs_event_silly_rename_total{export="192.168.1.1:/srv/test"} 0
+# HELP node_mountstats_nfs_event_truncation_total Number of times files have been truncated.
+# TYPE node_mountstats_nfs_event_truncation_total counter
+node_mountstats_nfs_event_truncation_total{export="192.168.1.1:/srv/test"} 0
+# HELP node_mountstats_nfs_event_vfs_access_total Number of times permissions have been checked.
+# TYPE node_mountstats_nfs_event_vfs_access_total counter
+node_mountstats_nfs_event_vfs_access_total{export="192.168.1.1:/srv/test"} 398
+# HELP node_mountstats_nfs_event_vfs_file_release_total Number of times files have been closed and released.
+# TYPE node_mountstats_nfs_event_vfs_file_release_total counter
+node_mountstats_nfs_event_vfs_file_release_total{export="192.168.1.1:/srv/test"} 77
+# HELP node_mountstats_nfs_event_vfs_flush_total Number of pending writes that have been forcefully flushed to the server.
+# TYPE node_mountstats_nfs_event_vfs_flush_total counter
+node_mountstats_nfs_event_vfs_flush_total{export="192.168.1.1:/srv/test"} 77
+# HELP node_mountstats_nfs_event_vfs_fsync_total Number of times fsync() has been called on directories and files.
+# TYPE node_mountstats_nfs_event_vfs_fsync_total counter
+node_mountstats_nfs_event_vfs_fsync_total{export="192.168.1.1:/srv/test"} 0
+# HELP node_mountstats_nfs_event_vfs_getdents_total Number of times directory entries have been read with getdents().
+# TYPE node_mountstats_nfs_event_vfs_getdents_total counter
+node_mountstats_nfs_event_vfs_getdents_total{export="192.168.1.1:/srv/test"} 0
+# HELP node_mountstats_nfs_event_vfs_lock_total Number of times locking has been attempted on a file.
+# TYPE node_mountstats_nfs_event_vfs_lock_total counter
+node_mountstats_nfs_event_vfs_lock_total{export="192.168.1.1:/srv/test"} 0
+# HELP node_mountstats_nfs_event_vfs_lookup_total Number of times a directory lookup has occurred.
+# TYPE node_mountstats_nfs_event_vfs_lookup_total counter
+node_mountstats_nfs_event_vfs_lookup_total{export="192.168.1.1:/srv/test"} 13
+# HELP node_mountstats_nfs_event_vfs_open_total Number of times cached inode attributes are invalidated.
+# TYPE node_mountstats_nfs_event_vfs_open_total counter
+node_mountstats_nfs_event_vfs_open_total{export="192.168.1.1:/srv/test"} 1
+# HELP node_mountstats_nfs_event_vfs_read_page_total Number of pages read directly via mmap()'d files.
+# TYPE node_mountstats_nfs_event_vfs_read_page_total counter
+node_mountstats_nfs_event_vfs_read_page_total{export="192.168.1.1:/srv/test"} 0
+# HELP node_mountstats_nfs_event_vfs_read_pages_total Number of times a group of pages have been read.
+# TYPE node_mountstats_nfs_event_vfs_read_pages_total counter
+node_mountstats_nfs_event_vfs_read_pages_total{export="192.168.1.1:/srv/test"} 331
+# HELP node_mountstats_nfs_event_vfs_setattr_total Number of times directory entries have been read with getdents().
+# TYPE node_mountstats_nfs_event_vfs_setattr_total counter
+node_mountstats_nfs_event_vfs_setattr_total{export="192.168.1.1:/srv/test"} 0
+# HELP node_mountstats_nfs_event_vfs_update_page_total Number of updates (and potential writes) to pages.
+# TYPE node_mountstats_nfs_event_vfs_update_page_total counter
+node_mountstats_nfs_event_vfs_update_page_total{export="192.168.1.1:/srv/test"} 0
+# HELP node_mountstats_nfs_event_vfs_write_page_total Number of pages written directly via mmap()'d files.
+# TYPE node_mountstats_nfs_event_vfs_write_page_total counter
+node_mountstats_nfs_event_vfs_write_page_total{export="192.168.1.1:/srv/test"} 0
+# HELP node_mountstats_nfs_event_vfs_write_pages_total Number of times a group of pages have been written.
+# TYPE node_mountstats_nfs_event_vfs_write_pages_total counter
+node_mountstats_nfs_event_vfs_write_pages_total{export="192.168.1.1:/srv/test"} 47
+# HELP node_mountstats_nfs_event_write_extension_total Number of times a file has been grown due to writes beyond its existing end.
+# TYPE node_mountstats_nfs_event_write_extension_total counter
+node_mountstats_nfs_event_write_extension_total{export="192.168.1.1:/srv/test"} 0
+# HELP node_mountstats_nfs_operations_major_timeouts_total Number of times a request has had a major timeout for a given operation.
+# TYPE node_mountstats_nfs_operations_major_timeouts_total counter
+node_mountstats_nfs_operations_major_timeouts_total{export="192.168.1.1:/srv/test",operation="NULL"} 0
+node_mountstats_nfs_operations_major_timeouts_total{export="192.168.1.1:/srv/test",operation="READ"} 0
+node_mountstats_nfs_operations_major_timeouts_total{export="192.168.1.1:/srv/test",operation="WRITE"} 0
+# HELP node_mountstats_nfs_operations_queue_time_seconds_total Duration all requests spent queued for transmission for a given operation before they were sent, in seconds.
+# TYPE node_mountstats_nfs_operations_queue_time_seconds_total counter
+node_mountstats_nfs_operations_queue_time_seconds_total{export="192.168.1.1:/srv/test",operation="NULL"} 0
+node_mountstats_nfs_operations_queue_time_seconds_total{export="192.168.1.1:/srv/test",operation="READ"} 0.006
+node_mountstats_nfs_operations_queue_time_seconds_total{export="192.168.1.1:/srv/test",operation="WRITE"} 0
+# HELP node_mountstats_nfs_operations_received_bytes_total Number of bytes received for a given operation, including RPC headers and payload.
+# TYPE node_mountstats_nfs_operations_received_bytes_total counter
+node_mountstats_nfs_operations_received_bytes_total{export="192.168.1.1:/srv/test",operation="NULL"} 0
+node_mountstats_nfs_operations_received_bytes_total{export="192.168.1.1:/srv/test",operation="READ"} 1.210292152e+09
+node_mountstats_nfs_operations_received_bytes_total{export="192.168.1.1:/srv/test",operation="WRITE"} 0
+# HELP node_mountstats_nfs_operations_request_time_seconds_total Duration all requests took from when a request was enqueued to when it was completely handled for a given operation, in seconds.
+# TYPE node_mountstats_nfs_operations_request_time_seconds_total counter
+node_mountstats_nfs_operations_request_time_seconds_total{export="192.168.1.1:/srv/test",operation="NULL"} 0
+node_mountstats_nfs_operations_request_time_seconds_total{export="192.168.1.1:/srv/test",operation="READ"} 79.407
+node_mountstats_nfs_operations_request_time_seconds_total{export="192.168.1.1:/srv/test",operation="WRITE"} 0
+# HELP node_mountstats_nfs_operations_requests_total Number of requests performed for a given operation.
+# TYPE node_mountstats_nfs_operations_requests_total counter
+node_mountstats_nfs_operations_requests_total{export="192.168.1.1:/srv/test",operation="NULL"} 0
+node_mountstats_nfs_operations_requests_total{export="192.168.1.1:/srv/test",operation="READ"} 1298
+node_mountstats_nfs_operations_requests_total{export="192.168.1.1:/srv/test",operation="WRITE"} 0
+# HELP node_mountstats_nfs_operations_response_time_seconds_total Duration all requests took to get a reply back after a request for a given operation was transmitted, in seconds.
+# TYPE node_mountstats_nfs_operations_response_time_seconds_total counter
+node_mountstats_nfs_operations_response_time_seconds_total{export="192.168.1.1:/srv/test",operation="NULL"} 0
+node_mountstats_nfs_operations_response_time_seconds_total{export="192.168.1.1:/srv/test",operation="READ"} 79.386
+node_mountstats_nfs_operations_response_time_seconds_total{export="192.168.1.1:/srv/test",operation="WRITE"} 0
+# HELP node_mountstats_nfs_operations_sent_bytes_total Number of bytes sent for a given operation, including RPC headers and payload.
+# TYPE node_mountstats_nfs_operations_sent_bytes_total counter
+node_mountstats_nfs_operations_sent_bytes_total{export="192.168.1.1:/srv/test",operation="NULL"} 0
+node_mountstats_nfs_operations_sent_bytes_total{export="192.168.1.1:/srv/test",operation="READ"} 207680
+node_mountstats_nfs_operations_sent_bytes_total{export="192.168.1.1:/srv/test",operation="WRITE"} 0
+# HELP node_mountstats_nfs_operations_transmissions_total Number of times an actual RPC request has been transmitted for a given operation.
+# TYPE node_mountstats_nfs_operations_transmissions_total counter
+node_mountstats_nfs_operations_transmissions_total{export="192.168.1.1:/srv/test",operation="NULL"} 0
+node_mountstats_nfs_operations_transmissions_total{export="192.168.1.1:/srv/test",operation="READ"} 1298
+node_mountstats_nfs_operations_transmissions_total{export="192.168.1.1:/srv/test",operation="WRITE"} 0
+# HELP node_mountstats_nfs_read_bytes_total Number of bytes read using the read() syscall.
+# TYPE node_mountstats_nfs_read_bytes_total counter
+node_mountstats_nfs_read_bytes_total{export="192.168.1.1:/srv/test"} 1.20764023e+09
+# HELP node_mountstats_nfs_read_pages_total Number of pages read directly via mmap()'d files.
+# TYPE node_mountstats_nfs_read_pages_total counter
+node_mountstats_nfs_read_pages_total{export="192.168.1.1:/srv/test"} 295483
+# HELP node_mountstats_nfs_total_read_bytes_total Number of bytes read from the NFS server, in total.
+# TYPE node_mountstats_nfs_total_read_bytes_total counter
+node_mountstats_nfs_total_read_bytes_total{export="192.168.1.1:/srv/test"} 1.210214218e+09
+# HELP node_mountstats_nfs_total_write_bytes_total Number of bytes written to the NFS server, in total.
+# TYPE node_mountstats_nfs_total_write_bytes_total counter
+node_mountstats_nfs_total_write_bytes_total{export="192.168.1.1:/srv/test"} 0
+# HELP node_mountstats_nfs_transport_backlog_queue_total Total number of items added to the RPC backlog queue.
+# TYPE node_mountstats_nfs_transport_backlog_queue_total counter
+node_mountstats_nfs_transport_backlog_queue_total{export="192.168.1.1:/srv/test"} 0
+# HELP node_mountstats_nfs_transport_bad_transaction_ids_total Number of times the NFS server sent a response with a transaction ID unknown to this client.
+# TYPE node_mountstats_nfs_transport_bad_transaction_ids_total counter
+node_mountstats_nfs_transport_bad_transaction_ids_total{export="192.168.1.1:/srv/test"} 0
+# HELP node_mountstats_nfs_transport_bind_total Number of times the client has had to establish a connection from scratch to the NFS server.
+# TYPE node_mountstats_nfs_transport_bind_total counter
+node_mountstats_nfs_transport_bind_total{export="192.168.1.1:/srv/test"} 0
+# HELP node_mountstats_nfs_transport_connect_total Number of times the client has made a TCP connection to the NFS server.
+# TYPE node_mountstats_nfs_transport_connect_total counter
+node_mountstats_nfs_transport_connect_total{export="192.168.1.1:/srv/test"} 1
+# HELP node_mountstats_nfs_transport_idle_time_seconds Duration since the NFS mount last saw any RPC traffic, in seconds.
+# TYPE node_mountstats_nfs_transport_idle_time_seconds gauge
+node_mountstats_nfs_transport_idle_time_seconds{export="192.168.1.1:/srv/test"} 11
+# HELP node_mountstats_nfs_transport_maximum_rpc_slots Maximum number of simultaneously active RPC requests ever used.
+# TYPE node_mountstats_nfs_transport_maximum_rpc_slots gauge
+node_mountstats_nfs_transport_maximum_rpc_slots{export="192.168.1.1:/srv/test"} 24
+# HELP node_mountstats_nfs_transport_pending_queue_total Total number of items added to the RPC transmission pending queue.
+# TYPE node_mountstats_nfs_transport_pending_queue_total counter
+node_mountstats_nfs_transport_pending_queue_total{export="192.168.1.1:/srv/test"} 5726
+# HELP node_mountstats_nfs_transport_receives_total Number of RPC responses for this mount received from the NFS server.
+# TYPE node_mountstats_nfs_transport_receives_total counter
+node_mountstats_nfs_transport_receives_total{export="192.168.1.1:/srv/test"} 6428
+# HELP node_mountstats_nfs_transport_sending_queue_total Total number of items added to the RPC transmission sending queue.
+# TYPE node_mountstats_nfs_transport_sending_queue_total counter
+node_mountstats_nfs_transport_sending_queue_total{export="192.168.1.1:/srv/test"} 26
+# HELP node_mountstats_nfs_transport_sends_total Number of RPC requests for this mount sent to the NFS server.
+# TYPE node_mountstats_nfs_transport_sends_total counter
+node_mountstats_nfs_transport_sends_total{export="192.168.1.1:/srv/test"} 6428
+# HELP node_mountstats_nfs_write_bytes_total Number of bytes written using the write() syscall.
+# TYPE node_mountstats_nfs_write_bytes_total counter
+node_mountstats_nfs_write_bytes_total{export="192.168.1.1:/srv/test"} 0
+# HELP node_mountstats_nfs_write_pages_total Number of pages written directly via mmap()'d files.
+# TYPE node_mountstats_nfs_write_pages_total counter
+node_mountstats_nfs_write_pages_total{export="192.168.1.1:/srv/test"} 0
 # HELP node_netstat_IcmpMsg_InType3 Protocol IcmpMsg statistic InType3.
 # TYPE node_netstat_IcmpMsg_InType3 untyped
 node_netstat_IcmpMsg_InType3 104
@@ -1743,12 +1990,147 @@ node_nf_conntrack_entries 123
 # HELP node_nf_conntrack_entries_limit Maximum size of connection tracking table.
 # TYPE node_nf_conntrack_entries_limit gauge
 node_nf_conntrack_entries_limit 65536
+# HELP node_nfs_net_connections Number of connections at the network layer.
+# TYPE node_nfs_net_connections counter
+node_nfs_net_connections{protocol="tcp"} 45
+# HELP node_nfs_net_reads Number of reads at the network layer.
+# TYPE node_nfs_net_reads counter
+node_nfs_net_reads{protocol="tcp"} 69
+node_nfs_net_reads{protocol="udp"} 70
+# HELP node_nfs_procedures Number of NFS procedures invoked.
+# TYPE node_nfs_procedures counter
+node_nfs_procedures{procedure="access",version="3"} 1.17661341e+08
+node_nfs_procedures{procedure="access",version="4"} 58
+node_nfs_procedures{procedure="close",version="4"} 28
+node_nfs_procedures{procedure="commit",version="3"} 23729
+node_nfs_procedures{procedure="commit",version="4"} 83
+node_nfs_procedures{procedure="create",version="2"} 52
+node_nfs_procedures{procedure="create",version="3"} 2.993289e+06
+node_nfs_procedures{procedure="create",version="4"} 15
+node_nfs_procedures{procedure="create_session",version="4"} 32
+node_nfs_procedures{procedure="delegreturn",version="4"} 97
+node_nfs_procedures{procedure="destroy_session",version="4"} 67
+node_nfs_procedures{procedure="exchange_id",version="4"} 58
+node_nfs_procedures{procedure="fs_locations",version="4"} 32
+node_nfs_procedures{procedure="fsid_present",version="4"} 11
+node_nfs_procedures{procedure="fsinfo",version="3"} 2
+node_nfs_procedures{procedure="fsinfo",version="4"} 68
+node_nfs_procedures{procedure="fsstat",version="3"} 13332
+node_nfs_procedures{procedure="get_lease_time",version="4"} 28
+node_nfs_procedures{procedure="getacl",version="4"} 36
+node_nfs_procedures{procedure="getattr",version="2"} 57
+node_nfs_procedures{procedure="getattr",version="3"} 1.061909262e+09
+node_nfs_procedures{procedure="getattr",version="4"} 88
+node_nfs_procedures{procedure="getdeviceinfo",version="4"} 1
+node_nfs_procedures{procedure="layoutcommit",version="4"} 26
+node_nfs_procedures{procedure="layoutget",version="4"} 90
+node_nfs_procedures{procedure="layoutreturn",version="4"} 0
+node_nfs_procedures{procedure="link",version="2"} 17
+node_nfs_procedures{procedure="link",version="3"} 0
+node_nfs_procedures{procedure="link",version="4"} 21
+node_nfs_procedures{procedure="lock",version="4"} 39
+node_nfs_procedures{procedure="lockt",version="4"} 68
+node_nfs_procedures{procedure="locku",version="4"} 59
+node_nfs_procedures{procedure="lookup",version="2"} 71
+node_nfs_procedures{procedure="lookup",version="3"} 4.077635e+06
+node_nfs_procedures{procedure="lookup",version="4"} 29
+node_nfs_procedures{procedure="lookup_root",version="4"} 74
+node_nfs_procedures{procedure="mkdir",version="2"} 50
+node_nfs_procedures{procedure="mkdir",version="3"} 590
+node_nfs_procedures{procedure="mknod",version="3"} 0
+node_nfs_procedures{procedure="null",version="2"} 16
+node_nfs_procedures{procedure="null",version="3"} 0
+node_nfs_procedures{procedure="null",version="4"} 98
+node_nfs_procedures{procedure="open",version="4"} 85
+node_nfs_procedures{procedure="open_confirm",version="4"} 23
+node_nfs_procedures{procedure="open_downgrade",version="4"} 1
+node_nfs_procedures{procedure="open_noattr",version="4"} 24
+node_nfs_procedures{procedure="pathconf",version="3"} 1
+node_nfs_procedures{procedure="pathconf",version="4"} 53
+node_nfs_procedures{procedure="read",version="2"} 45
+node_nfs_procedures{procedure="read",version="3"} 2.9391916e+07
+node_nfs_procedures{procedure="read",version="4"} 51
+node_nfs_procedures{procedure="readdir",version="2"} 70
+node_nfs_procedures{procedure="readdir",version="3"} 3983
+node_nfs_procedures{procedure="readdir",version="4"} 66
+node_nfs_procedures{procedure="readdirplus",version="3"} 92385
+node_nfs_procedures{procedure="readlink",version="2"} 73
+node_nfs_procedures{procedure="readlink",version="3"} 5
+node_nfs_procedures{procedure="readlink",version="4"} 54
+node_nfs_procedures{procedure="reclaim_complete",version="4"} 35
+node_nfs_procedures{procedure="release_lockowner",version="4"} 85
+node_nfs_procedures{procedure="remove",version="2"} 83
+node_nfs_procedures{procedure="remove",version="3"} 7815
+node_nfs_procedures{procedure="remove",version="4"} 69
+node_nfs_procedures{procedure="rename",version="2"} 61
+node_nfs_procedures{procedure="rename",version="3"} 1130
+node_nfs_procedures{procedure="rename",version="4"} 96
+node_nfs_procedures{procedure="renew",version="4"} 83
+node_nfs_procedures{procedure="rmdir",version="2"} 23
+node_nfs_procedures{procedure="rmdir",version="3"} 15
+node_nfs_procedures{procedure="root",version="2"} 52
+node_nfs_procedures{procedure="secinfo",version="4"} 81
+node_nfs_procedures{procedure="sequence",version="4"} 13
+node_nfs_procedures{procedure="server_caps",version="4"} 56
+node_nfs_procedures{procedure="setacl",version="4"} 49
+node_nfs_procedures{procedure="setattr",version="2"} 74
+node_nfs_procedures{procedure="setattr",version="3"} 48906
+node_nfs_procedures{procedure="setattr",version="4"} 73
+node_nfs_procedures{procedure="setclientid",version="4"} 12
+node_nfs_procedures{procedure="setclientid_confirm",version="4"} 84
+node_nfs_procedures{procedure="statfs",version="2"} 82
+node_nfs_procedures{procedure="statfs",version="4"} 86
+node_nfs_procedures{procedure="symlink",version="2"} 53
+node_nfs_procedures{procedure="symlink",version="3"} 0
+node_nfs_procedures{procedure="symlink",version="4"} 84
+node_nfs_procedures{procedure="write",version="2"} 0
+node_nfs_procedures{procedure="write",version="3"} 2.570425e+06
+node_nfs_procedures{procedure="write",version="4"} 54
+node_nfs_procedures{procedure="writecache",version="2"} 86
+# HELP node_nfs_rpc_authentication_refreshes Number of RPC authentication refreshes performed.
+# TYPE node_nfs_rpc_authentication_refreshes counter
+node_nfs_rpc_authentication_refreshes 1.218815394e+09
+# HELP node_nfs_rpc_operations Number of RPCs performed.
+# TYPE node_nfs_rpc_operations counter
+node_nfs_rpc_operations 1.218785755e+09
+# HELP node_nfs_rpc_retransmissions Number of RPC transmissions performed.
+# TYPE node_nfs_rpc_retransmissions counter
+node_nfs_rpc_retransmissions 374636
 # HELP node_procs_blocked Number of processes blocked waiting for I/O to complete.
 # TYPE node_procs_blocked gauge
 node_procs_blocked 0
 # HELP node_procs_running Number of processes in runnable state.
 # TYPE node_procs_running gauge
 node_procs_running 2
+# HELP node_scrape_collector_duration_seconds node_exporter: Duration of a collector scrape.
+# TYPE node_scrape_collector_duration_seconds gauge
+# HELP node_scrape_collector_success node_exporter: Whether a collector succeeded.
+# TYPE node_scrape_collector_success gauge
+node_scrape_collector_success{collector="bonding"} 1
+node_scrape_collector_success{collector="buddyinfo"} 1
+node_scrape_collector_success{collector="conntrack"} 1
+node_scrape_collector_success{collector="diskstats"} 1
+node_scrape_collector_success{collector="drbd"} 1
+node_scrape_collector_success{collector="edac"} 1
+node_scrape_collector_success{collector="entropy"} 1
+node_scrape_collector_success{collector="filefd"} 1
+node_scrape_collector_success{collector="hwmon"} 1
+node_scrape_collector_success{collector="infiniband"} 1
+node_scrape_collector_success{collector="ksmd"} 1
+node_scrape_collector_success{collector="loadavg"} 1
+node_scrape_collector_success{collector="mdadm"} 1
+node_scrape_collector_success{collector="megacli"} 1
+node_scrape_collector_success{collector="meminfo"} 1
+node_scrape_collector_success{collector="meminfo_numa"} 1
+node_scrape_collector_success{collector="mountstats"} 1
+node_scrape_collector_success{collector="netdev"} 1
+node_scrape_collector_success{collector="netstat"} 1
+node_scrape_collector_success{collector="nfs"} 1
+node_scrape_collector_success{collector="sockstat"} 1
+node_scrape_collector_success{collector="stat"} 1
+node_scrape_collector_success{collector="textfile"} 1
+node_scrape_collector_success{collector="wifi"} 1
+node_scrape_collector_success{collector="zfs"} 1
 # HELP node_sockstat_FRAG_inuse Number of FRAG sockets in state inuse.
 # TYPE node_sockstat_FRAG_inuse gauge
 node_sockstat_FRAG_inuse 0
@@ -1793,29 +2175,517 @@ node_sockstat_UDP_mem_bytes 0
 node_sockstat_sockets_used 229
 # HELP node_textfile_mtime Unixtime mtime of textfiles successfully read.
 # TYPE node_textfile_mtime gauge
-node_textfile_mtime{file="metrics1.prom"} 1.463773694e+09
-node_textfile_mtime{file="metrics2.prom"} 1.463773694e+09
 # HELP node_textfile_scrape_error 1 if there was an error opening or reading a file, 0 otherwise
 # TYPE node_textfile_scrape_error gauge
 node_textfile_scrape_error 0
+# HELP node_wifi_interface_frequency_hertz The current frequency a WiFi interface is operating at, in hertz.
+# TYPE node_wifi_interface_frequency_hertz gauge
+node_wifi_interface_frequency_hertz{device="wlan0"} 2.412e+09
+node_wifi_interface_frequency_hertz{device="wlan1"} 2.412e+09
+# HELP node_wifi_station_beacon_loss_total The total number of times a station has detected a beacon loss.
+# TYPE node_wifi_station_beacon_loss_total counter
+node_wifi_station_beacon_loss_total{device="wlan0"} 1
+# HELP node_wifi_station_connected_seconds_total The total number of seconds a station has been connected to an access point.
+# TYPE node_wifi_station_connected_seconds_total counter
+node_wifi_station_connected_seconds_total{device="wlan0"} 30
+# HELP node_wifi_station_inactive_seconds The number of seconds since any wireless activity has occurred on a station.
+# TYPE node_wifi_station_inactive_seconds gauge
+node_wifi_station_inactive_seconds{device="wlan0"} 0.4
+# HELP node_wifi_station_info Labeled WiFi interface station information as provided by the operating system.
+# TYPE node_wifi_station_info gauge
+node_wifi_station_info{bssid="00:11:22:33:44:55",device="wlan0",mode="client",ssid="Example"} 1
+# HELP node_wifi_station_receive_bits_per_second The current WiFi receive bitrate of a station, in bits per second.
+# TYPE node_wifi_station_receive_bits_per_second gauge
+node_wifi_station_receive_bits_per_second{device="wlan0"} 1.28e+08
+# HELP node_wifi_station_signal_dbm The current WiFi signal strength, in decibel-milliwatts (dBm).
+# TYPE node_wifi_station_signal_dbm gauge
+node_wifi_station_signal_dbm{device="wlan0"} -52
+# HELP node_wifi_station_transmit_bits_per_second The current WiFi transmit bitrate of a station, in bits per second.
+# TYPE node_wifi_station_transmit_bits_per_second gauge
+node_wifi_station_transmit_bits_per_second{device="wlan0"} 1.64e+08
+# HELP node_wifi_station_transmit_failed_total The total number of times a station has failed to send a packet.
+# TYPE node_wifi_station_transmit_failed_total counter
+node_wifi_station_transmit_failed_total{device="wlan0"} 2
+# HELP node_wifi_station_transmit_retries_total The total number of times a station has had to retry while sending a packet.
+# TYPE node_wifi_station_transmit_retries_total counter
+node_wifi_station_transmit_retries_total{device="wlan0"} 10
+# HELP node_zfs_arc_anon_evictable_data kstat.zfs.misc.arcstats.anon_evictable_data
+# TYPE node_zfs_arc_anon_evictable_data untyped
+node_zfs_arc_anon_evictable_data 0
+# HELP node_zfs_arc_anon_evictable_metadata kstat.zfs.misc.arcstats.anon_evictable_metadata
+# TYPE node_zfs_arc_anon_evictable_metadata untyped
+node_zfs_arc_anon_evictable_metadata 0
+# HELP node_zfs_arc_anon_size kstat.zfs.misc.arcstats.anon_size
+# TYPE node_zfs_arc_anon_size untyped
+node_zfs_arc_anon_size 1.91744e+06
+# HELP node_zfs_arc_arc_loaned_bytes kstat.zfs.misc.arcstats.arc_loaned_bytes
+# TYPE node_zfs_arc_arc_loaned_bytes untyped
+node_zfs_arc_arc_loaned_bytes 0
+# HELP node_zfs_arc_arc_meta_limit kstat.zfs.misc.arcstats.arc_meta_limit
+# TYPE node_zfs_arc_arc_meta_limit untyped
+node_zfs_arc_arc_meta_limit 6.275982336e+09
+# HELP node_zfs_arc_arc_meta_max kstat.zfs.misc.arcstats.arc_meta_max
+# TYPE node_zfs_arc_arc_meta_max untyped
+node_zfs_arc_arc_meta_max 4.49286096e+08
+# HELP node_zfs_arc_arc_meta_min kstat.zfs.misc.arcstats.arc_meta_min
+# TYPE node_zfs_arc_arc_meta_min untyped
+node_zfs_arc_arc_meta_min 1.6777216e+07
+# HELP node_zfs_arc_arc_meta_used kstat.zfs.misc.arcstats.arc_meta_used
+# TYPE node_zfs_arc_arc_meta_used untyped
+node_zfs_arc_arc_meta_used 3.08103632e+08
+# HELP node_zfs_arc_arc_need_free kstat.zfs.misc.arcstats.arc_need_free
+# TYPE node_zfs_arc_arc_need_free untyped
+node_zfs_arc_arc_need_free 0
+# HELP node_zfs_arc_arc_no_grow kstat.zfs.misc.arcstats.arc_no_grow
+# TYPE node_zfs_arc_arc_no_grow untyped
+node_zfs_arc_arc_no_grow 0
+# HELP node_zfs_arc_arc_prune kstat.zfs.misc.arcstats.arc_prune
+# TYPE node_zfs_arc_arc_prune untyped
+node_zfs_arc_arc_prune 0
+# HELP node_zfs_arc_arc_sys_free kstat.zfs.misc.arcstats.arc_sys_free
+# TYPE node_zfs_arc_arc_sys_free untyped
+node_zfs_arc_arc_sys_free 2.61496832e+08
+# HELP node_zfs_arc_arc_tempreserve kstat.zfs.misc.arcstats.arc_tempreserve
+# TYPE node_zfs_arc_arc_tempreserve untyped
+node_zfs_arc_arc_tempreserve 0
+# HELP node_zfs_arc_c kstat.zfs.misc.arcstats.c
+# TYPE node_zfs_arc_c untyped
+node_zfs_arc_c 1.643208777e+09
+# HELP node_zfs_arc_c_max kstat.zfs.misc.arcstats.c_max
+# TYPE node_zfs_arc_c_max untyped
+node_zfs_arc_c_max 8.367976448e+09
+# HELP node_zfs_arc_c_min kstat.zfs.misc.arcstats.c_min
+# TYPE node_zfs_arc_c_min untyped
+node_zfs_arc_c_min 3.3554432e+07
+# HELP node_zfs_arc_data_size kstat.zfs.misc.arcstats.data_size
+# TYPE node_zfs_arc_data_size untyped
+node_zfs_arc_data_size 1.29583616e+09
+# HELP node_zfs_arc_deleted kstat.zfs.misc.arcstats.deleted
+# TYPE node_zfs_arc_deleted untyped
+node_zfs_arc_deleted 60403
+# HELP node_zfs_arc_demand_data_hits kstat.zfs.misc.arcstats.demand_data_hits
+# TYPE node_zfs_arc_demand_data_hits untyped
+node_zfs_arc_demand_data_hits 7.221032e+06
+# HELP node_zfs_arc_demand_data_misses kstat.zfs.misc.arcstats.demand_data_misses
+# TYPE node_zfs_arc_demand_data_misses untyped
+node_zfs_arc_demand_data_misses 73300
+# HELP node_zfs_arc_demand_metadata_hits kstat.zfs.misc.arcstats.demand_metadata_hits
+# TYPE node_zfs_arc_demand_metadata_hits untyped
+node_zfs_arc_demand_metadata_hits 1.464353e+06
+# HELP node_zfs_arc_demand_metadata_misses kstat.zfs.misc.arcstats.demand_metadata_misses
+# TYPE node_zfs_arc_demand_metadata_misses untyped
+node_zfs_arc_demand_metadata_misses 498170
+# HELP node_zfs_arc_duplicate_buffers kstat.zfs.misc.arcstats.duplicate_buffers
+# TYPE node_zfs_arc_duplicate_buffers untyped
+node_zfs_arc_duplicate_buffers 0
+# HELP node_zfs_arc_duplicate_buffers_size kstat.zfs.misc.arcstats.duplicate_buffers_size
+# TYPE node_zfs_arc_duplicate_buffers_size untyped
+node_zfs_arc_duplicate_buffers_size 0
+# HELP node_zfs_arc_duplicate_reads kstat.zfs.misc.arcstats.duplicate_reads
+# TYPE node_zfs_arc_duplicate_reads untyped
+node_zfs_arc_duplicate_reads 0
+# HELP node_zfs_arc_evict_l2_cached kstat.zfs.misc.arcstats.evict_l2_cached
+# TYPE node_zfs_arc_evict_l2_cached untyped
+node_zfs_arc_evict_l2_cached 0
+# HELP node_zfs_arc_evict_l2_eligible kstat.zfs.misc.arcstats.evict_l2_eligible
+# TYPE node_zfs_arc_evict_l2_eligible untyped
+node_zfs_arc_evict_l2_eligible 8.99251456e+09
+# HELP node_zfs_arc_evict_l2_ineligible kstat.zfs.misc.arcstats.evict_l2_ineligible
+# TYPE node_zfs_arc_evict_l2_ineligible untyped
+node_zfs_arc_evict_l2_ineligible 9.92552448e+08
+# HELP node_zfs_arc_evict_l2_skip kstat.zfs.misc.arcstats.evict_l2_skip
+# TYPE node_zfs_arc_evict_l2_skip untyped
+node_zfs_arc_evict_l2_skip 0
+# HELP node_zfs_arc_evict_not_enough kstat.zfs.misc.arcstats.evict_not_enough
+# TYPE node_zfs_arc_evict_not_enough untyped
+node_zfs_arc_evict_not_enough 680
+# HELP node_zfs_arc_evict_skip kstat.zfs.misc.arcstats.evict_skip
+# TYPE node_zfs_arc_evict_skip untyped
+node_zfs_arc_evict_skip 2.265729e+06
+# HELP node_zfs_arc_hash_chain_max kstat.zfs.misc.arcstats.hash_chain_max
+# TYPE node_zfs_arc_hash_chain_max untyped
+node_zfs_arc_hash_chain_max 3
+# HELP node_zfs_arc_hash_chains kstat.zfs.misc.arcstats.hash_chains
+# TYPE node_zfs_arc_hash_chains untyped
+node_zfs_arc_hash_chains 412
+# HELP node_zfs_arc_hash_collisions kstat.zfs.misc.arcstats.hash_collisions
+# TYPE node_zfs_arc_hash_collisions untyped
+node_zfs_arc_hash_collisions 50564
+# HELP node_zfs_arc_hash_elements kstat.zfs.misc.arcstats.hash_elements
+# TYPE node_zfs_arc_hash_elements untyped
+node_zfs_arc_hash_elements 42359
+# HELP node_zfs_arc_hash_elements_max kstat.zfs.misc.arcstats.hash_elements_max
+# TYPE node_zfs_arc_hash_elements_max untyped
+node_zfs_arc_hash_elements_max 88245
+# HELP node_zfs_arc_hdr_size kstat.zfs.misc.arcstats.hdr_size
+# TYPE node_zfs_arc_hdr_size untyped
+node_zfs_arc_hdr_size 1.636108e+07
+# HELP node_zfs_arc_hits kstat.zfs.misc.arcstats.hits
+# TYPE node_zfs_arc_hits untyped
+node_zfs_arc_hits 8.772612e+06
+# HELP node_zfs_arc_l2_abort_lowmem kstat.zfs.misc.arcstats.l2_abort_lowmem
+# TYPE node_zfs_arc_l2_abort_lowmem untyped
+node_zfs_arc_l2_abort_lowmem 0
+# HELP node_zfs_arc_l2_asize kstat.zfs.misc.arcstats.l2_asize
+# TYPE node_zfs_arc_l2_asize untyped
+node_zfs_arc_l2_asize 0
+# HELP node_zfs_arc_l2_cdata_free_on_write kstat.zfs.misc.arcstats.l2_cdata_free_on_write
+# TYPE node_zfs_arc_l2_cdata_free_on_write untyped
+node_zfs_arc_l2_cdata_free_on_write 0
+# HELP node_zfs_arc_l2_cksum_bad kstat.zfs.misc.arcstats.l2_cksum_bad
+# TYPE node_zfs_arc_l2_cksum_bad untyped
+node_zfs_arc_l2_cksum_bad 0
+# HELP node_zfs_arc_l2_compress_failures kstat.zfs.misc.arcstats.l2_compress_failures
+# TYPE node_zfs_arc_l2_compress_failures untyped
+node_zfs_arc_l2_compress_failures 0
+# HELP node_zfs_arc_l2_compress_successes kstat.zfs.misc.arcstats.l2_compress_successes
+# TYPE node_zfs_arc_l2_compress_successes untyped
+node_zfs_arc_l2_compress_successes 0
+# HELP node_zfs_arc_l2_compress_zeros kstat.zfs.misc.arcstats.l2_compress_zeros
+# TYPE node_zfs_arc_l2_compress_zeros untyped
+node_zfs_arc_l2_compress_zeros 0
+# HELP node_zfs_arc_l2_evict_l1cached kstat.zfs.misc.arcstats.l2_evict_l1cached
+# TYPE node_zfs_arc_l2_evict_l1cached untyped
+node_zfs_arc_l2_evict_l1cached 0
+# HELP node_zfs_arc_l2_evict_lock_retry kstat.zfs.misc.arcstats.l2_evict_lock_retry
+# TYPE node_zfs_arc_l2_evict_lock_retry untyped
+node_zfs_arc_l2_evict_lock_retry 0
+# HELP node_zfs_arc_l2_evict_reading kstat.zfs.misc.arcstats.l2_evict_reading
+# TYPE node_zfs_arc_l2_evict_reading untyped
+node_zfs_arc_l2_evict_reading 0
+# HELP node_zfs_arc_l2_feeds kstat.zfs.misc.arcstats.l2_feeds
+# TYPE node_zfs_arc_l2_feeds untyped
+node_zfs_arc_l2_feeds 0
+# HELP node_zfs_arc_l2_free_on_write kstat.zfs.misc.arcstats.l2_free_on_write
+# TYPE node_zfs_arc_l2_free_on_write untyped
+node_zfs_arc_l2_free_on_write 0
+# HELP node_zfs_arc_l2_hdr_size kstat.zfs.misc.arcstats.l2_hdr_size
+# TYPE node_zfs_arc_l2_hdr_size untyped
+node_zfs_arc_l2_hdr_size 0
+# HELP node_zfs_arc_l2_hits kstat.zfs.misc.arcstats.l2_hits
+# TYPE node_zfs_arc_l2_hits untyped
+node_zfs_arc_l2_hits 0
+# HELP node_zfs_arc_l2_io_error kstat.zfs.misc.arcstats.l2_io_error
+# TYPE node_zfs_arc_l2_io_error untyped
+node_zfs_arc_l2_io_error 0
+# HELP node_zfs_arc_l2_misses kstat.zfs.misc.arcstats.l2_misses
+# TYPE node_zfs_arc_l2_misses untyped
+node_zfs_arc_l2_misses 0
+# HELP node_zfs_arc_l2_read_bytes kstat.zfs.misc.arcstats.l2_read_bytes
+# TYPE node_zfs_arc_l2_read_bytes untyped
+node_zfs_arc_l2_read_bytes 0
+# HELP node_zfs_arc_l2_rw_clash kstat.zfs.misc.arcstats.l2_rw_clash
+# TYPE node_zfs_arc_l2_rw_clash untyped
+node_zfs_arc_l2_rw_clash 0
+# HELP node_zfs_arc_l2_size kstat.zfs.misc.arcstats.l2_size
+# TYPE node_zfs_arc_l2_size untyped
+node_zfs_arc_l2_size 0
+# HELP node_zfs_arc_l2_write_bytes kstat.zfs.misc.arcstats.l2_write_bytes
+# TYPE node_zfs_arc_l2_write_bytes untyped
+node_zfs_arc_l2_write_bytes 0
+# HELP node_zfs_arc_l2_writes_done kstat.zfs.misc.arcstats.l2_writes_done
+# TYPE node_zfs_arc_l2_writes_done untyped
+node_zfs_arc_l2_writes_done 0
+# HELP node_zfs_arc_l2_writes_error kstat.zfs.misc.arcstats.l2_writes_error
+# TYPE node_zfs_arc_l2_writes_error untyped
+node_zfs_arc_l2_writes_error 0
+# HELP node_zfs_arc_l2_writes_lock_retry kstat.zfs.misc.arcstats.l2_writes_lock_retry
+# TYPE node_zfs_arc_l2_writes_lock_retry untyped
+node_zfs_arc_l2_writes_lock_retry 0
+# HELP node_zfs_arc_l2_writes_sent kstat.zfs.misc.arcstats.l2_writes_sent
+# TYPE node_zfs_arc_l2_writes_sent untyped
+node_zfs_arc_l2_writes_sent 0
+# HELP node_zfs_arc_memory_direct_count kstat.zfs.misc.arcstats.memory_direct_count
+# TYPE node_zfs_arc_memory_direct_count untyped
+node_zfs_arc_memory_direct_count 542
+# HELP node_zfs_arc_memory_indirect_count kstat.zfs.misc.arcstats.memory_indirect_count
+# TYPE node_zfs_arc_memory_indirect_count untyped
+node_zfs_arc_memory_indirect_count 3006
+# HELP node_zfs_arc_memory_throttle_count kstat.zfs.misc.arcstats.memory_throttle_count
+# TYPE node_zfs_arc_memory_throttle_count untyped
+node_zfs_arc_memory_throttle_count 0
+# HELP node_zfs_arc_metadata_size kstat.zfs.misc.arcstats.metadata_size
+# TYPE node_zfs_arc_metadata_size untyped
+node_zfs_arc_metadata_size 1.7529856e+08
+# HELP node_zfs_arc_mfu_evictable_data kstat.zfs.misc.arcstats.mfu_evictable_data
+# TYPE node_zfs_arc_mfu_evictable_data untyped
+node_zfs_arc_mfu_evictable_data 1.017613824e+09
+# HELP node_zfs_arc_mfu_evictable_metadata kstat.zfs.misc.arcstats.mfu_evictable_metadata
+# TYPE node_zfs_arc_mfu_evictable_metadata untyped
+node_zfs_arc_mfu_evictable_metadata 9.163776e+06
+# HELP node_zfs_arc_mfu_ghost_evictable_data kstat.zfs.misc.arcstats.mfu_ghost_evictable_data
+# TYPE node_zfs_arc_mfu_ghost_evictable_data untyped
+node_zfs_arc_mfu_ghost_evictable_data 9.6731136e+07
+# HELP node_zfs_arc_mfu_ghost_evictable_metadata kstat.zfs.misc.arcstats.mfu_ghost_evictable_metadata
+# TYPE node_zfs_arc_mfu_ghost_evictable_metadata untyped
+node_zfs_arc_mfu_ghost_evictable_metadata 8.205312e+06
+# HELP node_zfs_arc_mfu_ghost_hits kstat.zfs.misc.arcstats.mfu_ghost_hits
+# TYPE node_zfs_arc_mfu_ghost_hits untyped
+node_zfs_arc_mfu_ghost_hits 821
+# HELP node_zfs_arc_mfu_ghost_size kstat.zfs.misc.arcstats.mfu_ghost_size
+# TYPE node_zfs_arc_mfu_ghost_size untyped
+node_zfs_arc_mfu_ghost_size 1.04936448e+08
+# HELP node_zfs_arc_mfu_hits kstat.zfs.misc.arcstats.mfu_hits
+# TYPE node_zfs_arc_mfu_hits untyped
+node_zfs_arc_mfu_hits 7.829854e+06
+# HELP node_zfs_arc_mfu_size kstat.zfs.misc.arcstats.mfu_size
+# TYPE node_zfs_arc_mfu_size untyped
+node_zfs_arc_mfu_size 1.066623488e+09
+# HELP node_zfs_arc_misses kstat.zfs.misc.arcstats.misses
+# TYPE node_zfs_arc_misses untyped
+node_zfs_arc_misses 604635
+# HELP node_zfs_arc_mru_evictable_data kstat.zfs.misc.arcstats.mru_evictable_data
+# TYPE node_zfs_arc_mru_evictable_data untyped
+node_zfs_arc_mru_evictable_data 2.78091264e+08
+# HELP node_zfs_arc_mru_evictable_metadata kstat.zfs.misc.arcstats.mru_evictable_metadata
+# TYPE node_zfs_arc_mru_evictable_metadata untyped
+node_zfs_arc_mru_evictable_metadata 1.8606592e+07
+# HELP node_zfs_arc_mru_ghost_evictable_data kstat.zfs.misc.arcstats.mru_ghost_evictable_data
+# TYPE node_zfs_arc_mru_ghost_evictable_data untyped
+node_zfs_arc_mru_ghost_evictable_data 8.83765248e+08
+# HELP node_zfs_arc_mru_ghost_evictable_metadata kstat.zfs.misc.arcstats.mru_ghost_evictable_metadata
+# TYPE node_zfs_arc_mru_ghost_evictable_metadata untyped
+node_zfs_arc_mru_ghost_evictable_metadata 1.1596288e+08
+# HELP node_zfs_arc_mru_ghost_hits kstat.zfs.misc.arcstats.mru_ghost_hits
+# TYPE node_zfs_arc_mru_ghost_hits untyped
+node_zfs_arc_mru_ghost_hits 21100
+# HELP node_zfs_arc_mru_ghost_size kstat.zfs.misc.arcstats.mru_ghost_size
+# TYPE node_zfs_arc_mru_ghost_size untyped
+node_zfs_arc_mru_ghost_size 9.99728128e+08
+# HELP node_zfs_arc_mru_hits kstat.zfs.misc.arcstats.mru_hits
+# TYPE node_zfs_arc_mru_hits untyped
+node_zfs_arc_mru_hits 855535
+# HELP node_zfs_arc_mru_size kstat.zfs.misc.arcstats.mru_size
+# TYPE node_zfs_arc_mru_size untyped
+node_zfs_arc_mru_size 4.02593792e+08
+# HELP node_zfs_arc_mutex_miss kstat.zfs.misc.arcstats.mutex_miss
+# TYPE node_zfs_arc_mutex_miss untyped
+node_zfs_arc_mutex_miss 2
+# HELP node_zfs_arc_other_size kstat.zfs.misc.arcstats.other_size
+# TYPE node_zfs_arc_other_size untyped
+node_zfs_arc_other_size 1.16443992e+08
+# HELP node_zfs_arc_p kstat.zfs.misc.arcstats.p
+# TYPE node_zfs_arc_p untyped
+node_zfs_arc_p 5.16395305e+08
+# HELP node_zfs_arc_prefetch_data_hits kstat.zfs.misc.arcstats.prefetch_data_hits
+# TYPE node_zfs_arc_prefetch_data_hits untyped
+node_zfs_arc_prefetch_data_hits 3615
+# HELP node_zfs_arc_prefetch_data_misses kstat.zfs.misc.arcstats.prefetch_data_misses
+# TYPE node_zfs_arc_prefetch_data_misses untyped
+node_zfs_arc_prefetch_data_misses 17094
+# HELP node_zfs_arc_prefetch_metadata_hits kstat.zfs.misc.arcstats.prefetch_metadata_hits
+# TYPE node_zfs_arc_prefetch_metadata_hits untyped
+node_zfs_arc_prefetch_metadata_hits 83612
+# HELP node_zfs_arc_prefetch_metadata_misses kstat.zfs.misc.arcstats.prefetch_metadata_misses
+# TYPE node_zfs_arc_prefetch_metadata_misses untyped
+node_zfs_arc_prefetch_metadata_misses 16071
+# HELP node_zfs_arc_size kstat.zfs.misc.arcstats.size
+# TYPE node_zfs_arc_size untyped
+node_zfs_arc_size 1.603939792e+09
+# HELP node_zfs_dmu_tx_dmu_tx_assigned kstat.zfs.misc.dmu_tx.dmu_tx_assigned
+# TYPE node_zfs_dmu_tx_dmu_tx_assigned untyped
+node_zfs_dmu_tx_dmu_tx_assigned 3.532844e+06
+# HELP node_zfs_dmu_tx_dmu_tx_delay kstat.zfs.misc.dmu_tx.dmu_tx_delay
+# TYPE node_zfs_dmu_tx_dmu_tx_delay untyped
+node_zfs_dmu_tx_dmu_tx_delay 0
+# HELP node_zfs_dmu_tx_dmu_tx_dirty_delay kstat.zfs.misc.dmu_tx.dmu_tx_dirty_delay
+# TYPE node_zfs_dmu_tx_dmu_tx_dirty_delay untyped
+node_zfs_dmu_tx_dmu_tx_dirty_delay 0
+# HELP node_zfs_dmu_tx_dmu_tx_dirty_over_max kstat.zfs.misc.dmu_tx.dmu_tx_dirty_over_max
+# TYPE node_zfs_dmu_tx_dmu_tx_dirty_over_max untyped
+node_zfs_dmu_tx_dmu_tx_dirty_over_max 0
+# HELP node_zfs_dmu_tx_dmu_tx_dirty_throttle kstat.zfs.misc.dmu_tx.dmu_tx_dirty_throttle
+# TYPE node_zfs_dmu_tx_dmu_tx_dirty_throttle untyped
+node_zfs_dmu_tx_dmu_tx_dirty_throttle 0
+# HELP node_zfs_dmu_tx_dmu_tx_error kstat.zfs.misc.dmu_tx.dmu_tx_error
+# TYPE node_zfs_dmu_tx_dmu_tx_error untyped
+node_zfs_dmu_tx_dmu_tx_error 0
+# HELP node_zfs_dmu_tx_dmu_tx_group kstat.zfs.misc.dmu_tx.dmu_tx_group
+# TYPE node_zfs_dmu_tx_dmu_tx_group untyped
+node_zfs_dmu_tx_dmu_tx_group 0
+# HELP node_zfs_dmu_tx_dmu_tx_memory_reclaim kstat.zfs.misc.dmu_tx.dmu_tx_memory_reclaim
+# TYPE node_zfs_dmu_tx_dmu_tx_memory_reclaim untyped
+node_zfs_dmu_tx_dmu_tx_memory_reclaim 0
+# HELP node_zfs_dmu_tx_dmu_tx_memory_reserve kstat.zfs.misc.dmu_tx.dmu_tx_memory_reserve
+# TYPE node_zfs_dmu_tx_dmu_tx_memory_reserve untyped
+node_zfs_dmu_tx_dmu_tx_memory_reserve 0
+# HELP node_zfs_dmu_tx_dmu_tx_quota kstat.zfs.misc.dmu_tx.dmu_tx_quota
+# TYPE node_zfs_dmu_tx_dmu_tx_quota untyped
+node_zfs_dmu_tx_dmu_tx_quota 0
+# HELP node_zfs_dmu_tx_dmu_tx_suspended kstat.zfs.misc.dmu_tx.dmu_tx_suspended
+# TYPE node_zfs_dmu_tx_dmu_tx_suspended untyped
+node_zfs_dmu_tx_dmu_tx_suspended 0
+# HELP node_zfs_fm_erpt_dropped kstat.zfs.misc.fm.erpt-dropped
+# TYPE node_zfs_fm_erpt_dropped untyped
+node_zfs_fm_erpt_dropped 18
+# HELP node_zfs_fm_erpt_set_failed kstat.zfs.misc.fm.erpt-set-failed
+# TYPE node_zfs_fm_erpt_set_failed untyped
+node_zfs_fm_erpt_set_failed 0
+# HELP node_zfs_fm_fmri_set_failed kstat.zfs.misc.fm.fmri-set-failed
+# TYPE node_zfs_fm_fmri_set_failed untyped
+node_zfs_fm_fmri_set_failed 0
+# HELP node_zfs_fm_payload_set_failed kstat.zfs.misc.fm.payload-set-failed
+# TYPE node_zfs_fm_payload_set_failed untyped
+node_zfs_fm_payload_set_failed 0
+# HELP node_zfs_vdev_cache_delegations kstat.zfs.misc.vdev_cache_stats.delegations
+# TYPE node_zfs_vdev_cache_delegations untyped
+node_zfs_vdev_cache_delegations 40
+# HELP node_zfs_vdev_cache_hits kstat.zfs.misc.vdev_cache_stats.hits
+# TYPE node_zfs_vdev_cache_hits untyped
+node_zfs_vdev_cache_hits 0
+# HELP node_zfs_vdev_cache_misses kstat.zfs.misc.vdev_cache_stats.misses
+# TYPE node_zfs_vdev_cache_misses untyped
+node_zfs_vdev_cache_misses 0
+# HELP node_zfs_xuio_onloan_read_buf kstat.zfs.misc.xuio_stats.onloan_read_buf
+# TYPE node_zfs_xuio_onloan_read_buf untyped
+node_zfs_xuio_onloan_read_buf 32
+# HELP node_zfs_xuio_onloan_write_buf kstat.zfs.misc.xuio_stats.onloan_write_buf
+# TYPE node_zfs_xuio_onloan_write_buf untyped
+node_zfs_xuio_onloan_write_buf 0
+# HELP node_zfs_xuio_read_buf_copied kstat.zfs.misc.xuio_stats.read_buf_copied
+# TYPE node_zfs_xuio_read_buf_copied untyped
+node_zfs_xuio_read_buf_copied 0
+# HELP node_zfs_xuio_read_buf_nocopy kstat.zfs.misc.xuio_stats.read_buf_nocopy
+# TYPE node_zfs_xuio_read_buf_nocopy untyped
+node_zfs_xuio_read_buf_nocopy 0
+# HELP node_zfs_xuio_write_buf_copied kstat.zfs.misc.xuio_stats.write_buf_copied
+# TYPE node_zfs_xuio_write_buf_copied untyped
+node_zfs_xuio_write_buf_copied 0
+# HELP node_zfs_xuio_write_buf_nocopy kstat.zfs.misc.xuio_stats.write_buf_nocopy
+# TYPE node_zfs_xuio_write_buf_nocopy untyped
+node_zfs_xuio_write_buf_nocopy 0
+# HELP node_zfs_zfetch_bogus_streams kstat.zfs.misc.zfetchstats.bogus_streams
+# TYPE node_zfs_zfetch_bogus_streams untyped
+node_zfs_zfetch_bogus_streams 0
+# HELP node_zfs_zfetch_colinear_hits kstat.zfs.misc.zfetchstats.colinear_hits
+# TYPE node_zfs_zfetch_colinear_hits untyped
+node_zfs_zfetch_colinear_hits 0
+# HELP node_zfs_zfetch_colinear_misses kstat.zfs.misc.zfetchstats.colinear_misses
+# TYPE node_zfs_zfetch_colinear_misses untyped
+node_zfs_zfetch_colinear_misses 11
+# HELP node_zfs_zfetch_hits kstat.zfs.misc.zfetchstats.hits
+# TYPE node_zfs_zfetch_hits untyped
+node_zfs_zfetch_hits 7.067992e+06
+# HELP node_zfs_zfetch_misses kstat.zfs.misc.zfetchstats.misses
+# TYPE node_zfs_zfetch_misses untyped
+node_zfs_zfetch_misses 11
+# HELP node_zfs_zfetch_reclaim_failures kstat.zfs.misc.zfetchstats.reclaim_failures
+# TYPE node_zfs_zfetch_reclaim_failures untyped
+node_zfs_zfetch_reclaim_failures 11
+# HELP node_zfs_zfetch_reclaim_successes kstat.zfs.misc.zfetchstats.reclaim_successes
+# TYPE node_zfs_zfetch_reclaim_successes untyped
+node_zfs_zfetch_reclaim_successes 0
+# HELP node_zfs_zfetch_streams_noresets kstat.zfs.misc.zfetchstats.streams_noresets
+# TYPE node_zfs_zfetch_streams_noresets untyped
+node_zfs_zfetch_streams_noresets 2
+# HELP node_zfs_zfetch_streams_resets kstat.zfs.misc.zfetchstats.streams_resets
+# TYPE node_zfs_zfetch_streams_resets untyped
+node_zfs_zfetch_streams_resets 0
+# HELP node_zfs_zfetch_stride_hits kstat.zfs.misc.zfetchstats.stride_hits
+# TYPE node_zfs_zfetch_stride_hits untyped
+node_zfs_zfetch_stride_hits 7.06799e+06
+# HELP node_zfs_zfetch_stride_misses kstat.zfs.misc.zfetchstats.stride_misses
+# TYPE node_zfs_zfetch_stride_misses untyped
+node_zfs_zfetch_stride_misses 0
+# HELP node_zfs_zil_zil_commit_count kstat.zfs.misc.zil.zil_commit_count
+# TYPE node_zfs_zil_zil_commit_count untyped
+node_zfs_zil_zil_commit_count 10
+# HELP node_zfs_zil_zil_commit_writer_count kstat.zfs.misc.zil.zil_commit_writer_count
+# TYPE node_zfs_zil_zil_commit_writer_count untyped
+node_zfs_zil_zil_commit_writer_count 0
+# HELP node_zfs_zil_zil_itx_copied_bytes kstat.zfs.misc.zil.zil_itx_copied_bytes
+# TYPE node_zfs_zil_zil_itx_copied_bytes untyped
+node_zfs_zil_zil_itx_copied_bytes 0
+# HELP node_zfs_zil_zil_itx_copied_count kstat.zfs.misc.zil.zil_itx_copied_count
+# TYPE node_zfs_zil_zil_itx_copied_count untyped
+node_zfs_zil_zil_itx_copied_count 0
+# HELP node_zfs_zil_zil_itx_count kstat.zfs.misc.zil.zil_itx_count
+# TYPE node_zfs_zil_zil_itx_count untyped
+node_zfs_zil_zil_itx_count 0
+# HELP node_zfs_zil_zil_itx_indirect_bytes kstat.zfs.misc.zil.zil_itx_indirect_bytes
+# TYPE node_zfs_zil_zil_itx_indirect_bytes untyped
+node_zfs_zil_zil_itx_indirect_bytes 0
+# HELP node_zfs_zil_zil_itx_indirect_count kstat.zfs.misc.zil.zil_itx_indirect_count
+# TYPE node_zfs_zil_zil_itx_indirect_count untyped
+node_zfs_zil_zil_itx_indirect_count 0
+# HELP node_zfs_zil_zil_itx_metaslab_normal_bytes kstat.zfs.misc.zil.zil_itx_metaslab_normal_bytes
+# TYPE node_zfs_zil_zil_itx_metaslab_normal_bytes untyped
+node_zfs_zil_zil_itx_metaslab_normal_bytes 0
+# HELP node_zfs_zil_zil_itx_metaslab_normal_count kstat.zfs.misc.zil.zil_itx_metaslab_normal_count
+# TYPE node_zfs_zil_zil_itx_metaslab_normal_count untyped
+node_zfs_zil_zil_itx_metaslab_normal_count 0
+# HELP node_zfs_zil_zil_itx_metaslab_slog_bytes kstat.zfs.misc.zil.zil_itx_metaslab_slog_bytes
+# TYPE node_zfs_zil_zil_itx_metaslab_slog_bytes untyped
+node_zfs_zil_zil_itx_metaslab_slog_bytes 0
+# HELP node_zfs_zil_zil_itx_metaslab_slog_count kstat.zfs.misc.zil.zil_itx_metaslab_slog_count
+# TYPE node_zfs_zil_zil_itx_metaslab_slog_count untyped
+node_zfs_zil_zil_itx_metaslab_slog_count 0
+# HELP node_zfs_zil_zil_itx_needcopy_bytes kstat.zfs.misc.zil.zil_itx_needcopy_bytes
+# TYPE node_zfs_zil_zil_itx_needcopy_bytes untyped
+node_zfs_zil_zil_itx_needcopy_bytes 0
+# HELP node_zfs_zil_zil_itx_needcopy_count kstat.zfs.misc.zil.zil_itx_needcopy_count
+# TYPE node_zfs_zil_zil_itx_needcopy_count untyped
+node_zfs_zil_zil_itx_needcopy_count 0
+# HELP node_zfs_zpool_nread kstat.zfs.misc.io.nread
+# TYPE node_zfs_zpool_nread untyped
+node_zfs_zpool_nread{zpool="pool1"} 1.88416e+06
+node_zfs_zpool_nread{zpool="poolz1"} 2.82624e+06
+# HELP node_zfs_zpool_nwritten kstat.zfs.misc.io.nwritten
+# TYPE node_zfs_zpool_nwritten untyped
+node_zfs_zpool_nwritten{zpool="pool1"} 3.206144e+06
+node_zfs_zpool_nwritten{zpool="poolz1"} 2.680501248e+09
+# HELP node_zfs_zpool_rcnt kstat.zfs.misc.io.rcnt
+# TYPE node_zfs_zpool_rcnt untyped
+node_zfs_zpool_rcnt{zpool="pool1"} 0
+node_zfs_zpool_rcnt{zpool="poolz1"} 0
+# HELP node_zfs_zpool_reads kstat.zfs.misc.io.reads
+# TYPE node_zfs_zpool_reads untyped
+node_zfs_zpool_reads{zpool="pool1"} 22
+node_zfs_zpool_reads{zpool="poolz1"} 33
+# HELP node_zfs_zpool_rlentime kstat.zfs.misc.io.rlentime
+# TYPE node_zfs_zpool_rlentime untyped
+node_zfs_zpool_rlentime{zpool="pool1"} 1.04112268e+08
+node_zfs_zpool_rlentime{zpool="poolz1"} 6.472105124093e+12
+# HELP node_zfs_zpool_rtime kstat.zfs.misc.io.rtime
+# TYPE node_zfs_zpool_rtime untyped
+node_zfs_zpool_rtime{zpool="pool1"} 2.4168078e+07
+node_zfs_zpool_rtime{zpool="poolz1"} 9.82909164e+09
+# HELP node_zfs_zpool_rupdate kstat.zfs.misc.io.rupdate
+# TYPE node_zfs_zpool_rupdate untyped
+node_zfs_zpool_rupdate{zpool="pool1"} 7.921048984922e+13
+node_zfs_zpool_rupdate{zpool="poolz1"} 1.10734831944501e+14
+# HELP node_zfs_zpool_wcnt kstat.zfs.misc.io.wcnt
+# TYPE node_zfs_zpool_wcnt untyped
+node_zfs_zpool_wcnt{zpool="pool1"} 0
+node_zfs_zpool_wcnt{zpool="poolz1"} 0
+# HELP node_zfs_zpool_wlentime kstat.zfs.misc.io.wlentime
+# TYPE node_zfs_zpool_wlentime untyped
+node_zfs_zpool_wlentime{zpool="pool1"} 1.04112268e+08
+node_zfs_zpool_wlentime{zpool="poolz1"} 6.472105124093e+12
+# HELP node_zfs_zpool_writes kstat.zfs.misc.io.writes
+# TYPE node_zfs_zpool_writes untyped
+node_zfs_zpool_writes{zpool="pool1"} 132
+node_zfs_zpool_writes{zpool="poolz1"} 25294
+# HELP node_zfs_zpool_wtime kstat.zfs.misc.io.wtime
+# TYPE node_zfs_zpool_wtime untyped
+node_zfs_zpool_wtime{zpool="pool1"} 7.155162e+06
+node_zfs_zpool_wtime{zpool="poolz1"} 9.673715628e+09
+# HELP node_zfs_zpool_wupdate kstat.zfs.misc.io.wupdate
+# TYPE node_zfs_zpool_wupdate untyped
+node_zfs_zpool_wupdate{zpool="pool1"} 7.9210489694949e+13
+node_zfs_zpool_wupdate{zpool="poolz1"} 1.10734831833266e+14
 # HELP process_cpu_seconds_total Total user and system CPU time spent in seconds.
 # TYPE process_cpu_seconds_total counter
-process_cpu_seconds_total 0
 # HELP process_max_fds Maximum number of open file descriptors.
 # TYPE process_max_fds gauge
-process_max_fds 1024
 # HELP process_open_fds Number of open file descriptors.
 # TYPE process_open_fds gauge
-process_open_fds 8
 # HELP process_resident_memory_bytes Resident memory size in bytes.
 # TYPE process_resident_memory_bytes gauge
-process_resident_memory_bytes 1.1108352e+07
 # HELP process_start_time_seconds Start time of the process since unix epoch in seconds.
 # TYPE process_start_time_seconds gauge
-process_start_time_seconds 1.47509459587e+09
 # HELP process_virtual_memory_bytes Virtual memory size in bytes.
 # TYPE process_virtual_memory_bytes gauge
-process_virtual_memory_bytes 2.0549632e+08
 # HELP testmetric1_1 Metric read from collector/fixtures/textfile/two_metric_files/metrics1.prom
 # TYPE testmetric1_1 untyped
 testmetric1_1{foo="bar"} 10
