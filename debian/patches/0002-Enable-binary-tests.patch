@@ -1,0 +1,11 @@
+--- a/node_exporter_test.go
++++ b/node_exporter_test.go
+@@ -14,7 +14,7 @@
+ )
+ 
+ const (
+-	binary  = "./node_exporter"
++	binary  = "../../../../bin/node_exporter"
+ 	address = "localhost:19100"
+ )
+ 
