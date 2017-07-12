@@ -4,6 +4,7 @@ prometheus-node-exporter (0.14.0+ds-1) UNRELEASED; urgency=medium
   * Updated debian/copyright for vendored dependencies.
   * Add missing tests.
   * Update documentation, defaults file, examples.
+  * debian/control: Update Standards-Version (no changes).
 
  -- Martín Ferrari <tincho@debian.org>  Tue, 11 Jul 2017 22:40:39 +0000
 
