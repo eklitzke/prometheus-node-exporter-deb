@@ -1,4 +1,4 @@
-prometheus-node-exporter (0.14.0+ds-1) UNRELEASED; urgency=medium
+prometheus-node-exporter (0.14.0+ds-1) unstable; urgency=medium
 
   * New upstream version. Closes: #867908.
   * Updated debian/copyright for vendored dependencies.
@@ -8,8 +8,9 @@ prometheus-node-exporter (0.14.0+ds-1) UNRELEASED; urgency=medium
   * debian/control: Fix Vcs-* fields.
   * debian/control: Mark package as autopkgtest-able.
   * debian/control: Update dependency on procfs.
+  * debian/gbp.conf: Add builder defaults.
 
- -- Martín Ferrari <tincho@debian.org>  Tue, 11 Jul 2017 22:40:39 +0000
+ -- Martín Ferrari <tincho@debian.org>  Wed, 12 Jul 2017 00:54:52 +0000
 
 prometheus-node-exporter (0.13.0+ds-1) unstable; urgency=medium
 
