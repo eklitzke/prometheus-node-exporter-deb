@@ -11,7 +11,7 @@ Build-Depends: debhelper (>= 9.0.0), dh-golang (>= 1.17~), golang-any (>= 1.5~),
  golang-github-prometheus-common-dev (>= 0+git20160504),
  golang-golang-x-sys-dev,
  golang-goprotobuf-dev,
- golang-procfs-dev (>= 0+git20150616),
+ golang-procfs-dev (>= 0+git20170703),
  golang-prometheus-client-dev (>= 0.7.0+ds-3),
 Standards-Version: 4.0.0
 Vcs-Git: https://anonscm.debian.org/git/pkg-go/packages/prometheus-node-exporter.git
