@@ -12,11 +12,15 @@ text format.
 
 To atomically push completion time for a cron job:
 
-echo my_batch_job_completion_time $(date +%s) > /path/to/directory/my_batch_job.prom.$$
-mv /path/to/directory/my_batch_job.prom.$$ /path/to/directory/my_batch_job.prom
+echo my_batch_job_completion_time $(date +%s) > \
+    /var/lib/prometheus/node-exporter/my_batch_job.prom.$$
+mv /var/lib/prometheus/node-exporter/my_batch_job.prom.$$ \
+    /var/lib/prometheus/node-exporter/my_batch_job.prom
 
 To statically set roles for a machine using labels:
 
-echo 'role{role="application_server"} 1' > /path/to/directory/role.prom.$$
-mv /path/to/directory/role.prom.$$ /path/to/directory/role.prom
+echo 'role{role="application_server"} 1' > \
+    /var/lib/prometheus/node-exporter/role.prom.$$
+mv /var/lib/prometheus/node-exporter/role.prom.$$ \
+    /var/lib/prometheus/node-exporter/role.prom
 

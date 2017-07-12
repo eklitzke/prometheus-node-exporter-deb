@@ -10,7 +10,7 @@ ARGS="-collector.diskstats.ignored-devices=^(ram|loop|fd)\d+$ \
 #       (default "^(ram|loop|fd|(h|s|v|xv)d[a-z]|nvme\\d+n\\d+p)\\d+$")
 #  -collector.filesystem.ignored-fs-types string
 #    	Regexp of filesystem types to ignore for filesystem collector.
-#       (default "^(sys|proc)fs$")
+#       (default "^(sys|proc|auto)fs$")
 #  -collector.filesystem.ignored-mount-points string
 #    	Regexp of mount points to ignore for filesystem collector.
 #       (default "^/(sys|proc|dev)($|/)")
@@ -24,6 +24,8 @@ ARGS="-collector.diskstats.ignored-devices=^(ram|loop|fd)\d+$ \
 #    	NTP server to use for ntp collector.
 #  -collector.procfs string
 #    	procfs mountpoint. (default "/proc")
+#  -collector.runit.servicedir string
+#    	Path to runit service directory. (default "/etc/service")
 #  -collector.supervisord.url string
 #    	XML RPC endpoint (default "http://localhost:9001/RPC2")
 #  -collector.sysfs string
@@ -38,22 +40,17 @@ ARGS="-collector.diskstats.ignored-devices=^(ram|loop|fd)\d+$ \
 #    	and not match blacklist to be included. (default ".+")
 #  -collector.textfile.directory string
 #    	Directory to read text files with metrics from.
+#  -collector.wifi string
+#    	test fixtures to use for wifi collector metrics
 #  -collectors.enabled string
 #    	Comma-separated list of collectors to use.
-#       (default "conntrack,diskstats,entropy,filefd,filesystem,hwmon,\
-#       loadavg,mdadm,meminfo,netdev,netstat,sockstat,stat,textfile,time,\
-#       uname,vmstat")
-#  -collectors.print
-#    	If true, print available collectors and exit.
-#  -log.format value
-#    	Set the log target and format.
-#       Example: "logger:syslog?appname=bob&local=7" or
-#       "logger:stdout?json=true" (default "logger:stderr")
+#       (default "conntrack,diskstats,entropy,edac,filefd,filesystem,hwmon,\
+#       infiniband,loadavg,mdadm,meminfo,netdev,netstat,sockstat,stat,\
+#       textfile,time,uname,vmstat,wifi,zfs")
 #  -log.level value
 #    	Only log messages with the given severity or above.
 #       Valid levels: [debug, info, warn, error, fatal] (default "info")
 #  -web.listen-address string
-#    	Address on which to expose metrics and web interface.
-#       (default ":9100")
+#    	Address on which to expose metrics and web interface. (default ":9100")
 #  -web.telemetry-path string
 #    	Path under which to expose metrics. (default "/metrics")
