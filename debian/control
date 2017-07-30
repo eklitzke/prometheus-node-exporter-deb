@@ -24,7 +24,8 @@ Testsuite: autopkgtest-pkg-go
 
 Package: prometheus-node-exporter
 Architecture: any
-Depends: ${shlibs:Depends}, ${misc:Depends}, daemon
+Depends: ${shlibs:Depends}, ${misc:Depends},
+         daemon | systemd-sysv,
 Built-Using: ${misc:Built-Using}
 Description: Prometheus exporter for machine metrics
  Prometheus exporter for machine metrics, written in Go with pluggable metric

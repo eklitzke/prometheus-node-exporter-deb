@@ -1,6 +1,7 @@
 prometheus-node-exporter (0.14.0+ds-2) UNRELEASED; urgency=medium
 
   * Add dh-systemd support. Closes: #866399.
+  * Only depend on daemon if systemd-sysv is not installed. Closes: #870083.
 
  -- Martín Ferrari <tincho@debian.org>  Sun, 30 Jul 2017 16:39:59 +0000
 
