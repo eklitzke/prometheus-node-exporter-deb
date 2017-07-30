@@ -57,9 +57,3 @@ override_dh_auto_install:
             debian/$(DEBPKGNAME)/usr/bin/$(DEBPKGNAME)
 	cp -v debian/README.textfile \
             debian/$(DEBPKGNAME)/var/lib/prometheus/node-exporter
-
-gen-orig-tgz:
-	if [ ! -f ../$(DEBPKGNAME)_$(VERSION).orig.tar.gz ] ; then \
-            git archive --format=tar.gz --prefix=$(DEBPKGNAME)-$(VERSION)/ \
-            upstream/$(VERSION) >../$(DEBPKGNAME)_$(VERSION).orig.tar.gz ; \
-	fi
