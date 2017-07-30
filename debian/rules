@@ -27,7 +27,8 @@ BUILDFLAGS := -ldflags \
     -X $(METAPKG)/version.GoVersion=$(GO_VERSION)"
 
 %:
-	dh $@ --buildsystem=golang --with=golang --builddirectory=$(BUILDDIR)
+	dh $@ --buildsystem=golang --with=golang,systemd \
+            --builddirectory=$(BUILDDIR)
 
 ifneq ($(GCCGO),)
 # Gccgo ignores vendoring.
