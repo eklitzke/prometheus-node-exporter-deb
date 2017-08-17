@@ -1,0 +1,22 @@
+--- a/collector/zfs_linux.go
++++ b/collector/zfs_linux.go
+@@ -11,6 +11,8 @@
+ // See the License for the specific language governing permissions and
+ // limitations under the License.
+ 
++// +build !nozfs
++
+ package collector
+ 
+ import (
+--- a/collector/zfs_linux_test.go
++++ b/collector/zfs_linux_test.go
+@@ -11,6 +11,8 @@
+ // See the License for the specific language governing permissions and
+ // limitations under the License.
+ 
++// +build !nozfs
++
+ package collector
+ 
+ import (

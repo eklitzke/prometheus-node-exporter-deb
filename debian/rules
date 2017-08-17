@@ -31,6 +31,7 @@ BUILDFLAGS := -ldflags \
             --builddirectory=$(BUILDDIR)
 
 DEB_HOST_ARCH := $(shell dpkg-architecture -qDEB_HOST_ARCH)
+DEB_HOST_ARCH_BITS := $(shell dpkg-architecture -qDEB_HOST_ARCH_BITS)
 
 ifneq ($(GCCGO),)
 # Workaround until #872402 is fixed.
@@ -48,6 +49,11 @@ override_dh_auto_configure:
             mkdir -vp $$dst; \
             mv -v $$src $$dst; \
         done
+endif
+
+# ZFS (or its tests) are not working in 32-bit arches.
+ifeq ($(DEB_HOST_ARCH_BITS),32)
+BUILDFLAGS += -tags nozfs
 endif
 
 override_dh_auto_build:
