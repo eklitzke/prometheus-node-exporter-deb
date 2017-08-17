@@ -30,7 +30,14 @@ BUILDFLAGS := -ldflags \
 	dh $@ --buildsystem=golang --with=golang,systemd \
             --builddirectory=$(BUILDDIR)
 
+DEB_HOST_ARCH := $(shell dpkg-architecture -qDEB_HOST_ARCH)
+
 ifneq ($(GCCGO),)
+# Workaround until #872402 is fixed.
+ifeq ($(findstring mips,$(DEB_HOST_ARCH)),mips)
+# mipsel => mipsle, mips64el => mips64le
+BUILDFLAGS += -tags $(DEB_HOST_ARCH:el=le)
+endif
 # Gccgo ignores vendoring.
 override_dh_auto_configure:
 	dh_auto_configure
@@ -48,7 +55,7 @@ override_dh_auto_build:
 
 override_dh_auto_test:
 	chmod a+x $(BUILDDIR)/src/$(DH_GOPKG)/collector/fixtures/megacli
-	dh_auto_test
+	dh_auto_test -- $(BUILDFLAGS)
 
 override_dh_auto_install:
 	mkdir -p debian/$(DEBPKGNAME)/usr/bin
