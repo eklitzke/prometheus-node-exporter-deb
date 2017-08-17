@@ -1,11 +1,14 @@
 --- a/node_exporter_test.go
 +++ b/node_exporter_test.go
-@@ -14,7 +14,7 @@
+@@ -13,8 +13,10 @@
+ 	"github.com/prometheus/procfs"
  )
  
++var (
++	binary = filepath.Join(os.Getenv("GOPATH"), "bin/node_exporter")
++)
  const (
 -	binary  = "./node_exporter"
-+	binary  = "../../../../bin/node_exporter"
  	address = "localhost:19100"
  )
  

@@ -3,6 +3,7 @@ prometheus-node-exporter (0.14.0+ds-2) UNRELEASED; urgency=medium
   * Add dh-systemd support. Closes: #866399.
   * Only depend on daemon if systemd-sysv is not installed. Closes: #870083.
   * Fix compilation on gccgo/mips*.
+  * Fix integration test (wrong path under gccgo).
 
   TODO: wait for https://github.com/prometheus/node_exporter/issues/629 to be
   solved, and apply patch.
