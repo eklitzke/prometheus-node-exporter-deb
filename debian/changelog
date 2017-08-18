@@ -1,4 +1,4 @@
-prometheus-node-exporter (0.14.0+ds-2) UNRELEASED; urgency=medium
+prometheus-node-exporter (0.14.0+ds-2) unstable; urgency=medium
 
   * Add dh-systemd support. Closes: #866399.
   * Only depend on daemon if systemd-sysv is not installed. Closes: #870083.
@@ -7,7 +7,7 @@ prometheus-node-exporter (0.14.0+ds-2) UNRELEASED; urgency=medium
   * Disable the ZFS collector in 32-bit arches, until issue #629 is
     solved upstream.
 
- -- Martín Ferrari <tincho@debian.org>  Sun, 30 Jul 2017 16:39:59 +0000
+ -- Martín Ferrari <tincho@debian.org>  Fri, 18 Aug 2017 09:36:40 +0000
 
 prometheus-node-exporter (0.14.0+ds-1) unstable; urgency=medium
 
