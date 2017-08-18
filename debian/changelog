@@ -1,3 +1,9 @@
+prometheus-node-exporter (0.14.0+ds-3) UNRELEASED; urgency=medium
+
+  * Fix problem introduced by the combination of two flags (nozfs and mips*).
+
+ -- Martín Ferrari <tincho@debian.org>  Fri, 18 Aug 2017 11:11:28 +0000
+
 prometheus-node-exporter (0.14.0+ds-2) unstable; urgency=medium
 
   * Add dh-systemd support. Closes: #866399.

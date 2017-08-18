@@ -18,7 +18,8 @@ HOSTNAME   := debian
 BUILD_DATE := $(shell date --utc --date='$(DEBDATE)' +%Y%m%d-%H:%M:%S)
 GO_VERSION := $(shell go version | sed 's/go version \(\S*\).*/\1/')
 GCCGO      := $(strip $(shell go version | grep gccgo))
-BUILDFLAGS := -ldflags \
+BUILDTAGS  :=
+BUILDFLAGS  = -tags "$(BUILDTAGS)" -ldflags \
   " -X $(METAPKG)/version.Version=$(VERSION)\
     -X $(METAPKG)/version.Revision=$(REV)\
     -X $(METAPKG)/version.Branch=$(BRANCH)\
@@ -37,7 +38,7 @@ ifneq ($(GCCGO),)
 # Workaround until #872402 is fixed.
 ifeq ($(findstring mips,$(DEB_HOST_ARCH)),mips)
 # mipsel => mipsle, mips64el => mips64le
-BUILDFLAGS += -tags $(DEB_HOST_ARCH:el=le)
+BUILDTAGS += $(DEB_HOST_ARCH:el=le)
 endif
 # Gccgo ignores vendoring.
 override_dh_auto_configure:
@@ -53,7 +54,7 @@ endif
 
 # ZFS (or its tests) are not working in 32-bit arches.
 ifeq ($(DEB_HOST_ARCH_BITS),32)
-BUILDFLAGS += -tags nozfs
+BUILDTAGS += nozfs
 endif
 
 override_dh_auto_build:
