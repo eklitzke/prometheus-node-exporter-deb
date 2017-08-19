@@ -1,9 +1,9 @@
-prometheus-node-exporter (0.14.0+ds-3) UNRELEASED; urgency=medium
+prometheus-node-exporter (0.14.0+ds-3) unstable; urgency=medium
 
   * Fix problem introduced by the combination of two flags (nozfs and mips*).
   * Fix test timing issue in slow arches.
 
- -- Martín Ferrari <tincho@debian.org>  Fri, 18 Aug 2017 11:11:28 +0000
+ -- Martín Ferrari <tincho@debian.org>  Sat, 19 Aug 2017 11:34:09 +0000
 
 prometheus-node-exporter (0.14.0+ds-2) unstable; urgency=medium
 
