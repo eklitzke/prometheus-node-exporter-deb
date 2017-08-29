@@ -1,3 +1,4 @@
+Description: Enable missing arches to build
 --- a/collector/uname_linux_int8.go
 +++ b/collector/uname_linux_int8.go
 @@ -11,7 +11,8 @@

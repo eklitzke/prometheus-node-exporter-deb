@@ -1,4 +1,4 @@
-Format: http://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
+Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: github.com/prometheus/node_exporter
 Source: https://github.com/prometheus/node_exporter
 
@@ -14,13 +14,13 @@ Comment: Included in the repackaged source, as it does not seem to deserve a
 
 Files: vendor/github.com/soundcloud/go-runit/*
 Copyright: 2015 SoundCloud Ltd.
-License: MIT
+License: Expat
 Comment: Included in the repackaged source, as it does not seem to deserve a
  separate package.
 
 Files: vendor/github.com/mdlayher/*
 Copyright: 2016 Matt Layher
-License: MIT
+License: Expat
 Comment: Included in the repackaged source, as it does not seem to deserve a
  separate package.
 
@@ -68,7 +68,7 @@ License: BSD-2-clause
  (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE
  OF THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
 
-License: MIT
+License: Expat
  Permission is hereby granted, free of charge, to any person obtaining a copy
  of this software and associated documentation files (the "Software"), to deal
  in the Software without restriction, including without limitation the rights

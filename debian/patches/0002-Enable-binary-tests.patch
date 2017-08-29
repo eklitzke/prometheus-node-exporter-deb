@@ -1,3 +1,4 @@
+Description: Enable integration tests
 --- a/node_exporter_test.go
 +++ b/node_exporter_test.go
 @@ -13,8 +13,10 @@

@@ -1,3 +1,11 @@
+prometheus-node-exporter (0.14.0+ds-4) UNRELEASED; urgency=medium
+
+  * debian/control: Update package name for client-golang.
+  * debian/control: Update Standards-Version (no changes).
+  * debian/control: Add XS-Go-Import-Path.
+
+ -- Martín Ferrari <tincho@debian.org>  Tue, 29 Aug 2017 01:40:10 +0000
+
 prometheus-node-exporter (0.14.0+ds-3) unstable; urgency=medium
 
   * Fix problem introduced by the combination of two flags (nozfs and mips*).

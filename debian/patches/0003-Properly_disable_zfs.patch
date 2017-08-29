@@ -1,3 +1,4 @@
+Description: Properly disable zfs
 --- a/collector/zfs_linux.go
 +++ b/collector/zfs_linux.go
 @@ -11,6 +11,8 @@
