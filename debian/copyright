@@ -24,6 +24,12 @@ License: Expat
 Comment: Included in the repackaged source, as it does not seem to deserve a
  separate package.
 
+Files: vendor/github.com/ema/qdisc/*
+Copyright: 2017 Emanuele Rocca
+License: Expat
+Comment: Included in the repackaged source, as it does not seem to deserve a
+ separate package.
+
 Files: debian/*
 Copyright: 2015 Martín Ferrari <tincho@tincho.org>
 License: Apache-2.0
