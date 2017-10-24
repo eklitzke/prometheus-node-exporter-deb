@@ -1,0 +1,19 @@
+prometheus-node-exporter (0.15.2+ds-1) UNRELEASED; urgency=medium
+
+  Breaking changes
+
+  This release contains major breaking changes to flag handling.
+  * The flag library has been changed, all flags now require double-dashs.
+    (`-foo` becomes `--foo`).
+  * The collector selection flag has been replaced by individual boolean
+    flags.
+  * The `-collector.procfs` and `-collector.sysfs` flags have been renamed to
+    `--path.procfs` and `--path.sysfs` respectively.
+
+  The `ntp` collector has been replaced with a new NTP-based check that is
+  designed to expose the state of a localhost NTP server rather than provide
+  the offset of the node to a remote NTP server.  By default the `ntp`
+  collector is now locked to localhost.  This is to avoid accidental spamming
+  of public internet NTP pools.
+
+ -- Martín Ferrari <tincho@debian.org>  Tue, 24 Oct 2017 06:13:51 +0000

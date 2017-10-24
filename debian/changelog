@@ -7,6 +7,7 @@ prometheus-node-exporter (0.15.2+ds-1) UNRELEASED; urgency=medium
   * Replace dpkg-parsechangelog with /usr/share/dpkg/pkg-info.mk
   * Update defaults file.
   * Update debian/copyright.
+  * Add debian/NEWS to warn of breaking changes.
 
  -- Martín Ferrari <tincho@debian.org>  Thu, 14 Dec 2017 14:04:58 +0000
 
