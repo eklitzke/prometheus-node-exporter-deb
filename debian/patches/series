@@ -1,3 +1,2 @@
-0001-Enable_other_arches.patch
-0002-Enable-binary-tests.patch
-0003-Properly_disable_zfs.patch
+01-Enable_other_arches.patch
+02-Properly_disable_zfs.patch
