@@ -16,15 +16,14 @@
 package collector
 
 import (
-	"flag"
-
 	"github.com/kolo/xmlrpc"
 	"github.com/prometheus/client_golang/prometheus"
 	"github.com/prometheus/common/log"
+	"gopkg.in/alecthomas/kingpin.v2"
 )
 
 var (
-	supervisordURL = flag.String("collector.supervisord.url", "http://localhost:9001/RPC2", "XML RPC endpoint")
+	supervisordURL = kingpin.Flag("collector.supervisord.url", "XML RPC endpoint.").Default("http://localhost:9001/RPC2").String()
 )
 
 type supervisordCollector struct {
@@ -36,7 +35,7 @@ type supervisordCollector struct {
 }
 
 func init() {
-	Factories["supervisord"] = NewSupervisordCollector
+	registerCollector("supervisord", defaultDisabled, NewSupervisordCollector)
 }
 
 // NewSupervisordCollector returns a new Collector exposing supervisord statistics.
@@ -53,25 +52,25 @@ func NewSupervisordCollector() (Collector, error) {
 	return &supervisordCollector{
 		client: client,
 		upDesc: prometheus.NewDesc(
-			prometheus.BuildFQName(Namespace, subsystem, "up"),
+			prometheus.BuildFQName(namespace, subsystem, "up"),
 			"Process Up",
 			labelNames,
 			nil,
 		),
 		stateDesc: prometheus.NewDesc(
-			prometheus.BuildFQName(Namespace, subsystem, "state"),
+			prometheus.BuildFQName(namespace, subsystem, "state"),
 			"Process State",
 			labelNames,
 			nil,
 		),
 		exitStatusDesc: prometheus.NewDesc(
-			prometheus.BuildFQName(Namespace, subsystem, "exit_status"),
+			prometheus.BuildFQName(namespace, subsystem, "exit_status"),
 			"Process Exit Status",
 			labelNames,
 			nil,
 		),
 		uptimeDesc: prometheus.NewDesc(
-			prometheus.BuildFQName(Namespace, subsystem, "uptime"),
+			prometheus.BuildFQName(namespace, subsystem, "uptime"),
 			"Process Uptime",
 			labelNames,
 			nil,

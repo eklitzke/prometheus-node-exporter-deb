@@ -2,9 +2,12 @@
 
 set -euf -o pipefail
 
-collectors=$(cat << COLLECTORS
+enabled_collectors=$(cat << COLLECTORS
+  arp
+  bcache
   buddyinfo
   conntrack
+  cpu
   diskstats
   drbd
   edac
@@ -12,6 +15,7 @@ collectors=$(cat << COLLECTORS
   filefd
   hwmon
   infiniband
+  ipvs
   ksmd
   loadavg
   mdadm
@@ -21,13 +25,23 @@ collectors=$(cat << COLLECTORS
   netdev
   netstat
   nfs
+  qdisc
   sockstat
   stat
   textfile
   bonding
   megacli
   wifi
+  xfs
   zfs
+COLLECTORS
+)
+disabled_collectors=$(cat << COLLECTORS
+  filesystem
+  time
+  timex
+  uname
+  vmstat
 COLLECTORS
 )
 cd "$(dirname $0)"
@@ -68,14 +82,16 @@ then
 fi
 
 ./node_exporter \
-  -collector.procfs="collector/fixtures/proc" \
-  -collector.sysfs="collector/fixtures/sys" \
-  -collectors.enabled="$(echo ${collectors} | tr ' ' ',')" \
-  -collector.textfile.directory="collector/fixtures/textfile/two_metric_files/" \
-  -collector.megacli.command="collector/fixtures/megacli" \
-  -collector.wifi="collector/fixtures/wifi" \
-  -web.listen-address "127.0.0.1:${port}" \
-  -log.level="debug" > "${tmpdir}/node_exporter.log" 2>&1 &
+  --path.procfs="collector/fixtures/proc" \
+  --path.sysfs="collector/fixtures/sys" \
+  $(for c in ${enabled_collectors}; do echo --collector.${c}  ; done) \
+  $(for c in ${disabled_collectors}; do echo --no-collector.${c}  ; done) \
+  --collector.textfile.directory="collector/fixtures/textfile/two_metric_files/" \
+  --collector.megacli.command="collector/fixtures/megacli" \
+  --collector.wifi.fixtures="collector/fixtures/wifi" \
+  --collector.qdisc.fixtures="collector/fixtures/qdisc/" \
+  --web.listen-address "127.0.0.1:${port}" \
+  --log.level="debug" > "${tmpdir}/node_exporter.log" 2>&1 &
 
 echo $! > "${tmpdir}/node_exporter.pid"
 

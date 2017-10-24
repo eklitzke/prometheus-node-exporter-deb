@@ -23,6 +23,7 @@ import (
 	"strings"
 
 	"github.com/prometheus/client_golang/prometheus"
+	"github.com/prometheus/common/log"
 )
 
 type bondingCollector struct {
@@ -30,7 +31,7 @@ type bondingCollector struct {
 }
 
 func init() {
-	Factories["bonding"] = NewBondingCollector
+	registerCollector("bonding", defaultDisabled, NewBondingCollector)
 }
 
 // NewBondingCollector returns a newly allocated bondingCollector.
@@ -38,12 +39,12 @@ func init() {
 func NewBondingCollector() (Collector, error) {
 	return &bondingCollector{
 		slaves: typedDesc{prometheus.NewDesc(
-			prometheus.BuildFQName(Namespace, "bonding", "slaves"),
+			prometheus.BuildFQName(namespace, "bonding", "slaves"),
 			"Number of configured slaves per bonding interface.",
 			[]string{"master"}, nil,
 		), prometheus.GaugeValue},
 		active: typedDesc{prometheus.NewDesc(
-			prometheus.BuildFQName(Namespace, "bonding", "active"),
+			prometheus.BuildFQName(namespace, "bonding", "active"),
 			"Number of active slaves per bonding interface.",
 			[]string{"master"}, nil,
 		), prometheus.GaugeValue},
@@ -52,8 +53,13 @@ func NewBondingCollector() (Collector, error) {
 
 // Update reads and exposes bonding states, implements Collector interface. Caution: This works only on linux.
 func (c *bondingCollector) Update(ch chan<- prometheus.Metric) error {
-	bondingStats, err := readBondingStats(sysFilePath("class/net"))
+	statusfile := sysFilePath("class/net")
+	bondingStats, err := readBondingStats(statusfile)
 	if err != nil {
+		if os.IsNotExist(err) {
+			log.Debugf("Not collecting bonding, file does not exist: %s", statusfile)
+			return nil
+		}
 		return err
 	}
 	for master, status := range bondingStats {

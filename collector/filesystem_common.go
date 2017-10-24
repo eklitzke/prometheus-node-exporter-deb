@@ -17,10 +17,10 @@
 package collector
 
 import (
-	"flag"
 	"regexp"
 
 	"github.com/prometheus/client_golang/prometheus"
+	"gopkg.in/alecthomas/kingpin.v2"
 )
 
 // Arch-dependent implementation must define:
@@ -30,25 +30,24 @@ import (
 // * filesystemCollector.GetStats
 
 var (
-	ignoredMountPoints = flag.String(
+	ignoredMountPoints = kingpin.Flag(
 		"collector.filesystem.ignored-mount-points",
-		defIgnoredMountPoints,
-		"Regexp of mount points to ignore for filesystem collector.")
-
-	ignoredFSTypes = flag.String(
+		"Regexp of mount points to ignore for filesystem collector.",
+	).Default(defIgnoredMountPoints).String()
+	ignoredFSTypes = kingpin.Flag(
 		"collector.filesystem.ignored-fs-types",
-		defIgnoredFSTypes,
-		"Regexp of filesystem types to ignore for filesystem collector.")
+		"Regexp of filesystem types to ignore for filesystem collector.",
+	).Default(defIgnoredFSTypes).String()
 
 	filesystemLabelNames = []string{"device", "mountpoint", "fstype"}
 )
 
 type filesystemCollector struct {
-	ignoredMountPointsPattern *regexp.Regexp
-	ignoredFSTypesPattern     *regexp.Regexp
-	sizeDesc, freeDesc, availDesc,
-	filesDesc, filesFreeDesc, roDesc *prometheus.Desc
-	devErrors *prometheus.CounterVec
+	ignoredMountPointsPattern     *regexp.Regexp
+	ignoredFSTypesPattern         *regexp.Regexp
+	sizeDesc, freeDesc, availDesc *prometheus.Desc
+	filesDesc, filesFreeDesc      *prometheus.Desc
+	roDesc, deviceErrorDesc       *prometheus.Desc
 }
 
 type filesystemLabels struct {
@@ -56,12 +55,14 @@ type filesystemLabels struct {
 }
 
 type filesystemStats struct {
-	labels                                  filesystemLabels
-	size, free, avail, files, filesFree, ro float64
+	labels            filesystemLabels
+	size, free, avail float64
+	files, filesFree  float64
+	ro, deviceError   float64
 }
 
 func init() {
-	Factories["filesystem"] = NewFilesystemCollector
+	registerCollector("filesystem", defaultEnabled, NewFilesystemCollector)
 }
 
 // NewFilesystemCollector returns a new Collector exposing filesystems stats.
@@ -71,45 +72,46 @@ func NewFilesystemCollector() (Collector, error) {
 	filesystemsTypesPattern := regexp.MustCompile(*ignoredFSTypes)
 
 	sizeDesc := prometheus.NewDesc(
-		prometheus.BuildFQName(Namespace, subsystem, "size"),
+		prometheus.BuildFQName(namespace, subsystem, "size"),
 		"Filesystem size in bytes.",
 		filesystemLabelNames, nil,
 	)
 
 	freeDesc := prometheus.NewDesc(
-		prometheus.BuildFQName(Namespace, subsystem, "free"),
+		prometheus.BuildFQName(namespace, subsystem, "free"),
 		"Filesystem free space in bytes.",
 		filesystemLabelNames, nil,
 	)
 
 	availDesc := prometheus.NewDesc(
-		prometheus.BuildFQName(Namespace, subsystem, "avail"),
+		prometheus.BuildFQName(namespace, subsystem, "avail"),
 		"Filesystem space available to non-root users in bytes.",
 		filesystemLabelNames, nil,
 	)
 
 	filesDesc := prometheus.NewDesc(
-		prometheus.BuildFQName(Namespace, subsystem, "files"),
+		prometheus.BuildFQName(namespace, subsystem, "files"),
 		"Filesystem total file nodes.",
 		filesystemLabelNames, nil,
 	)
 
 	filesFreeDesc := prometheus.NewDesc(
-		prometheus.BuildFQName(Namespace, subsystem, "files_free"),
+		prometheus.BuildFQName(namespace, subsystem, "files_free"),
 		"Filesystem total free file nodes.",
 		filesystemLabelNames, nil,
 	)
 
 	roDesc := prometheus.NewDesc(
-		prometheus.BuildFQName(Namespace, subsystem, "readonly"),
+		prometheus.BuildFQName(namespace, subsystem, "readonly"),
 		"Filesystem read-only status.",
 		filesystemLabelNames, nil,
 	)
 
-	devErrors := prometheus.NewCounterVec(prometheus.CounterOpts{
-		Name: prometheus.BuildFQName(Namespace, subsystem, "device_errors_total"),
-		Help: "Total number of errors occurred when getting stats for device",
-	}, filesystemLabelNames)
+	deviceErrorDesc := prometheus.NewDesc(
+		prometheus.BuildFQName(namespace, subsystem, "device_error"),
+		"Whether an error occurred while getting statistics for the given device.",
+		filesystemLabelNames, nil,
+	)
 
 	return &filesystemCollector{
 		ignoredMountPointsPattern: mountPointPattern,
@@ -120,7 +122,7 @@ func NewFilesystemCollector() (Collector, error) {
 		filesDesc:                 filesDesc,
 		filesFreeDesc:             filesFreeDesc,
 		roDesc:                    roDesc,
-		devErrors:                 devErrors,
+		deviceErrorDesc:           deviceErrorDesc,
 	}, nil
 }
 
@@ -136,6 +138,14 @@ func (c *filesystemCollector) Update(ch chan<- prometheus.Metric) error {
 			continue
 		}
 		seen[s.labels] = true
+
+		ch <- prometheus.MustNewConstMetric(
+			c.deviceErrorDesc, prometheus.GaugeValue,
+			s.deviceError, s.labels.device, s.labels.mountPoint, s.labels.fsType,
+		)
+		if s.deviceError > 0 {
+			continue
+		}
 
 		ch <- prometheus.MustNewConstMetric(
 			c.sizeDesc, prometheus.GaugeValue,
@@ -162,6 +172,5 @@ func (c *filesystemCollector) Update(ch chan<- prometheus.Metric) error {
 			s.ro, s.labels.device, s.labels.mountPoint, s.labels.fsType,
 		)
 	}
-	c.devErrors.Collect(ch)
 	return nil
 }

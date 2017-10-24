@@ -17,18 +17,16 @@
 package collector
 
 import (
-	"flag"
 	"fmt"
 	"regexp"
 	"strconv"
 
 	"github.com/prometheus/client_golang/prometheus"
+	"gopkg.in/alecthomas/kingpin.v2"
 )
 
 var (
-	netdevIgnoredDevices = flag.String(
-		"collector.netdev.ignored-devices", "^$",
-		"Regexp of net devices to ignore for netdev collector.")
+	netdevIgnoredDevices = kingpin.Flag("collector.netdev.ignored-devices", "Regexp of net devices to ignore for netdev collector.").Default("^$").String()
 )
 
 type netDevCollector struct {
@@ -38,7 +36,7 @@ type netDevCollector struct {
 }
 
 func init() {
-	Factories["netdev"] = NewNetDevCollector
+	registerCollector("netdev", defaultEnabled, NewNetDevCollector)
 }
 
 // NewNetDevCollector returns a new Collector exposing network device stats.
@@ -61,7 +59,7 @@ func (c *netDevCollector) Update(ch chan<- prometheus.Metric) error {
 			desc, ok := c.metricDescs[key]
 			if !ok {
 				desc = prometheus.NewDesc(
-					prometheus.BuildFQName(Namespace, c.subsystem, key),
+					prometheus.BuildFQName(namespace, c.subsystem, key),
 					fmt.Sprintf("Network device statistic %s.", key),
 					[]string{"device"},
 					nil,
