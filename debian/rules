@@ -57,13 +57,15 @@ override_dh_auto_build:
 	dh_auto_build -- $(BUILDFLAGS)
 
 override_dh_auto_test:
+	$(CURDIR)/ttar -C $(BUILDDIR)/src/$(DH_GOPKG)/collector/fixtures \
+            -x -f collector/fixtures/sys.ttar
 	chmod a+x $(BUILDDIR)/src/$(DH_GOPKG)/collector/fixtures/megacli
 	dh_auto_test -- $(BUILDFLAGS)
 
 override_dh_auto_install:
-	mkdir -p debian/$(DEBPKGNAME)/usr/bin
+	mkdir -p debian/$(DEB_SOURCE)/usr/bin
 	# Rename the binary to match the debian package.
 	cp -v $(BUILDDIR)/bin/node_exporter \
-            debian/$(DEBPKGNAME)/usr/bin/$(DEBPKGNAME)
+            debian/$(DEB_SOURCE)/usr/bin/$(DEB_SOURCE)
 	cp -v debian/README.textfile \
-            debian/$(DEBPKGNAME)/var/lib/prometheus/node-exporter
+            debian/$(DEB_SOURCE)/var/lib/prometheus/node-exporter
