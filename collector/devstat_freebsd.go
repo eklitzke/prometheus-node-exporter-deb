@@ -36,45 +36,43 @@ type devstatCollector struct {
 	mu      sync.Mutex
 	devinfo *C.struct_devinfo
 
-	bytes       typedDesc
-	bytes_total typedDesc
-	transfers   typedDesc
-	duration    typedDesc
-	busyTime    typedDesc
-	blocks      typedDesc
+	bytes     typedDesc
+	transfers typedDesc
+	duration  typedDesc
+	busyTime  typedDesc
+	blocks    typedDesc
 }
 
 func init() {
-	Factories["devstat"] = NewDevstatCollector
+	registerCollector("devstat", defaultDisabled, NewDevstatCollector)
 }
 
-// Takes a prometheus registry and returns a new Collector exposing
-// Device stats.
+// NewDevstatCollector returns a new Collector exposing Device stats.
 func NewDevstatCollector() (Collector, error) {
 	return &devstatCollector{
 		devinfo: &C.struct_devinfo{},
 		bytes: typedDesc{prometheus.NewDesc(
-			prometheus.BuildFQName(Namespace, devstatSubsystem, "bytes_total"),
+			prometheus.BuildFQName(namespace, devstatSubsystem, "bytes_total"),
 			"The total number of bytes in transactions.",
 			[]string{"device", "type"}, nil,
 		), prometheus.CounterValue},
 		transfers: typedDesc{prometheus.NewDesc(
-			prometheus.BuildFQName(Namespace, devstatSubsystem, "transfers_total"),
+			prometheus.BuildFQName(namespace, devstatSubsystem, "transfers_total"),
 			"The total number of transactions.",
 			[]string{"device", "type"}, nil,
 		), prometheus.CounterValue},
 		duration: typedDesc{prometheus.NewDesc(
-			prometheus.BuildFQName(Namespace, devstatSubsystem, "duration_seconds_total"),
+			prometheus.BuildFQName(namespace, devstatSubsystem, "duration_seconds_total"),
 			"The total duration of transactions in seconds.",
 			[]string{"device", "type"}, nil,
 		), prometheus.CounterValue},
 		busyTime: typedDesc{prometheus.NewDesc(
-			prometheus.BuildFQName(Namespace, devstatSubsystem, "busy_time_seconds_total"),
+			prometheus.BuildFQName(namespace, devstatSubsystem, "busy_time_seconds_total"),
 			"Total time the device had one or more transactions outstanding in seconds.",
 			[]string{"device"}, nil,
 		), prometheus.CounterValue},
 		blocks: typedDesc{prometheus.NewDesc(
-			prometheus.BuildFQName(Namespace, devstatSubsystem, "blocks_transferred_total"),
+			prometheus.BuildFQName(namespace, devstatSubsystem, "blocks_transferred_total"),
 			"The total number of blocks transferred.",
 			[]string{"device"}, nil,
 		), prometheus.CounterValue},

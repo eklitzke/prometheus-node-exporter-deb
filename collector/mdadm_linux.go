@@ -29,7 +29,7 @@ import (
 
 var (
 	statuslineRE             = regexp.MustCompile(`(\d+) blocks .*\[(\d+)/(\d+)\] \[[U_]+\]`)
-	raid0lineRE              = regexp.MustCompile(`(\d+) blocks( super ([0-9\.])*)? \d+k chunks`)
+	raid0lineRE              = regexp.MustCompile(`(\d+) blocks .*\d+k chunks`)
 	buildlineRE              = regexp.MustCompile(`\((\d+)/\d+\)`)
 	unknownPersonalityLineRE = regexp.MustCompile(`(\d+) blocks (.*)`)
 	raidPersonalityRE        = regexp.MustCompile(`raid[0-9]+`)
@@ -47,7 +47,7 @@ type mdStatus struct {
 type mdadmCollector struct{}
 
 func init() {
-	Factories["mdadm"] = NewMdadmCollector
+	registerCollector("mdadm", defaultEnabled, NewMdadmCollector)
 }
 
 func evalStatusline(statusline string) (active, total, size int64, err error) {
@@ -133,7 +133,7 @@ func evalBuildline(buildline string) (int64, error) {
 func parseMdstat(mdStatusFilePath string) ([]mdStatus, error) {
 	content, err := ioutil.ReadFile(mdStatusFilePath)
 	if err != nil {
-		return []mdStatus{}, fmt.Errorf("error parsing mdstat: %s", err)
+		return []mdStatus{}, err
 	}
 
 	lines := strings.Split(string(content), "\n")
@@ -220,35 +220,35 @@ func NewMdadmCollector() (Collector, error) {
 
 var (
 	isActiveDesc = prometheus.NewDesc(
-		prometheus.BuildFQName(Namespace, "md", "is_active"),
+		prometheus.BuildFQName(namespace, "md", "is_active"),
 		"Indicator whether the md-device is active or not.",
 		[]string{"device"},
 		nil,
 	)
 
 	disksActiveDesc = prometheus.NewDesc(
-		prometheus.BuildFQName(Namespace, "md", "disks_active"),
+		prometheus.BuildFQName(namespace, "md", "disks_active"),
 		"Number of active disks of device.",
 		[]string{"device"},
 		nil,
 	)
 
 	disksTotalDesc = prometheus.NewDesc(
-		prometheus.BuildFQName(Namespace, "md", "disks"),
+		prometheus.BuildFQName(namespace, "md", "disks"),
 		"Total number of disks of device.",
 		[]string{"device"},
 		nil,
 	)
 
 	blocksTotalDesc = prometheus.NewDesc(
-		prometheus.BuildFQName(Namespace, "md", "blocks"),
+		prometheus.BuildFQName(namespace, "md", "blocks"),
 		"Total number of blocks on device.",
 		[]string{"device"},
 		nil,
 	)
 
 	blocksSyncedDesc = prometheus.NewDesc(
-		prometheus.BuildFQName(Namespace, "md", "blocks_synced"),
+		prometheus.BuildFQName(namespace, "md", "blocks_synced"),
 		"Number of blocks synced on device.",
 		[]string{"device"},
 		nil,
@@ -257,16 +257,12 @@ var (
 
 func (c *mdadmCollector) Update(ch chan<- prometheus.Metric) error {
 	statusfile := procFilePath("mdstat")
-	if _, err := os.Stat(statusfile); err != nil {
+	mdstate, err := parseMdstat(statusfile)
+	if err != nil {
 		if os.IsNotExist(err) {
 			log.Debugf("Not collecting mdstat, file does not exist: %s", statusfile)
 			return nil
 		}
-		return err
-	}
-
-	mdstate, err := parseMdstat(statusfile)
-	if err != nil {
 		return fmt.Errorf("error parsing mdstatus: %s", err)
 	}
 

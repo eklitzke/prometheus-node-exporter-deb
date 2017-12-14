@@ -44,7 +44,7 @@ type infinibandMetric struct {
 }
 
 func init() {
-	Factories["infiniband"] = NewInfiniBandCollector
+	registerCollector("infiniband", defaultEnabled, NewInfiniBandCollector)
 }
 
 // NewInfiniBandCollector returns a new Collector exposing InfiniBand stats.
@@ -80,7 +80,7 @@ func NewInfiniBandCollector() (Collector, error) {
 
 	for metricName, infinibandMetric := range i.counters {
 		i.metricDescs[metricName] = prometheus.NewDesc(
-			prometheus.BuildFQName(Namespace, subsystem, metricName),
+			prometheus.BuildFQName(namespace, subsystem, metricName),
 			infinibandMetric.Help,
 			[]string{"device", "port"},
 			nil,
@@ -89,7 +89,7 @@ func NewInfiniBandCollector() (Collector, error) {
 
 	for metricName, infinibandMetric := range i.legacyCounters {
 		i.metricDescs[metricName] = prometheus.NewDesc(
-			prometheus.BuildFQName(Namespace, subsystem, metricName),
+			prometheus.BuildFQName(namespace, subsystem, metricName),
 			infinibandMetric.Help,
 			[]string{"device", "port"},
 			nil,
@@ -146,6 +146,15 @@ func readMetric(directory, metricFile string) (uint64, error) {
 	if err != nil {
 		log.Debugf("Error reading %q file", metricFile)
 		return 0, err
+	}
+
+	// According to Mellanox, the following metrics "are divided by 4 unconditionally"
+	// as they represent the amount of data being transmitted and received per lane.
+	// Mellanox cards have 4 lanes per port, so all values must be multiplied by 4
+	// to get the expected value.
+	switch metricFile {
+	case "port_rcv_data", "port_xmit_data", "port_rcv_data_64", "port_xmit_data_64":
+		metric *= 4
 	}
 
 	return metric, nil
