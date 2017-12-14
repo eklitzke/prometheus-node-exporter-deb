@@ -1,4 +1,4 @@
-prometheus-node-exporter (0.15.2+ds-1) UNRELEASED; urgency=medium
+prometheus-node-exporter (0.15.2+ds-1) unstable; urgency=medium
 
   Breaking changes
 

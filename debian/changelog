@@ -1,4 +1,4 @@
-prometheus-node-exporter (0.15.2+ds-1) UNRELEASED; urgency=medium
+prometheus-node-exporter (0.15.2+ds-1) unstable; urgency=medium
 
   * New upstream release.
   * debian/control: Update package name for client-golang.
@@ -13,7 +13,7 @@ prometheus-node-exporter (0.15.2+ds-1) UNRELEASED; urgency=medium
   * Stop using pristine-tar.
   * Remove unused lintian overrides.
 
- -- Martín Ferrari <tincho@debian.org>  Thu, 14 Dec 2017 14:04:58 +0000
+ -- Martín Ferrari <tincho@debian.org>  Thu, 14 Dec 2017 15:26:08 +0000
 
 prometheus-node-exporter (0.14.0+ds-3) unstable; urgency=medium
 
