@@ -11,6 +11,7 @@ prometheus-node-exporter (0.15.2+ds-1) UNRELEASED; urgency=medium
   * Add debian/NEWS to warn of breaking changes.
   * Refresh patches.
   * Stop using pristine-tar.
+  * Remove unused lintian overrides.
 
  -- Martín Ferrari <tincho@debian.org>  Thu, 14 Dec 2017 14:04:58 +0000
 
