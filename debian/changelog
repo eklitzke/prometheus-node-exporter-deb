@@ -1,11 +1,11 @@
-prometheus-node-exporter (0.14.0+ds-3~bpo9+1) UNRELEASED; urgency=medium
+prometheus-node-exporter (0.14.0+ds-3~bpo9+1) stretch-backports; urgency=medium
 
   * Rebuild for stretch-backports.
   * Fix dependency version of x/sys (missing SOL_NETLINK).
   * Update debian/docs.
   * Remove dh-systemd dependency to placate lintian.
 
- -- Martín Ferrari <tincho@debian.org>  Tue, 09 Jan 2018 18:03:49 +0000
+ -- Martín Ferrari <tincho@debian.org>  Tue, 09 Jan 2018 18:05:18 +0000
 
 prometheus-node-exporter (0.14.0+ds-3) unstable; urgency=medium
 
