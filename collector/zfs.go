@@ -29,7 +29,7 @@ var errZFSNotAvailable = errors.New("ZFS / ZFS statistics are not available")
 type zfsSysctl string
 
 func init() {
-	Factories["zfs"] = NewZFSCollector
+	registerCollector("zfs", defaultEnabled, NewZFSCollector)
 }
 
 type zfsCollector struct {
@@ -75,12 +75,12 @@ func (s zfsSysctl) metricName() string {
 	return strings.Replace(parts[len(parts)-1], "-", "_", -1)
 }
 
-func (c *zfsCollector) constSysctlMetric(subsystem string, sysctl zfsSysctl, value int) prometheus.Metric {
+func (c *zfsCollector) constSysctlMetric(subsystem string, sysctl zfsSysctl, value int64) prometheus.Metric {
 	metricName := sysctl.metricName()
 
 	return prometheus.MustNewConstMetric(
 		prometheus.NewDesc(
-			prometheus.BuildFQName(Namespace, subsystem, metricName),
+			prometheus.BuildFQName(namespace, subsystem, metricName),
 			string(sysctl),
 			nil,
 			nil,
@@ -90,12 +90,12 @@ func (c *zfsCollector) constSysctlMetric(subsystem string, sysctl zfsSysctl, val
 	)
 }
 
-func (c *zfsCollector) constPoolMetric(poolName string, sysctl zfsSysctl, value int) prometheus.Metric {
+func (c *zfsCollector) constPoolMetric(poolName string, sysctl zfsSysctl, value int64) prometheus.Metric {
 	metricName := sysctl.metricName()
 
 	return prometheus.MustNewConstMetric(
 		prometheus.NewDesc(
-			prometheus.BuildFQName(Namespace, "zfs_zpool", metricName),
+			prometheus.BuildFQName(namespace, "zfs_zpool", metricName),
 			string(sysctl),
 			[]string{"zpool"},
 			nil,

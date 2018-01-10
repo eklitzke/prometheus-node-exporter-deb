@@ -41,29 +41,29 @@ type edacCollector struct {
 }
 
 func init() {
-	Factories["edac"] = NewEdacCollector
+	registerCollector("edac", defaultEnabled, NewEdacCollector)
 }
 
 // NewEdacCollector returns a new Collector exposing edac stats.
 func NewEdacCollector() (Collector, error) {
 	return &edacCollector{
 		ceCount: prometheus.NewDesc(
-			prometheus.BuildFQName(Namespace, edacSubsystem, "correctable_errors_total"),
+			prometheus.BuildFQName(namespace, edacSubsystem, "correctable_errors_total"),
 			"Total correctable memory errors.",
 			[]string{"controller"}, nil,
 		),
 		ueCount: prometheus.NewDesc(
-			prometheus.BuildFQName(Namespace, edacSubsystem, "uncorrectable_errors_total"),
+			prometheus.BuildFQName(namespace, edacSubsystem, "uncorrectable_errors_total"),
 			"Total uncorrectable memory errors.",
 			[]string{"controller"}, nil,
 		),
 		csRowCECount: prometheus.NewDesc(
-			prometheus.BuildFQName(Namespace, edacSubsystem, "csrow_correctable_errors_total"),
+			prometheus.BuildFQName(namespace, edacSubsystem, "csrow_correctable_errors_total"),
 			"Total correctable memory errors for this csrow.",
 			[]string{"controller", "csrow"}, nil,
 		),
 		csRowUECount: prometheus.NewDesc(
-			prometheus.BuildFQName(Namespace, edacSubsystem, "csrow_uncorrectable_errors_total"),
+			prometheus.BuildFQName(namespace, edacSubsystem, "csrow_uncorrectable_errors_total"),
 			"Total uncorrectable memory errors for this csrow.",
 			[]string{"controller", "csrow"}, nil,
 		),
@@ -108,7 +108,7 @@ func (c *edacCollector) Update(ch chan<- prometheus.Metric) error {
 			return fmt.Errorf("couldn't get ue_noinfo_count for controller %s: %s", controllerNumber, err)
 		}
 		ch <- prometheus.MustNewConstMetric(
-			c.csRowUECount, prometheus.CounterValue, float64(value), controllerNumber, "uknown")
+			c.csRowUECount, prometheus.CounterValue, float64(value), controllerNumber, "unknown")
 
 		// For each controller, walk the csrow directories.
 		csrows, err := filepath.Glob(controller + "/csrow[0-9]*")

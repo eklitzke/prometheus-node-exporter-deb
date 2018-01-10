@@ -1,4 +1,5 @@
 #!/usr/bin/make -f
+include /usr/share/dpkg/pkg-info.mk
 
 export DH_VERBOSE=1
 export DH_GOPKG := github.com/prometheus/node_exporter
@@ -7,21 +8,16 @@ export DH_GOLANG_INSTALL_EXTRA := collector/fixtures
 BUILDDIR := $(CURDIR)/build
 METAPKG := github.com/prometheus/common
 
-DEBVERS    ?= $(shell dpkg-parsechangelog -SVersion)
-VERSION    ?= $(shell echo '$(DEBVERS)' | sed 's/^[[:digit:]]*://; s/[-].*//')
-DEBPKGNAME ?= $(shell dpkg-parsechangelog -SSource)
-DEBDATE    ?= $(shell dpkg-parsechangelog -SDate)
-REV        := $(DEBVERS)
 BRANCH     := debian/sid
 USER       := pkg-go-maintainers@lists.alioth.debian.org
-HOSTNAME   := debian
-BUILD_DATE := $(shell date --utc --date='$(DEBDATE)' +%Y%m%d-%H:%M:%S)
+BUILD_DATE := $(shell date --utc --date='@$(SOURCE_DATE_EPOCH)' \
+    +%Y%m%d-%H:%M:%S)
 GO_VERSION := $(shell go version | sed 's/go version \(\S*\).*/\1/')
 GCCGO      := $(strip $(shell go version | grep gccgo))
 BUILDTAGS  :=
 BUILDFLAGS  = -tags "$(BUILDTAGS)" -ldflags \
-  " -X $(METAPKG)/version.Version=$(VERSION)\
-    -X $(METAPKG)/version.Revision=$(REV)\
+  " -X $(METAPKG)/version.Version=$(DEB_VERSION_UPSTREAM)\
+    -X $(METAPKG)/version.Revision=$(DEB_VERSION)\
     -X $(METAPKG)/version.Branch=$(BRANCH)\
     -X $(METAPKG)/version.BuildUser=$(USER)\
     -X $(METAPKG)/version.BuildDate=$(BUILD_DATE)\
@@ -61,13 +57,15 @@ override_dh_auto_build:
 	dh_auto_build -- $(BUILDFLAGS)
 
 override_dh_auto_test:
+	$(CURDIR)/ttar -C $(BUILDDIR)/src/$(DH_GOPKG)/collector/fixtures \
+            -x -f collector/fixtures/sys.ttar
 	chmod a+x $(BUILDDIR)/src/$(DH_GOPKG)/collector/fixtures/megacli
 	dh_auto_test -- $(BUILDFLAGS)
 
 override_dh_auto_install:
-	mkdir -p debian/$(DEBPKGNAME)/usr/bin
+	mkdir -p debian/$(DEB_SOURCE)/usr/bin
 	# Rename the binary to match the debian package.
 	cp -v $(BUILDDIR)/bin/node_exporter \
-            debian/$(DEBPKGNAME)/usr/bin/$(DEBPKGNAME)
+            debian/$(DEB_SOURCE)/usr/bin/$(DEB_SOURCE)
 	cp -v debian/README.textfile \
-            debian/$(DEBPKGNAME)/var/lib/prometheus/node-exporter
+            debian/$(DEB_SOURCE)/var/lib/prometheus/node-exporter

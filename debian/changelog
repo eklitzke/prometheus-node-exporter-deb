@@ -1,3 +1,20 @@
+prometheus-node-exporter (0.15.2+ds-1) unstable; urgency=medium
+
+  * New upstream release.
+  * debian/control: Update package name for client-golang.
+  * debian/control: Add XS-Go-Import-Path.
+  * debian/control: Add/update dependencies, update Standards-Version,
+    Priority and compat.
+  * Replace dpkg-parsechangelog with /usr/share/dpkg/pkg-info.mk
+  * Update defaults file.
+  * Update debian/copyright.
+  * Add debian/NEWS to warn of breaking changes.
+  * Refresh patches.
+  * Stop using pristine-tar.
+  * Remove unused lintian overrides.
+
+ -- Martín Ferrari <tincho@debian.org>  Thu, 14 Dec 2017 15:26:08 +0000
+
 prometheus-node-exporter (0.14.0+ds-3~bpo9+1) stretch-backports; urgency=medium
 
   * Rebuild for stretch-backports.

@@ -25,7 +25,7 @@ type execCollector struct {
 }
 
 func init() {
-	Factories["exec"] = NewExecCollector
+	registerCollector("exec", defaultEnabled, NewExecCollector)
 }
 
 // NewExecCollector returns a new Collector exposing system execution statistics.
@@ -39,6 +39,9 @@ func NewExecCollector() (Collector, error) {
 	// vm.stats.sys.v_intr: Device interrupts
 	// vm.stats.sys.v_soft: Software interrupts
 	// vm.stats.vm.v_forks: Number of fork() calls
+	//
+	// From sys/kern/kern_tc.c:
+	// kern.boottime is an S,timeval
 
 	return &execCollector{
 		sysctls: []bsdSysctl{
@@ -72,6 +75,12 @@ func NewExecCollector() (Collector, error) {
 				description: "Number of fork() calls since system boot.  Resets at architeture unsigned integer.",
 				mib:         "vm.stats.vm.v_forks",
 			},
+			{
+				name:        "boot_timestamp_seconds",
+				description: "Unix time of last boot, including microseconds.",
+				mib:         "kern.boottime",
+				dataType:    bsdSysctlTypeStructTimeval,
+			},
 		},
 	}, nil
 }
@@ -86,7 +95,7 @@ func (c *execCollector) Update(ch chan<- prometheus.Metric) error {
 
 		ch <- prometheus.MustNewConstMetric(
 			prometheus.NewDesc(
-				prometheus.BuildFQName(Namespace, "exec", m.name),
+				prometheus.BuildFQName(namespace, "exec", m.name),
 				m.description,
 				nil, nil,
 			), prometheus.CounterValue, v)
