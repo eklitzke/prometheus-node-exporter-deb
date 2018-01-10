@@ -1,3 +1,9 @@
+prometheus-node-exporter (0.15.2+ds-1~bpo9+1) stretch-backports; urgency=medium
+
+  * Rebuild for stretch-backports.
+
+ -- Martín Ferrari <tincho@debian.org>  Wed, 10 Jan 2018 17:11:02 +0000
+
 prometheus-node-exporter (0.15.2+ds-1) unstable; urgency=medium
 
   * New upstream release.
