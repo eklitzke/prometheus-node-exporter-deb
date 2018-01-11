@@ -2,16 +2,13 @@
 # Due to shell scaping, to pass backslashes for regexes, you need to double
 # them (\\d for \d). If running under systemd, you need to double them again
 # (\\\\d to mean \d), and escape newlines too.
-ARGS="--collector.diskstats.ignored-devices=^(ram|loop|fd|(h|s|v|xv)d[a-z]|nvme\\d+n\\d+p)\\d+$ \
-      --collector.filesystem.ignored-mount-points=^/(sys|proc|dev|run)($|/) \
-      --collector.netdev.ignored-devices=^lo$ \
-      --collector.textfile.directory=/var/lib/prometheus/node-exporter"
+ARGS=""
 
 # Prometheus-node-exporter supports the following options:
 #
 #  --collector.diskstats.ignored-devices="^(ram|loop|fd|(h|s|v|xv)d[a-z]|nvme\\d+n\\d+p)\\d+$"
 #                            Regexp of devices to ignore for diskstats.
-#  --collector.filesystem.ignored-mount-points="^/(sys|proc|dev)($|/)"
+#  --collector.filesystem.ignored-mount-points="^/(sys|proc|dev|run)($|/)"
 #                            Regexp of mount points to ignore for filesystem
 #                            collector.
 #  --collector.filesystem.ignored-fs-types="^(sys|proc|auto)fs$"
@@ -19,7 +16,7 @@ ARGS="--collector.diskstats.ignored-devices=^(ram|loop|fd|(h|s|v|xv)d[a-z]|nvme\
 #                            filesystem collector.
 #  --collector.megacli.command="megacli"
 #                            Command to run megacli.
-#  --collector.netdev.ignored-devices="^$"
+#  --collector.netdev.ignored-devices="^lo$"
 #                            Regexp of net devices to ignore for netdev
 #                            collector.
 #  --collector.ntp.server="127.0.0.1"
@@ -55,7 +52,7 @@ ARGS="--collector.diskstats.ignored-devices=^(ram|loop|fd|(h|s|v|xv)d[a-z]|nvme\
 #  --collector.systemd.private
 #                            Establish a private, direct connection to
 #                            systemd without dbus.
-#  --collector.textfile.directory=""
+#  --collector.textfile.directory="/var/lib/prometheus/node-exporter"
 #                            Directory to read text files with metrics from.
 #  --collector.wifi.fixtures=""
 #                            test fixtures to use for wifi collector metrics
@@ -130,4 +127,3 @@ ARGS="--collector.diskstats.ignored-devices=^(ram|loop|fd|(h|s|v|xv)d[a-z]|nvme\
 #                            Set the log target and format. Example:
 #                            "logger:syslog?appname=bob&local=7" or
 #                            "logger:stdout?json=true"
-#  --version                 Show application version.
