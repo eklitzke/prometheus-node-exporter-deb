@@ -53,8 +53,18 @@ ifeq ($(DEB_HOST_ARCH_BITS),32)
 BUILDTAGS += nozfs
 endif
 
+BINNAME := $(DEB_SOURCE)
+WHATIS := "$(BINNAME) \\- Prometheus exporter for machine metrics"
+
 override_dh_auto_build:
 	dh_auto_build -- $(BUILDFLAGS)
+	# Rename the binary to match the debian package.
+	cp -v $(BUILDDIR)/bin/node_exporter $(BUILDDIR)/bin/$(BINNAME)
+	build/bin/$(BINNAME) --help-man > build/$(BINNAME).1
+	# Remove build user/build date/go version headers, which is ugly.
+	sed -i -e '/^  /d' build/$(BINNAME).1
+	# Fix whatis entry.
+	sed -i '/^.SH "NAME"/,+1c.SH "NAME"\n'$(WHATIS) build/$(BINNAME).1
 
 override_dh_auto_test:
 	$(CURDIR)/ttar -C $(BUILDDIR)/src/$(DH_GOPKG)/collector/fixtures \
@@ -63,9 +73,3 @@ override_dh_auto_test:
 	dh_auto_test -- $(BUILDFLAGS)
 
 override_dh_auto_install:
-	mkdir -p debian/$(DEB_SOURCE)/usr/bin
-	# Rename the binary to match the debian package.
-	cp -v $(BUILDDIR)/bin/node_exporter \
-            debian/$(DEB_SOURCE)/usr/bin/$(DEB_SOURCE)
-	cp -v debian/README.textfile \
-            debian/$(DEB_SOURCE)/var/lib/prometheus/node-exporter
