@@ -16,19 +16,19 @@ Description: Set defaults that make sense for Debian systems.
  )
  
  const (
--	defIgnoredMountPoints = "^/(sys|proc|dev)($|/)"
-+	defIgnoredMountPoints = "^/(sys|proc|dev|run)($|/)"
- 	defIgnoredFSTypes     = "^(sys|proc|auto)fs$"
+-	defIgnoredMountPoints = "^/(dev|proc|sys|var/lib/docker)($|/)"
++	defIgnoredMountPoints = "^/(dev|proc|run|sys|var/lib/docker)($|/)"
+ 	defIgnoredFSTypes     = "^(autofs|binfmt_misc|cgroup|configfs|debugfs|devpts|devtmpfs|fusectl|hugetlbfs|mqueue|overlay|proc|procfs|pstore|rpc_pipefs|securityfs|sysfs|tracefs)$"
  	readOnly              = 0x1 // ST_RDONLY
  )
 --- a/collector/textfile.go
 +++ b/collector/textfile.go
-@@ -33,7 +33,7 @@
+@@ -32,7 +32,7 @@
  )
  
  var (
 -	textFileDirectory = kingpin.Flag("collector.textfile.directory", "Directory to read text files with metrics from.").Default("").String()
 +	textFileDirectory = kingpin.Flag("collector.textfile.directory", "Directory to read text files with metrics from.").Default("/var/lib/prometheus/node-exporter").String()
- )
- 
- type textFileCollector struct {
+ 	mtimeDesc         = prometheus.NewDesc(
+ 		"node_textfile_mtime_seconds",
+ 		"Unixtime mtime of textfiles successfully read.",
