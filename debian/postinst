@@ -28,8 +28,8 @@ case "$1" in
             --group --gecos "Prometheus daemon" prometheus || true
     fi
 
-    chown -R prometheus:prometheus /var/lib/prometheus || true
-    chown -R prometheus:prometheus /var/log/prometheus || true
+    chown prometheus:prometheus /var/lib/prometheus || true
+    chown prometheus:prometheus /var/log/prometheus || true
 
   ;;
 
