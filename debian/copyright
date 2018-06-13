@@ -1,6 +1,10 @@
 Format: https://www.debian.org/doc/packaging-manuals/copyright-format/1.0/
 Upstream-Name: github.com/prometheus/node_exporter
 Source: https://github.com/prometheus/node_exporter
+Comment: Upstream embeds many dependencies into the source tree. Everything
+ that is already packaged in Debian has been removed, packages that were deemed
+ useful to have as independent packages were packaged independenly, and the
+ rest was left embedded.
 
 Files: *
 Copyright: 2013-2015 The Prometheus Authors
