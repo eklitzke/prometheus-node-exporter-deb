@@ -1,4 +1,4 @@
-prometheus-node-exporter (0.16.0+ds-1) UNRELEASED; urgency=medium
+prometheus-node-exporter (0.16.0+ds-1) unstable; urgency=medium
 
   [ Alexandre Viau ]
   * Point Vcs-* urls to salsa.debian.org.
@@ -25,7 +25,7 @@ prometheus-node-exporter (0.16.0+ds-1) UNRELEASED; urgency=medium
   * Bump Standards-Version (no changes).
   * debian/rules: Remove now unneeded workarounds.
 
- -- Martín Ferrari <tincho@debian.org>  Wed, 13 Jun 2018 18:15:15 +0000
+ -- Martín Ferrari <tincho@debian.org>  Wed, 13 Jun 2018 19:00:23 +0000
 
 prometheus-node-exporter (0.15.2+ds-1) unstable; urgency=medium
 
