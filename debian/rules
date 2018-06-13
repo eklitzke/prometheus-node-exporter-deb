@@ -69,7 +69,6 @@ override_dh_auto_build:
 override_dh_auto_test:
 	$(CURDIR)/ttar -C $(BUILDDIR)/src/$(DH_GOPKG)/collector/fixtures \
             -x -f collector/fixtures/sys.ttar
-	chmod a+x $(BUILDDIR)/src/$(DH_GOPKG)/collector/fixtures/megacli
 	dh_auto_test -- $(BUILDFLAGS)
 
 override_dh_auto_install:
