@@ -65,6 +65,8 @@ override_dh_auto_build:
 	sed -i -e '/^  /d' build/$(BINNAME).1
 	# Fix whatis entry.
 	sed -i '/^.SH "NAME"/,+1c.SH "NAME"\n'$(WHATIS) build/$(BINNAME).1
+	# Remove default values as they create unwieldy long lines.
+	sed -i 's/\\fB--\(.*\)=".*"\\fR/\\fB--\1\\fR/' build/$(BINNAME).1
 
 override_dh_auto_test:
 	$(CURDIR)/ttar -C $(BUILDDIR)/src/$(DH_GOPKG)/collector/fixtures \
