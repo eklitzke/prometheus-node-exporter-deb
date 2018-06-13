@@ -13,7 +13,6 @@ USER       := pkg-go-maintainers@lists.alioth.debian.org
 BUILD_DATE := $(shell date --utc --date='@$(SOURCE_DATE_EPOCH)' \
     +%Y%m%d-%H:%M:%S)
 GO_VERSION := $(shell go version | sed 's/go version \(\S*\).*/\1/')
-GCCGO      := $(strip $(shell go version | grep gccgo))
 BUILDTAGS  :=
 BUILDFLAGS  = -tags "$(BUILDTAGS)" -ldflags \
   " -X $(METAPKG)/version.Version=$(DEB_VERSION_UPSTREAM)\
@@ -27,28 +26,8 @@ BUILDFLAGS  = -tags "$(BUILDTAGS)" -ldflags \
 	dh $@ --buildsystem=golang --with=golang \
             --builddirectory=$(BUILDDIR)
 
-DEB_HOST_ARCH := $(shell dpkg-architecture -qDEB_HOST_ARCH)
-DEB_HOST_ARCH_BITS := $(shell dpkg-architecture -qDEB_HOST_ARCH_BITS)
-
-ifneq ($(GCCGO),)
-# Workaround until #872402 is fixed.
-ifeq ($(findstring mips,$(DEB_HOST_ARCH)),mips)
-# mipsel => mipsle, mips64el => mips64le
-BUILDTAGS += $(DEB_HOST_ARCH:el=le)
-endif
-# Gccgo ignores vendoring.
-override_dh_auto_configure:
-	dh_auto_configure
-	for i in github.com/beevik github.com/soundcloud; \
-        do \
-            src=$(BUILDDIR)/src/$(DH_GOPKG)/vendor/$$i; \
-            dst=`dirname $(BUILDDIR)/src/$$i`; \
-            mkdir -vp $$dst; \
-            mv -v $$src $$dst; \
-        done
-endif
-
 # ZFS (or its tests) are not working in 32-bit arches.
+DEB_HOST_ARCH_BITS := $(shell dpkg-architecture -qDEB_HOST_ARCH_BITS)
 ifeq ($(DEB_HOST_ARCH_BITS),32)
 BUILDTAGS += nozfs
 endif
