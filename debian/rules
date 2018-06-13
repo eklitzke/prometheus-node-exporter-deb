@@ -24,7 +24,7 @@ BUILDFLAGS  = -tags "$(BUILDTAGS)" -ldflags \
     -X $(METAPKG)/version.GoVersion=$(GO_VERSION)"
 
 %:
-	dh $@ --buildsystem=golang --with=golang,systemd \
+	dh $@ --buildsystem=golang --with=golang \
             --builddirectory=$(BUILDDIR)
 
 DEB_HOST_ARCH := $(shell dpkg-architecture -qDEB_HOST_ARCH)
