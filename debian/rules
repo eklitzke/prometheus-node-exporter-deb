@@ -35,6 +35,12 @@ endif
 BINNAME := $(DEB_SOURCE)
 WHATIS := "$(BINNAME) \\- Prometheus exporter for machine metrics"
 
+override_dh_auto_configure:
+	dh_auto_configure
+	# FIXME: Temporary workaround.
+	# Remove vendored file left by mistake.
+	rm -rf $(BUILDDIR)/src/$(DH_GOPKG)/vendor/github.com/golang/protobuf/
+
 override_dh_auto_build:
 	dh_auto_build -- $(BUILDFLAGS)
 	# Rename the binary to match the debian package.
