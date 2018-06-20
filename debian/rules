@@ -13,7 +13,6 @@ USER       := pkg-go-maintainers@lists.alioth.debian.org
 BUILD_DATE := $(shell date --utc --date='@$(SOURCE_DATE_EPOCH)' \
     +%Y%m%d-%H:%M:%S)
 GO_VERSION := $(shell go version | sed 's/go version \(\S*\).*/\1/')
-GCCGO      := $(strip $(shell go version | grep gccgo))
 BUILDTAGS  :=
 BUILDFLAGS  = -tags "$(BUILDTAGS)" -ldflags \
   " -X $(METAPKG)/version.Version=$(DEB_VERSION_UPSTREAM)\
@@ -24,48 +23,33 @@ BUILDFLAGS  = -tags "$(BUILDTAGS)" -ldflags \
     -X $(METAPKG)/version.GoVersion=$(GO_VERSION)"
 
 %:
-	dh $@ --buildsystem=golang --with=golang,systemd \
+	dh $@ --buildsystem=golang --with=golang \
             --builddirectory=$(BUILDDIR)
 
-DEB_HOST_ARCH := $(shell dpkg-architecture -qDEB_HOST_ARCH)
-DEB_HOST_ARCH_BITS := $(shell dpkg-architecture -qDEB_HOST_ARCH_BITS)
-
-ifneq ($(GCCGO),)
-# Workaround until #872402 is fixed.
-ifeq ($(findstring mips,$(DEB_HOST_ARCH)),mips)
-# mipsel => mipsle, mips64el => mips64le
-BUILDTAGS += $(DEB_HOST_ARCH:el=le)
-endif
-# Gccgo ignores vendoring.
-override_dh_auto_configure:
-	dh_auto_configure
-	for i in github.com/beevik github.com/soundcloud; \
-        do \
-            src=$(BUILDDIR)/src/$(DH_GOPKG)/vendor/$$i; \
-            dst=`dirname $(BUILDDIR)/src/$$i`; \
-            mkdir -vp $$dst; \
-            mv -v $$src $$dst; \
-        done
-endif
-
 # ZFS (or its tests) are not working in 32-bit arches.
+DEB_HOST_ARCH_BITS := $(shell dpkg-architecture -qDEB_HOST_ARCH_BITS)
 ifeq ($(DEB_HOST_ARCH_BITS),32)
 BUILDTAGS += nozfs
 endif
 
+BINNAME := $(DEB_SOURCE)
+WHATIS := "$(BINNAME) \\- Prometheus exporter for machine metrics"
+
 override_dh_auto_build:
 	dh_auto_build -- $(BUILDFLAGS)
+	# Rename the binary to match the debian package.
+	cp -v $(BUILDDIR)/bin/node_exporter $(BUILDDIR)/bin/$(BINNAME)
+	build/bin/$(BINNAME) --help-man > build/$(BINNAME).1
+	# Remove build user/build date/go version headers, which is ugly.
+	sed -i -e '/^  /d' build/$(BINNAME).1
+	# Fix whatis entry.
+	sed -i '/^.SH "NAME"/,+1c.SH "NAME"\n'$(WHATIS) build/$(BINNAME).1
+	# Remove default values as they create unwieldy long lines.
+	sed -i 's/\\fB--\(.*\)=".*"\\fR/\\fB--\1\\fR/' build/$(BINNAME).1
 
 override_dh_auto_test:
 	$(CURDIR)/ttar -C $(BUILDDIR)/src/$(DH_GOPKG)/collector/fixtures \
             -x -f collector/fixtures/sys.ttar
-	chmod a+x $(BUILDDIR)/src/$(DH_GOPKG)/collector/fixtures/megacli
 	dh_auto_test -- $(BUILDFLAGS)
 
 override_dh_auto_install:
-	mkdir -p debian/$(DEB_SOURCE)/usr/bin
-	# Rename the binary to match the debian package.
-	cp -v $(BUILDDIR)/bin/node_exporter \
-            debian/$(DEB_SOURCE)/usr/bin/$(DEB_SOURCE)
-	cp -v debian/README.textfile \
-            debian/$(DEB_SOURCE)/var/lib/prometheus/node-exporter

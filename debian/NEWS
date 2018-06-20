@@ -1,3 +1,28 @@
+prometheus-node-exporter (0.16.0+ds-1) unstable; urgency=medium
+
+  Breaking changes
+
+  This release contains major breaking changes to metric names.  Many metrics
+  have new names, labels, and label values in order to conform to current
+  naming conventions.
+
+  * Linux node_cpu metrics now break out `guest` values into separate metrics.
+    See Issue #737
+  * Many counter metrics have been renamed to include `_total`.
+  * Many metrics have been renamed/modified to include base units, for example
+    `node_cpu` is now `node_cpu_seconds_total`.
+
+  In order to help with the transition check the upgrade guide at
+  /usr/share/docs/prometheus-node-exporter/V0_16_UPGRADE_GUIDE.md.
+
+  Other breaking changes:
+  * The megacli collector has been removed, is now replaced by the storcli.py
+    textfile helper.
+  * The gmond collector has been removed.
+  * The textfile collector will now treat timestamps as errors.
+
+ -- Martín Ferrari <tincho@debian.org>  Wed, 13 Jun 2018 19:00:23 +0000
+
 prometheus-node-exporter (0.15.2+ds-1) unstable; urgency=medium
 
   Breaking changes

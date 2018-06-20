@@ -1,0 +1,34 @@
+Description: Set defaults that make sense for Debian systems.
+--- a/collector/netdev_common.go
++++ b/collector/netdev_common.go
+@@ -26,7 +26,7 @@
+ )
+ 
+ var (
+-	netdevIgnoredDevices = kingpin.Flag("collector.netdev.ignored-devices", "Regexp of net devices to ignore for netdev collector.").Default("^$").String()
++	netdevIgnoredDevices = kingpin.Flag("collector.netdev.ignored-devices", "Regexp of net devices to ignore for netdev collector.").Default("^lo$").String()
+ )
+ 
+ type netDevCollector struct {
+--- a/collector/filesystem_linux.go
++++ b/collector/filesystem_linux.go
+@@ -25,7 +25,7 @@
+ )
+ 
+ const (
+-	defIgnoredMountPoints = "^/(dev|proc|sys|var/lib/docker)($|/)"
++	defIgnoredMountPoints = "^/(dev|proc|run|sys|var/lib/docker)($|/)"
+ 	defIgnoredFSTypes     = "^(autofs|binfmt_misc|cgroup|configfs|debugfs|devpts|devtmpfs|fusectl|hugetlbfs|mqueue|overlay|proc|procfs|pstore|rpc_pipefs|securityfs|sysfs|tracefs)$"
+ 	readOnly              = 0x1 // ST_RDONLY
+ )
+--- a/collector/textfile.go
++++ b/collector/textfile.go
+@@ -32,7 +32,7 @@
+ )
+ 
+ var (
+-	textFileDirectory = kingpin.Flag("collector.textfile.directory", "Directory to read text files with metrics from.").Default("").String()
++	textFileDirectory = kingpin.Flag("collector.textfile.directory", "Directory to read text files with metrics from.").Default("/var/lib/prometheus/node-exporter").String()
+ 	mtimeDesc         = prometheus.NewDesc(
+ 		"node_textfile_mtime_seconds",
+ 		"Unixtime mtime of textfiles successfully read.",

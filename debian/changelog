@@ -1,3 +1,32 @@
+prometheus-node-exporter (0.16.0+ds-1) unstable; urgency=medium
+
+  [ Alexandre Viau ]
+  * Point Vcs-* urls to salsa.debian.org.
+
+  [ Michael Stapelberg ]
+  * gbp.conf: set debian-branch
+
+  [ Martín Ferrari ]
+  * New upstream release. Closes: #900760.
+  * Refresh patches.
+  * Fix dependency version of x/sys (missing SOL_NETLINK).
+  * Instead of putting arguments in the default /etc/default file, set
+    them in the source. Closes: #886891.
+  * debian/NEWS: Announce beaking changes.
+  * debian/rules: Automatically generate man page.
+  * debian/rules: Remove reference to nonexistent fixture.
+  * debian/control: Depend on latest version of procfs.
+  * debian/default: Update available flags.
+  * debian/copyright: Add repackaging comment.
+  * debian/copyright: Add missing ttar attribution.
+  * debian/postinst: Stop changing permissions recursively.
+  * debian/docs: Add missing documentation.
+  * Update dh compat level to 11.
+  * Bump Standards-Version (no changes).
+  * debian/rules: Remove now unneeded workarounds.
+
+ -- Martín Ferrari <tincho@debian.org>  Wed, 13 Jun 2018 19:00:23 +0000
+
 prometheus-node-exporter (0.15.2+ds-1~bpo9+1) stretch-backports; urgency=medium
 
   * Rebuild for stretch-backports.
