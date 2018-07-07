@@ -1,11 +1,11 @@
-prometheus-node-exporter (0.16.0+ds-1~bpo9+1) UNRELEASED; urgency=medium
+prometheus-node-exporter (0.16.0+ds-1~bpo9+1) stretch-backports; urgency=medium
 
   * Rebuild for stretch-backports.
   * debian/gbp.conf: Set debian-branch for BPO.
   * debian/rules:Remove vendored file left by mistake.
   * debian/control: Adjust dependencies versions.
 
- -- Martín Ferrari <tincho@debian.org>  Wed, 20 Jun 2018 10:49:42 +0000
+ -- Martín Ferrari <tincho@debian.org>  Sat, 07 Jul 2018 17:28:14 +0000
 
 prometheus-node-exporter (0.16.0+ds-1) unstable; urgency=medium
 
